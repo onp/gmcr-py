@@ -54,7 +54,7 @@ class InpFrameTemplate(ttk.Frame):
 
         #configuring helpFrame & helpFrame widgets
         self.helpFrame.grid(column=2,row=1,sticky=(N,S,E,W),padx=3,pady=3)
-        self.infoFrame.grid_remove()
+        self.helpFrame.grid_remove()
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options

@@ -24,7 +24,11 @@ class DMInpFrame(ttk.Frame):
         self.stateCount = StringVar(value='Total States: ' + 'init')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value='lots and lots of words about relevant stuff and instructions and so on and on and on and on and on.')
+        self.helpText = StringVar(value=
+                "Click a decision maker in the left panel to view their associated options "
+                "in the right panel.  Double clicking an entry or hitting 'Enter' with it "
+                "selected allows you to edit it. Pressing 'Delete' with an entry selected "
+                "will remove it.")
 
         #Define frame-specific variables
         self.optLabText = StringVar(value='')

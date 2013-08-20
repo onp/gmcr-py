@@ -21,7 +21,10 @@ class PreferencesFrame(ttk.Frame):
         self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(self.game.numDMs(),self.game.numDMs()))
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value='lots and lots of words about relevant stuff and instructions and so on and on and on and on and on.')
+        self.helpText = StringVar(value="Select a decision maker from the column at left by clicking its "
+                "'View/Edit' button.  Enter preferred states using the box to the right.  Preferred "
+                "states are shown below the decision makers, from most important at the top, to least "
+                "important at the bottom")
 
         #Define frame-specific variables
         self.dmIdx = 0
@@ -53,7 +56,7 @@ class PreferencesFrame(ttk.Frame):
 
         #configuring helpFrame & helpFrame widgets
         self.helpFrame.grid(column=2,row=1,sticky=(N,S,E,W),padx=3,pady=3)
-        self.infoFrame.grid_remove()
+        self.helpFrame.grid_remove()
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options

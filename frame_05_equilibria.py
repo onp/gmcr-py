@@ -19,7 +19,10 @@ class ResultFrame(ttk.Frame):
         self.infoText = StringVar(value='information here reflects \nthe state of the module')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value='lots and lots of words about relevant stuff and instructions and so on and on and on and on and on.')
+        self.helpText = StringVar(value="The stability of each state in the game is listed in the upper box, "
+                "giving results under a number of different stability criterion. The lower box combined with "
+                "the drop down menus in the centre allow the logic which defines the stability/instability "
+                "of each option to be examined.")
 
         #Define frame-specific variables
 
@@ -51,7 +54,7 @@ class ResultFrame(ttk.Frame):
 
         #configuring helpFrame & helpFrame widgets
         self.helpFrame.grid(column=2,row=1,sticky=(N,S,E,W),padx=3,pady=3)
-        self.infoFrame.grid_remove()
+        self.helpFrame.grid_remove()
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options

@@ -24,7 +24,9 @@ class InfeasInpFrame(Frame):
         self.feasStatesText = StringVar(value='States Remaining: '+'init')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value='lots and lots of words about relevant stuff and instructions and so on and on and on and on and on.')
+        self.helpText = StringVar(value="Enter infeasible states using the box at left. Removing as infeasible "
+                "state will remove all states that match the pattern from the game. Removing as mutually "
+                "exclusive will remove all states where ANY TWO OR MORE of the specified options occur together.")
 
         #Define frame-specific variables
         self.warnText = StringVar(value='')
