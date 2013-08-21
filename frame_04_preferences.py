@@ -37,9 +37,9 @@ class PreferencesFrame(ttk.Frame):
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')      # helpFrame master must be 'master'
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
-        #Define frame-specific input widgets (with 'self' or a child therof as master)
+        #Define frame-specific input widgets (with 'self' or a child thereof as master)
         self.editor = RadiobuttonEntry(self,self.game)
-        self.vectors = PreferenceRankingMaster(self, self.game)
+        self.vectors = PreferenceRankingMaster(self,self.game)
         self.statDisp = PreferenceEditDisplay(self,self.game)
         self.prefDisp = PreferenceLongDisp(self,self.game)
 
@@ -60,15 +60,15 @@ class PreferencesFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
-        self.editor.grid(column=0,row=0,rowspan=2,sticky=(N,S,E,W))
+        self.vectors.grid(column=0,row=0,sticky=(N,S,E,W))
+        self.statDisp.grid(column=0,row=1,sticky=(N,S,E,W))
         ttk.Separator(self,orient=VERTICAL).grid(column=1,row=0,rowspan=2,sticky=(N,S,E,W),padx=3)
-        self.vectors.grid(column=2,row=0,sticky=(N,S,E,W))
-        self.statDisp.grid(column=2,row=1,sticky=(N,S,E,W))
+        self.editor.grid(column=2,row=0,rowspan=2,sticky=(N,S,E,W))
         ttk.Separator(self,orient=VERTICAL).grid(column=3,row=0,rowspan=2,sticky=(N,S,E,W),padx=3)
         self.prefDisp.grid(column=4,row=0,rowspan=2,sticky=(N,S,E,W))
-        self.columnconfigure(0,weight=0)
-        self.columnconfigure(2,weight=1)
-        self.columnconfigure(4,weight=1)
+        self.columnconfigure(0,weight=1)
+        self.columnconfigure(2,weight=0)
+        self.columnconfigure(4,weight=2)
         self.rowconfigure(1,weight=1)
 
         # bindings
