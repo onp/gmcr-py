@@ -51,9 +51,10 @@ class MainAppWindow:
         if launchGame is not None:
             self.activeGame = ConflictModel(launchGame)
             self.root.wm_title(self.activeGame.file)
+            fresh_start=False
         else:
             self.activeGame = ConflictModel('save_files/Prisoners.gmcr')
-            reClear = True
+            fresh_start = True
 
         self.contentFrame.currFrame=1
 
@@ -65,7 +66,7 @@ class MainAppWindow:
         self.addMod(InverseFrame)
 
         self.frameBtnCmds[0](self)
-        if reClear:
+        if fresh_start:
             self.newGame()
         
         self.root.mainloop()

@@ -128,7 +128,7 @@ class ConflictModel(GMCRcalc):
 
         self.optList = []     #stored as lists of Strings
 
-        self.infeas  = -1       #stored as dash patterns
+        self.infeas  = []       #stored as dash patterns
         self.feasDec = []       #stored as decimal values
         self.feasDash= []       #stored as dash patterns
         self.ordered = {}
@@ -231,6 +231,7 @@ class ConflictModel(GMCRcalc):
         self.prefVec = [[] for x in range(self.numDMs())]
         self.prefVecOrd = [[] for x in range(self.numDMs())]
         self.prefPri = [[] for x in range(self.numDMs())]
+        self.payoffs = [[] for x in range(self.numDMs())]
 
     def numDMs(self):
         """Return the number of DMs in the game."""
