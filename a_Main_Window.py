@@ -10,7 +10,7 @@ from frame_05_equilibria import ResultFrame
 from frame_06_inverseApproach import InverseFrame
 
 class MainAppWindow:
-    def __init__(self,newGame=None):
+    def __init__(self,launchGame=None):
         self.root= Tk()
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
@@ -48,12 +48,12 @@ class MainAppWindow:
         self.loadButton.grid(  column=0, row=2, sticky=(E,W))
         self.newButton.grid(   column=0, row=3, sticky=(E,W))
 
-        if newGame:
-            self.activeGame = ConflictModel(newGame)
+        if launchGame is not None:
+            self.activeGame = ConflictModel(launchGame)
             self.root.wm_title(self.activeGame.file)
         else:
-            self.activeGame = ConflictModel()
-            self.root.wm_title('New GMCR Model')
+            self.activeGame = ConflictModel('save_files/Prisoners.gmcr')
+            reClear = True
 
         self.contentFrame.currFrame=1
 
@@ -63,10 +63,11 @@ class MainAppWindow:
         self.addMod(PreferencesFrame)
         self.addMod(ResultFrame)
         self.addMod(InverseFrame)
-        #self.addMod(InpFrameTemplate)
 
         self.frameBtnCmds[0](self)
-
+        if reClear:
+            self.newGame()
+        
         self.root.mainloop()
 
     def addMod(self,newMod):
@@ -134,11 +135,7 @@ class MainAppWindow:
         self.activeGame.__init__()
         self.frameBtnCmds[0](self)
         self.root.wm_title('New GMCR Model')
-
-
-
-def main():
-    a= MainAppWindow('save_files/Prisoners.gmcr')
+    
 
 if __name__ == '__main__':
-    main()
+    a= MainAppWindow()
