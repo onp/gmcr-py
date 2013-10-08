@@ -86,7 +86,7 @@ class MainAppWindow:
 
         self.frameBtnCmds.append(FSelect)
 
-        newButton = ttk.Button(self.pageSelectFrame,text=newFrame.buttonLabel,image=newFrame.bigIcon,compound="top",width=30,command=lambda: FSelect(self))
+        newButton = ttk.Button(self.pageSelectFrame,text=newFrame.buttonLabel,image=newFrame.bigIcon,compound="top",width=25,command=lambda: FSelect(self))
         self.frameBtnList.append(newButton)
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
 

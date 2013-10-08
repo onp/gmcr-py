@@ -1,4 +1,3 @@
-
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
@@ -120,11 +119,21 @@ class InverseContent(ttk.Frame):
 
         self.resDisp = ttk.Treeview(self)
 
-        self.resDisp.grid(column=3,row=0,rowspan=10,sticky=(N,S,E,W))
+        self.resDisp.grid(column=3,row=0,rowspan=7,sticky=(N,S,E,W))
 
         self.resDispScrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.resDisp.yview)
         self.resDisp.configure(yscrollcommand=self.resDispScrl.set)
-        self.resDispScrl.grid(column=4,row=0,rowspan=10,sticky=(N,S,E,W))
+        self.resDispScrl.grid(column=4,row=0,rowspan=7,sticky=(N,S,E,W))
+        
+        self.conditionDisp = Text(self)
+        self.conditionDisp.configure(wrap="word")
+        self.conditionDisp.configure(state="disabled")
+        self.conditionDisp.grid(column=3,row=7,rowspan=3,sticky=(N,S,E,W))
+        
+        self.conditionDispScrl = ttk.Scrollbar(self,orient=VERTICAL,command=self.conditionDisp.yview)
+        self.conditionDisp.configure(yscrollcommand=self.conditionDispScrl.set)
+        self.conditionDispScrl.grid(column=4,row=7,rowspan=3,sticky=(N,S,E,W))
+        
 
 
         self.passDesEq()
@@ -182,6 +191,15 @@ class InverseContent(ttk.Frame):
         self.seqCountVar.set('%s SEQ'%counts[1])
         self.gmrCountVar.set('%s GMR'%counts[2])
         self.smrCountVar.set('%s SMR'%counts[3])
+        
+        self.conditionDisp.configure(state="normal")
+        self.conditionDisp.delete("1.0","end")
+        self.conditionDisp.insert("end","Conditions for Nash stability at state %s:"%(self.desEqVar.get()))
+        self.conditionDisp.insert("end",self.sol.nashCond())
+        self.conditionDisp.insert("end","\n\nConditions for GMR stability at state %s:"%(self.desEqVar.get()))
+        self.conditionDisp.insert("end",self.sol.gmrCond())
+        
+        self.conditionDisp.configure(state="disabled")
 
 
     def passDesEq(self,*args):

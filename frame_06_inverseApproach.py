@@ -33,7 +33,7 @@ class InverseFrame(ttk.Frame):
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')      # helpFrame master must be 'master'
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
-        #Define frame-specific input widgets (with 'self' or a child therof as master)
+        #Define frame-specific input widgets (with 'self' or a child thereof as master)
         self.invDisp = InverseContent(self,self.game)
 
 

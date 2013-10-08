@@ -390,16 +390,40 @@ class InverseSolver(RMGenerator):
         c=itertools.product(*b)
         for y in c:
             yield y
+            
+    def nashCond(self):
+        output=[""]
+        for dm in range(self.game.numDMs()):
+            desEq = self.game.ordered[self.desEq[0]]
+            mblNash = [self.game.ordered[state] for state in self.mustBeLowerNash[0][dm]]
+            message = "For DM %s: %s must be more preferred than %s"%(dm,desEq,mblNash)
+            output.append(message)
+        return "\n".join(output)
+        
+    def gmrCond(self):
+        output=[""]
+        for dm in range(self.game.numDMs()):
+            desEq = self.game.ordered[self.desEq[0]]
+            mblGMR = [self.game.ordered[state] for state in self.mustBeLowerNash[0][dm]]
+            mbl2GMR = []
+            for stateList in self.mustBeLowerGMR[0][dm]:
+                mbl2GMR.extend(stateList)
+            mbl2GMR = list(set(mbl2GMR))
+            mbl2GMR = [self.game.ordered[state] for state in mbl2GMR] 
+            message = "For DM %s: %s must be more preferred than %s, or at least one of %s must be less preferred than %s"%(dm,desEq,mblGMR,mbl2GMR,desEq)
+            output.append(message)
+        return "\n".join(output)
+        
 
     def _mblInit(self):
         self.mustBeLowerNash = [[self.reachable(dm,state) for dm in range(self.game.numDMs())] for state in self.desEq]
         #mustBeLowerNash[state0][dm] contains the states that must be less preferred than 'state0' for 'dm'
-        # to have a nash equilibrium at 'state0'.
+        # to have a Nash equilibrium at 'state0'.
 
         self.mustBeLowerGMR = [[[[] for state1 in dm] for dm in state] for state in self.mustBeLowerNash]
         #mustBeLowerGMR[state0][dm][idx] contains the states that 'dm' could be sanctioned to after taking
         # the move in 'idx' from 'state0'. If, for each 'idx' there is at least one state less preferred
-        # than 'state0', then 'state0' is GMR.  Sanctions are UMs for opponents, but not neccesarily UIs.
+        # than 'state0', then 'state0' is GMR.  Sanctions are UMs for opponents, but not necessarily UIs.
 
         for x,state0 in enumerate(self.mustBeLowerNash):
             for y,dm in enumerate(state0):      #'dm' contains a list of reachable states for dm from 'state0'
@@ -446,7 +470,7 @@ class InverseSolver(RMGenerator):
             for dm in range(self.game.numDMs()):
                 for state0p,state0d in enumerate(self.desEq):
                     if not self.nash[prefsI,dm]: break
-                    pay0=payoffs[dm][state0d]        #payoff of the orginal state; higher is better
+                    pay0=payoffs[dm][state0d]        #payoff of the original state; higher is better
                     for pay1 in (payoffs[dm][state1] for state1 in self.mustBeLowerNash[state0p][dm]):    #get preferences of all states reachable by 'dm'
                         if pay0<pay1:       #prefs0>prefs1 means a UI exists
                             self.nash[prefsI,dm]=False
@@ -465,7 +489,7 @@ class InverseSolver(RMGenerator):
                         if pay0<pay1:   #if there is a UI available
                             #nash=False
                             self.gmr[prefsI,dm]=False
-                            #print('%s is unstable by nash, set dm %s gmr unstable'%(state0d,dm))
+                            #print('%s is unstable by Nash, set dm %s gmr unstable'%(state0d,dm))
                             for pay2 in (payoffs[dm][state2] for state2 in self.mustBeLowerGMR[state0p][dm][state1p]):
                                 if pay0>pay2:       #if initial state was preferred to sanctioned state
                                     self.gmr[prefsI,dm]=True
@@ -493,7 +517,7 @@ class InverseSolver(RMGenerator):
                         if pay0<pay1:  #if there is a UI available
                             #nash=False
                             self.seq[prefsI,dm]=False
-                            #print('%s is unstable by nash, set dm %s gmr unstable'%(state0d,dm))
+                            #print('%s is unstable by Nash, set dm %s gmr unstable'%(state0d,dm))
                             for pay2 in (payoffs[dm][state2] for state2 in mustBeLowerSEQ[state0p][dm][state1p]):
                                 if pay0>pay2:       #if initial state was preferred to sanctioned state
                                     self.seq[prefsI,dm]=True        #set to true since sanctioned, however this will be broken if another UI exists.
