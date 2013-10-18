@@ -102,29 +102,15 @@ class RMGenerator:
         return(gameName[::-1].strip('.gmcr'))
 
     def saveMatrices(self):
-
+        """export reachability matrix to numpy format"""
         np.savez("RMs_for_"+self.gameName(),*self.reachabilityMatrices)
 
-    def saveJSON_(self):
-        nodes = {}
-        links = []
-        dms = self.game.dmList
-
-        for stateDec,stateYN in zip(self.game.getFeas('dec'),
-                                    self.game.getFeas('YN')):
-            nodes[str(stateDec)] = ({'id':str(stateDec),'state':str(stateYN),
-                          'ordered':str(self.game.ordered[stateDec])})
-
-            for dmInd,dm in enumerate(self.game.dmList):
-                for rchSt in self.reachable(dmInd,stateDec):
-                    links.append({'source':str(stateDec),'target':str(rchSt),'dm': 'dm%s'%dmInd})
-
-        with open("networkfor_%s.json"%(self.gameName()),'w') as jsonfile:
-            json.dump({"nodes":nodes,"links":links,"DMs":dms},jsonfile)
-
     def saveJSON(self):
+        """export conflict data to JSON format for presentation"""
         nodes = {}
         dms = self.game.dmList
+        options = self.game.getFlatOpts()
+        startNode = self.game.getFeas('dec')[0]
 
         for stateDec,stateYN in zip(self.game.getFeas('dec'),
                                     self.game.getFeas('YN')):
@@ -137,10 +123,12 @@ class RMGenerator:
                 for rchSt in self.reachable(dmInd,stateDec):
                     nodes[str(stateDec)]['reachable'].append(
                         {'target':str(rchSt),
-                         'dm': 'dm%s'%dmInd})
+                         'dm': 'dm%s'%dmInd},
+                         'payoff':self.game.payoffs[dmInd][rchSt]-self.game.payoffs[dmInd][stateDec])
 
         with open("networkfor_%s.json"%(self.gameName()),'w') as jsonfile:
-            json.dump({"nodes":nodes,"DMs":dms},jsonfile)
+            json.dump({"nodes":nodes,"DMs":dms,"options":options,
+                       "startNode":startNode},jsonfile)
 
 
 class LogicalSolver(RMGenerator):
