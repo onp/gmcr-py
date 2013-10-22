@@ -6,6 +6,18 @@ import itertools
 import json
 
 class RMGenerator:
+    """Reachability matrix class.
+    
+    When initialized with a game for data, it produces a reachability matrix
+    for it.  
+    
+    Key methods for extracting data from the matrix are:
+    reachable(dm,state)
+    uis(dm,state)
+    
+    Other methods are provided that allow the reachability data to be exported.
+    
+    """
     def __init__(self,game):
 
         self.game = game
@@ -22,10 +34,10 @@ class RMGenerator:
 
         for dm in range(game.numDMs()):
 
-            #assign simple pointer to the current focal DM's reachability matrix
+            #assign simpler name to the current focal DM's reachability matrix
             focalReachMat = self.reachabilityMatrices[dm]
 
-            # generate a flat list move values controlled by other DMs
+            # generate a flat list of move values controlled by other DMs
             oDMmoves = list(movelists)
             focalDMmoves = oDMmoves.pop(dm)
             oDMmoves = [val for subl in oDMmoves for val in subl]   #flattening
@@ -71,6 +83,11 @@ class RMGenerator:
                                     focalReachMat[self.game.ordered[state0],self.game.ordered[state1]]= 0
 
     def reachable(self,dm,state):
+        """Returns a list of all states reachable by dm from state.
+        
+        dm is the integer index of the decision maker.
+        state is the integer representation of the state in decimal format.
+        """
         stateO = self.game.ordered[state]
         reachVec = self.reachabilityMatrices[dm][stateO,:].flatten().tolist()
         reachVec = [x for x,y in enumerate(reachVec) if y != -1]
@@ -78,9 +95,15 @@ class RMGenerator:
         return(reachVec)
 
     def UIs(self,dm,state,minPref=None):
+        """Returns a list of a unilateral improvements available to dm from state
+        
+        dm is the integer index of the decision maker.
+        state is the integer representation of the state in decimal format.
+        minPref (optional) is a minimum preference for UIs to be returned. This
+            is used to find moves that are preferred relative to some other
+            initial state rather than the current one.  Used in SMR calculation.
+        """
         stateO = self.game.ordered[state]
-        #optional 'minPref' is a minimum preference for UIs. Used to find moves that are preferred
-        #     relative to an initial state rather than the current one. applied for SMR stability.
         UIvec = self.reachabilityMatrices[dm][stateO,:].flatten().tolist()
 
         if minPref is not None:
@@ -92,6 +115,10 @@ class RMGenerator:
         return(UIvec)
 
     def gameName(self):
+        """extracts a guess at the game's name from the file name.
+        
+        Used in generating file names for data dumps (json or npz).
+        """
         gameName = self.game.file[::-1]
         try:
             slashInd = gameName.index('/')
@@ -102,11 +129,18 @@ class RMGenerator:
         return(gameName[::-1].strip('.gmcr'))
 
     def saveMatrices(self):
-        """export reachability matrix to numpy format"""
+        """Export reachability matrix to numpy format."""
         np.savez("RMs_for_"+self.gameName(),*self.reachabilityMatrices)
 
     def saveJSON(self):
-        """export conflict data to JSON format for presentation"""
+        """Export conflict data to JSON format for presentation.
+        
+        Includes:
+        Nodes: state data,
+        DMs: Decision Maker Names,
+        options: option names,
+        startNode: the first feasible state in the game
+        """"
         nodes = {}
         dms = self.game.dmList
         options = self.game.getFlatOpts()
@@ -132,11 +166,14 @@ class RMGenerator:
 
 
 class LogicalSolver(RMGenerator):
+    """Solves the games for equilibria, based on the logical definitions of stability concepts.
+    
+    """
     def __init__(self,game):
         RMGenerator.__init__(self,game)
 
-        #used in generating the verbose versions of the stability calculations
     def chattyHelper(self,dm,state):
+        """Used in generating narration for the verbose versions of the stability calculations"""
         a= 'state %s (decimal %s, payoff %s)' %(self.game.ordered[state],state,
                                                 self.game.payoffs[dm][state])
         return a
