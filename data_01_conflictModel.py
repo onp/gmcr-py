@@ -107,14 +107,20 @@ class GMCRcalc:
         return feas,numRmvd
 
     def mutuallyExclusive(self,mutEx):
+  """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
         states = self._toIndex(mutEx)
         toRemove = itertools.combinations(states,2)
         remove = [self._fromIndex(x) for x in toRemove]
         return remove
 
     def orderedNumbers(self,decimalList):
-        ordered  = {}
-        expanded = {}
+        """creates translation dictionaries for using ordered numbers.
+        
+        Generates the decimal->ordered and ordered->decimal translation
+        dictionaries for a list of decimal values.
+        """
+        ordered  = {}        #decimal -> ordered dictionary
+        expanded = {}        #ordered -> decimal dictionary
         for i,x in enumerate(decimalList,1):
             ordered[x]=i
             expanded[i]=x
@@ -131,13 +137,13 @@ class ConflictModel(GMCRcalc):
         self.infeas  = []       #stored as dash patterns
         self.feasDec = []       #stored as decimal values
         self.feasDash= []       #stored as dash patterns
-        self.ordered = {}
-        self.expanded = {}
-        self.numFeas = 0
+        self.ordered = {}        #decimal -> ordered dictionary
+        self.expanded = {}      #ordered -> decimal dictionary
+        self.numFeas = 0        #number of feasible states, integer
 
         self.irrev = []       #stored as (idx,'val') tuples
 
-        self.prefVec = []
+        self.prefVec = []    
         self.prefVecOrd = []
 
         self.prefPri = []     #stored as lists of dash patterns
@@ -257,7 +263,12 @@ class ConflictModel(GMCRcalc):
         self.numFeas = len(self.feasDec)
 
     def addInfeas(self,infeas,external=True):
-        """Add infeasible states to the game.  Input is in dash format."""
+        """Add infeasible states to the game.  Input in dash format.
+        
+        The 'external' flag is set to false by some calls to prevent excessive
+        recalculation of values when a large number of infeasibles are being
+        added simultaneously.
+        """
         if (not self.infeas) & bool(external) :  #adding a first infeasible state should go through "setInfeas"
              self.setInfeas([infeas])
              return None
@@ -282,11 +293,20 @@ class ConflictModel(GMCRcalc):
         self.payoffs = [[0]*(self.numOpts()**2) for x in range(self.numDMs())]
 
     def setPayoffs(self,payoffs):
-        """Interface function. Sets Payoffs in the game. conflict with setPref?"""
+        """Interface function. Sets Payoffs in the game.
+        
+        Conflicts with setPref, and is not used by the GUI program"""
         self.payoffs = payoffs
 
     def getInfeas(self,fmt='dash'):
-        """Interface function.  Returns the infeasible states in the specified format."""
+        """Interface function.  Returns the infeasible states in the specified format.
+        
+        Valid formats are:
+        dash: uses '1','0', and '-' to represent infeasible states compactly.
+        'YN': lists all infeasible states using 'Y' and 'N'.
+        'bin': lists all infeasible states using '1' and '0'.
+        'dec': lists all infeasible states in decimal form.
+        """
         if fmt == 'dash':
             return self.infeas
         if fmt == 'YN':
@@ -302,7 +322,18 @@ class ConflictModel(GMCRcalc):
             print('invalid format')
 
     def getFeas(self,fmt):
-        """Interface function.  Returns the feasible states in the game in the specificed format."""
+        """Interface function.  Returns the feasible states in the game in the specified format.
+        
+        Valid formats are:
+        'dash': uses '1','0', and '-' to represent feasible states compactly.
+        'YN-': uses 'Y','N', and '-' to represent feasible states compactly.
+        'YN': lists all feasible states using 'Y' and 'N'.
+        'bin': lists all feasible states using '1' and '0'.
+        'dec': lists all feasible states in decimal form.
+        'ord': lists all feasible states in ordered form.
+        'ord_dec': lists all feasible states, as the ordered value followed by
+            the decimal one in square brackets
+  """
         if fmt == 'dash':
             return self.reducePatterns(self.feasDash)
         if fmt == 'YN-':
@@ -359,7 +390,7 @@ class ConflictModel(GMCRcalc):
 
     def mapPayoffs(self):
         """Map the preference vectors provided into payoff values for each state."""
-        for dmi,dm in enumerate(self.prefVec):
+        for dmi,dm in enumerate(self.prefVec):		#DM index, preference vector for that DM
             for state in dm:
                 if state not in self.feasDec:
                     try:
@@ -369,7 +400,7 @@ class ConflictModel(GMCRcalc):
                     except TypeError:
                         raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'%(state,dmi))
 
-        self.payoffs =[[0]*(2**self.numOpts()) for x in range(self.numDMs())]
+        self.payoffs =[[0]*(2**self.numOpts()) for x in range(self.numDMs())]   
 
         for dm in range(self.numDMs()):
             for x,y in enumerate(self.prefVec[dm]):
@@ -384,16 +415,20 @@ class ConflictModel(GMCRcalc):
                     raise Exception("feasible state '%s' for DM '%s' was not included in the preference vector" %(state,dm))
 
     def setPrefPri(self,prefPri):
+        """If data is provided, populate the game's preference priority settings with it.
+        Otherwise, reinitialize the preference priorities to blank."""
         if prefPri:
             self.prefPri = prefPri
         else:
             self.prefPri = [[] for x in range(self.numDMs())]
 
     def addPreference(self,dmIdx,state):
+        """Append a new preferred state for a DM, in the lowest priority position."""
         if state not in self.prefPri[dmIdx]:
             self.prefPri[dmIdx].append(state)
 
     def removePreference(self,dmIdx,idx):
+        """Remove the specified preferred state from a DM's profile"""
         del self.prefPri[dmIdx][idx]
 
     def movePreference(self,dmIdx,idx,targ):
@@ -401,11 +436,12 @@ class ConflictModel(GMCRcalc):
         self.prefPri[dmIdx].insert(targ,self.prefPri[dmIdx].pop(idx))
 
     def rankPreferences(self,dmIdx):
+        """returns a refreshed preference vector for the given DM."""
         self.rankStates(dmIdx)
         return str(self.prefVecOrd[dmIdx])[1:-1]
 
     def matchesCrit(self,stateX,criteriaX):
-        #returns True if stateX is in the set specified by criteriaX
+        """returns True if stateX is in the set specified by criteriaX"""
         stateX = self.dec2bin(stateX)
         criteria = self._toIndex(criteriaX)
         for x in criteria:
@@ -414,6 +450,11 @@ class ConflictModel(GMCRcalc):
         return True
 
     def rankStates(self,dmIdx):
+        """Ranks the states for a DM, generating payoff values.
+        
+        Ranking is based on Preference Prioritization, and output payoff values
+        are sequential. Calculated payoffs are stored in self.payoffs[dmIdx]
+        """
         self.payoffs[dmIdx] = [0]*(2**self.numOpts())
         pVal=len(self.prefPri[dmIdx])-1
         for Pstatement in self.prefPri[dmIdx]:
@@ -445,6 +486,7 @@ class ConflictModel(GMCRcalc):
         self.prefVecOrd[dmIdx] = pVecOrd
 
     def rankAll(self):
+        """calls rankState for every DM in the conflict."""
         for dm in range(self.numDMs()):
             self.rankStates(dm)
 
