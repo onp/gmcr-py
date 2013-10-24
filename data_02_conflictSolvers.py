@@ -435,7 +435,25 @@ class InverseSolver(RMGenerator):
                 mbl2GMR.extend(stateList)
             mbl2GMR = list(set(mbl2GMR))
             mbl2GMR = [self.game.ordered[state] for state in mbl2GMR] 
-            message = "For DM %s: %s must be more preferred than %s, or at least one of %s must be less preferred than %s"%(dm,desEq,mblGMR,mbl2GMR,desEq)
+            message = "For DM %s: %s must be more preferred than %s"%(dm,desEq,mblGMR)
+            message += "\n    or at least one of %s must be less preferred than %s"%(mbl2GMR,desEq)
+            output.append(message)
+        return "\n".join(output)
+        
+    def seqCond(self):
+        output=[""]
+        for dm in range(self.game.numDMs()):
+            desEq = self.game.ordered[self.desEq[0]]
+            mblSEQ = [self.game.ordered[state] for state in self.mustBeLowerNash[0][dm]]
+            message = "For DM %s: %s must be more preferred than %s"%(dm,desEq,mblSEQ)
+            for dm2 in range(self.game.numDMs()):
+                if dm2 == dm:
+                    continue
+                for state1 in self.mustBeLowerNash[0][dm]:
+                    for state2 in self.reachable(dm2,state1):
+                        s1 = self.game.ordered[state1]
+                        s2 = self.game.ordered[state2]
+                        message += "\n    or if %s is preferred to %s for DM %s, %s must be less preferred than %s for DM %s"%(s2,s1,dm2,s2,desEq,dm)
             output.append(message)
         return "\n".join(output)
         

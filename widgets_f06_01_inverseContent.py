@@ -198,6 +198,8 @@ class InverseContent(ttk.Frame):
         self.conditionDisp.insert("end",self.sol.nashCond())
         self.conditionDisp.insert("end","\n\nConditions for GMR stability at state %s:"%(self.desEqVar.get()))
         self.conditionDisp.insert("end",self.sol.gmrCond())
+        self.conditionDisp.insert("end","\n\nConditions for SEQ stability at state %s:"%(self.desEqVar.get()))
+        self.conditionDisp.insert("end",self.sol.seqCond())
         
         self.conditionDisp.configure(state="disabled")
 

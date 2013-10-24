@@ -86,7 +86,7 @@ class GMCRcalc:
             idx,val = x
             if feas[idx] == self.bitFlip[val]:
                 return [feas]
-        #subract overlap if it exists
+        #subtract overlap if it exists
         remainingStates = []
         curr = feas
         for x in sub:
