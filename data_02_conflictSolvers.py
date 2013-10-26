@@ -140,7 +140,7 @@ class RMGenerator:
         DMs: Decision Maker Names,
         options: option names,
         startNode: the first feasible state in the game
-        """"
+        """
         nodes = {}
         dms = self.game.dmList
         options = self.game.getFlatOpts()
@@ -157,8 +157,8 @@ class RMGenerator:
                 for rchSt in self.reachable(dmInd,stateDec):
                     nodes[str(stateDec)]['reachable'].append(
                         {'target':str(rchSt),
-                         'dm': 'dm%s'%dmInd},
-                         'payoff':self.game.payoffs[dmInd][rchSt]-self.game.payoffs[dmInd][stateDec])
+                         'dm': 'dm%s'%dmInd,
+                         'payoff':self.game.payoffs[dmInd][rchSt]-self.game.payoffs[dmInd][stateDec]})
 
         with open("networkfor_%s.json"%(self.gameName()),'w') as jsonfile:
             json.dump({"nodes":nodes,"DMs":dms,"options":options,

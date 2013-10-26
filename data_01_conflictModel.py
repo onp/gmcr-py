@@ -107,7 +107,7 @@ class GMCRcalc:
         return feas,numRmvd
 
     def mutuallyExclusive(self,mutEx):
-  """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
+        """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
         states = self._toIndex(mutEx)
         toRemove = itertools.combinations(states,2)
         remove = [self._fromIndex(x) for x in toRemove]
