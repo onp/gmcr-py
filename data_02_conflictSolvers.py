@@ -1,6 +1,3 @@
-# class to hold all information about the current state of the game,
-# and serve it up to the UI elements and calculators.
-
 import numpy as np
 import itertools
 import json
@@ -179,8 +176,8 @@ class LogicalSolver(RMGenerator):
         return a
 
 
-        #Nash function
     def nash(self,dm,state):
+        """Used to calculate Nash stability. Returns true if state Nash is stable for dm."""
         if not self.UIs(dm,state):
             narr = self.chattyHelper(dm,state)+' is Nash stable for dm '+ self.game.dmList[dm]+' since they have no UIs from this state.'
             return 1,narr
@@ -189,8 +186,8 @@ class LogicalSolver(RMGenerator):
             return 0,narr
 
 
-        #SEQ function
     def seq(self,dm,state):
+        """Used to calculate SEQ stability. Returns true if state is SEQ stable for dm."""
         ui=self.UIs(dm,state)
         narr = ''
 
@@ -222,8 +219,8 @@ class LogicalSolver(RMGenerator):
         return seqStab,narr
 
 
-        #SIM function
     def sim(self,dm,state):
+        """Used to calculate SIM stability. Returns true if state is SIM stable for dm."""
         ui=self.UIs(dm,state)
         narr=''
 
@@ -257,8 +254,8 @@ class LogicalSolver(RMGenerator):
         return simStab,narr
 
 
-        #GMR function
     def gmr(self,dm,state):
+        """Used to calculate GMR stability. Returns true if state is GMR stable for dm."""
         ui=self.UIs(dm,state)
         narr=''
 
@@ -290,8 +287,8 @@ class LogicalSolver(RMGenerator):
         return gmrStab,narr
 
 
-        #SMR function
     def smr(self,dm,state):
+        """Used to calculate SMR stability. Returns true if state is SMR stable for dm."""
         ui=self.UIs(dm,state)
         narr= ''
 
@@ -332,6 +329,7 @@ class LogicalSolver(RMGenerator):
         return smrStab,narr
 
     def findEquilibria(self):
+        """Calculates the equalibrium states that exist within the game for each stability concept."""
             #Nash calculation
         nashStabilities = np.zeros((self.game.numDMs(),2**self.game.numOpts()))
         for dm in range(self.game.numDMs()):
@@ -417,6 +415,7 @@ class InverseSolver(RMGenerator):
             yield y
             
     def nashCond(self):
+        """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
         output=[""]
         for dm in range(self.game.numDMs()):
             desEq = self.game.ordered[self.desEq[0]]
@@ -426,6 +425,7 @@ class InverseSolver(RMGenerator):
         return "\n".join(output)
         
     def gmrCond(self):
+        """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
         output=[""]
         for dm in range(self.game.numDMs()):
             desEq = self.game.ordered[self.desEq[0]]
@@ -441,6 +441,7 @@ class InverseSolver(RMGenerator):
         return "\n".join(output)
         
     def seqCond(self):
+        """Generates a list of the conditions that preferences must satisfy for SEQ stability to exist."""
         output=[""]
         for dm in range(self.game.numDMs()):
             desEq = self.game.ordered[self.desEq[0]]
@@ -459,6 +460,7 @@ class InverseSolver(RMGenerator):
         
 
     def _mblInit(self):
+        """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
         self.mustBeLowerNash = [[self.reachable(dm,state) for dm in range(self.game.numDMs())] for state in self.desEq]
         #mustBeLowerNash[state0][dm] contains the states that must be less preferred than 'state0' for 'dm'
         # to have a Nash equilibrium at 'state0'.
@@ -491,6 +493,7 @@ class InverseSolver(RMGenerator):
 
 
     def findEquilibria(self):
+        """Generates a list of all requested preference vectors, then checks if they meet equilibrium requirements."""
         self._mblInit()
         self.pVecs = list(self.prefPermGen(self.game.prefVec,self.vary))
         self.pVecsOrd = list(self.prefPermGen(self.game.prefVecOrd,self.vary))
