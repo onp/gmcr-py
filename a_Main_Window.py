@@ -11,6 +11,8 @@ from frame_06_inverseApproach import InverseFrame
 
 class MainAppWindow:
     def __init__(self,file=None):
+        self.file = file
+        
         self.root= Tk()
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
@@ -48,10 +50,9 @@ class MainAppWindow:
         self.loadButton.grid(  column=0, row=2, sticky=(E,W))
         self.newButton.grid(   column=0, row=3, sticky=(E,W))
 
-        if launchGame is not None:
-            self.activeGame = ConflictModel(launchGame)
-            self.root.wm_title(self.activeGame.file)
-            fresh_start=False
+        if self.file is not None:
+            self.activeGame = ConflictModel(file)
+            self.root.wm_title(self.file)
         else:
             self.activeGame = ConflictModel()
 
@@ -100,40 +101,40 @@ class MainAppWindow:
         print(str([x.name for x in self.activeGame.options]))
         print(self.activeGame.json_export())
         return None
-        if not self.activeGame.file:
+        if self.file is None:
             self.saveAs()
+            return
         self.contentFrame.currFrame.leave()
         self.contentFrame.currFrame.enter()
-        self.activeGame.saveVals()
+        self.activeGame.save_to_file(self.file)
         print('Saved')
 
     def saveAs(self):
         """Opens a file dialog that prompts for name and location for saving the game."""
-        filename = filedialog.asksaveasfilename(defaultextension= '.gmcr',
+        self.file = filedialog.asksaveasfilename(defaultextension= '.gmcr',
                                                 filetypes = (("GMCRo Save Files", "*.gmcr")
                                                              ,("All files", "*.*") ),
                                                 parent=self.root)
-        self.activeGame.setFile(filename)
-        self.root.wm_title(filename)
+        self.root.wm_title(self.file)
         self.saveGame()
 
 
     def loadGame(self):
         """Opens a file dialog that prompts for a save file to open."""
-        filename = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr")
+        self.file = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr")
                                                              ,("All files", "*.*") ),
                                                 parent=self.root)
-        self.activeGame.setFile(filename)
         self.frameLeave()
-        print('loading...')
-        self.activeGame.loadVals()
+        print('loading: %s'%(self.file))
+        self.root.wm_title(self.file)
+        self.activeGame.load_from_file(self.file)
         self.frameBtnCmds[0](self)
-        self.root.wm_title(filename)
+        
 
     def newGame(self):
         """Clears all data in the game, allowing a new game to be entered."""
         self.frameLeave()
-        self.activeGame.__init__()
+        self.activeGame = ConflictModel()
         self.frameBtnCmds[0](self)
         self.root.wm_title('New GMCR Model')
     

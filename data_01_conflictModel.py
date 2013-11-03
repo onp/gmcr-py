@@ -7,14 +7,16 @@ import data_03_gmcrUtilities as gmcrUtil
 
 
 class Option:
-    def __init__(self,name):
+    def __init__(self,name,reversibility='both'):
         self.name = str(name)
+        self.reversibility = reversibility
     
     def __str__(self):
         return self.name
         
     def export_rep(self):
-        return {'name':str(self.name)}
+        return {'name':str(self.name),
+                'reversibility':str(self.reversibility)}
         
 class DecisionMaker:
     def __init__(self,name,masterOptionList):
@@ -25,7 +27,8 @@ class DecisionMaker:
         return self.name
         
     def export_rep(self):
-        return {'name':str(self.name),'options':self.options.export_rep()}
+        return {'name':str(self.name),
+                'options':self.options.export_rep()}
 
     def addOption(self,option):
         if option not in self.options:
@@ -37,9 +40,9 @@ class DecisionMaker:
             
 class Condition:
     """A list of options either taken or not taken against which a state can be tested."""
-    def __init__(self,name=''):
+    def __init__(self,name,masterOptionList):
         self.name = str(name)
-        self.options = []
+        self.options = OptionList(masterOptionList)
         self.taken = []
 
     def __str__(self):
@@ -88,16 +91,22 @@ class DecisionMakerList(ObjectList):
     def __init__(self,masterOptionList):
         ObjectList.__init__(self)
         self.masterOptionList = masterOptionList
-        
+
     def export_rep(self):
         return [x.export_rep() for x in self.itemList]
 
     def append(self,item):
-        if isinstance(item,DecisionMaker):
+        if isinstance(item,DecisionMaker) and item not in self.itemList:
             self.itemList.append(item)
         elif isinstance(item,str):
             self.itemList.append(DecisionMaker(item,self.masterOptionList))
-            
+
+    def from_json(self,dmData):
+        newDM = DecisionMaker(dmData['name'],self.masterOptionList)
+        for optIdx in dmData['options']:
+            newDM.options.append(self.masterOptionList[int(optIdx)])
+        self.append(newDM)
+
 class OptionList(ObjectList):
     def __init__(self,masterList=None):
         ObjectList.__init__(self,masterList)
@@ -110,7 +119,7 @@ class OptionList(ObjectList):
             return [x.export_rep() for x in self.itemList]
 
     def append(self,item):
-        if isinstance(item,Option):
+        if isinstance(item,Option) and item not in self.itemList:
             self.itemList.append(item)
             if (self.masterList is not None) and (item not in self.masterList):
                 self.masterList.append(item)
@@ -119,6 +128,10 @@ class OptionList(ObjectList):
             self.itemList.append(newOption)
             if self.masterList is not None:
                 self.masterList.append(newOption)
+                
+    def from_json(self,optData):
+        newOption = Option(optData['name'],optData['reversibility'])
+        self.append(newOption)
             
 class ConditionList(ObjectList):
     def __init__(self):
@@ -163,31 +176,36 @@ class ConflictModel:
         self.payoffs = []     #stored as lists of decimal payoffs
 
         self.file = file
-        if self.file:
-            self.loadVals()
+        if self.file is not None:
+            self.load_from_file(self.file)
 
     def export_rep(self):
         return {'decisionMakers':self.decisionMakers.export_rep(),
-                'options':self.options.export_rep()}
+                'options':self.options.export_rep(),
+                'program':'gmcr-py'}
 
     def json_export(self):
         return json.dumps(self.export_rep())
+        
+    def save_to_file(self,file):
+        """Saves the current conflict to the file location given."""
+        print(self.json_export())
+        try:
+            fileObj = open(file,mode='w')
+        except IOError:
+            print('file not readable')
+            return
+        try:
+            json.dump(self.json_export(),fileObj)
+        finally:
+            fileObj.close()
 
-#    def dExport(self):
-#        """ Returns the conflict description as a dictionary """
-#        exptDict = {'decisionMakers' :self.dmList,
-#                    'options' :self.optList,
-#                    'infeas'  :self.infeas,
-#                    'prefVec' :self.prefVec,
-#                    'irrev'   :self.irrev,
-#                    'prefPri' :self.prefPri,
-#                    'payoffs' :self.payoffs}
-#        return exptDict
-
-    def dImport(self,d):
+    def json_import(self,d):
         """Imports values into the conflict from dictionary 'd'"""
-        self.setDMs (   d['decisionMakers'])
-        self.setOpts(   d['options'])
+        for optData in d['options']:
+            self.options.from_json(optData)
+        for dmData in d['decisionMakers']:
+            self.decisionMakers.from_json(dmData)
         try:
             self.setInfeas( d['infeas'])
             self.setPref(   d['prefVec'])
@@ -200,28 +218,20 @@ class ConflictModel:
     def load_from_file(self,file):
         """Load a conflict from the file given."""
         try:
-            fileData = open(file,mode='r')
+            fileObj = open(file,mode='r')
         except IOError:
             print('file not readable')
             raise Exception('the loaded file was invalid')
             return
         try:
-            self.json_import(json.loads(fileData))
+            self.json_import(json.load(fileObj))
         except EOFError:
             print('file is empty')
             return
-        savFile.close()
+        finally:
+            fileObj.close()
 
-    def save_to_file(self,file):
-        """Saves the current conflict to the file location given."""
-        print(self.json_export())
-        try:
-            savFile = open(self.file,mode='w')
-        except IOError:
-            print('file not readable')
-            return
-        
-        savFile.close()
+
 
     def getStateList(self,infeasIdx=-1):
         """Interface function.  Returns the list of infeasible states in
@@ -242,30 +252,9 @@ class ConflictModel:
         """ Returns a list of all of the options in the conflict as a flat list."""
         return [x.name for x in self.options]
 
-    def setDMs(self,data):
-        """Creates decision makers from save data."""
-        self.decisionMakers = []
-        for dmData in dms:
-            dm = DecisionMaker(dmData.name)
-            for index in dmData.options:
-                dm.addOption(self.options[index])
-            self.decisionMakers.append(dm)
-            
-    #    self.prefVec = [[] for x in range(self.numDMs())]
-    #    self.prefVecOrd = [[] for x in range(self.numDMs())]
-    #    self.prefPri = [[] for x in range(self.numDMs())]
-    #    self.payoffs = [[] for x in range(self.numDMs())]
-
     def numDMs(self):
         """Return the number of DMs in the conflict."""
         return len(self.decisionMakers)
-
-    def setOpts(self,data):
-        """Creates options in the conflict from save data."""
-        self.options = []
-        for optData in data:
-            opt = Option(optData)
-            self.options.append(opt)
 
     def numOpts(self):
         """Return the number of options in the conflict."""
@@ -511,107 +500,3 @@ class ConflictModel:
         for dm in range(self.numDMs()):
             self.rankStates(dm)
 
-
-# ##################
-
-def main():
-    # #################################################################################
-    # #############                     INPUTS                            #############
-    # #################################################################################
-
-        # Define DMs:
-        #   write as a list of strings
-        #   ex: ["Americans","British","Canadians"]
-    DMnames = ["Americans","British"]
-
-
-        # Define Options:
-        #   a list for each DM, listed in the same order as above
-        #   ex:   [  ["Escalate","Petition"], ["Dance"]  ]
-    Options =   [   ["Boycott","Riot","Militias","Declare"],
-                    ["Tax","Military","Supression"]]
-
-        # Define Infeasible States:
-        #   list infeasible outcomes as list of tuples (position, state)
-        #   ex:   ( 1 - - 1 - 1) would be [(0,1), (3,1), (5,1)]
-    infeasible = ['---11--',    #no tax possible if declaration
-
-                  '--01---',    #no independence without militia
-                  '---1--0',    #no independence without suppression
-
-                  '-----01',    #no suppression without military
-                 ]
-
-        # Define irreversible moves:
-        #   List irreversible moves as [OptionNumber, 'position that can't be moved away from']
-    UseIrreversibles = True
-    irreversible = [    [3, '1']        # Declaration of Independence is irreversible
-                   ]
-
-    payoffs = [[],
-               []]
-
-        # Define Preference Vector     (or see Option Prioritization below)
-        #   vector of payoff values, including all feasible states in ascending decimal order
-    prefVec = [ [],
-                []]
-
-
-        # Define Preferences through Option Prioritization
-        #   Set this option to 'True' if Prioritization should be used.  This will
-        #   cause the preference vector defined above to be ignored, and a new
-        #   preference vector will be created based on the priorities defined.
-        # Define Priorities below:
-        #   Format is somewhat complex, related to the infeasible state format.
-    PrefPriorities=[    [   #First DM priority list
-                            ['True',  [(6,'0')]           ],     # Prefer No Supression
-                            ['True',  [(4,'0')]  ],              # Prefer No Tax
-                            ['True',  [(3,'0'), (6,'0')]  ],     # Prefer no Declaration if no Supression
-                            ['True',  [(3,'1'), (6,'1')]  ],     # Prefer Declaration if Supression
-                            ['True',  [(0,'0'), (4,'0')]  ],     # Prefer no Boycott if no Tax
-                            ['True',  [(0,'1'), (4,'1')]  ],     # Prefer Boycott if Tax
-                            ['True',  [(5,'0')]  ],              # Prefer no military presence
-                            ['If',    [(2,'1')],  [(4,'1'),(5,'1'),(6,'1')]   ],    #Prefer having Militias if British do (Tax, Military,Supression)
-                            ['If',    [(1,'1')],  [(4,'1'),(5,'1'),(6,'1')]   ],    #Prefer Rioting if British do (Tax, Military, Supression)
-                            ['If',    [(3,'1')],  [(4,'1'),(5,'1'),(6,'1')]   ],    #Prefer Declaration if British do (Tax, Military, Supression)
-                            ['If',    [(0,'1')],  [(4,'1'),(5,'1'),(6,'1')]   ],    #Prefer Boycott if British do (Tax, Military, Supression)
-                            ['True',  [(1,'0'), (6,'1')]  ]                         #Prefer no Riots if Suppression
-                        ],
-
-                        [   #Second DM priority list
-                            ['True',  [(3,'0')]               ],        # Prefer No Declaration
-                            ['True',  [(0,'0')]               ],        # Prefer No Boycott
-                            ['True',  [(1,'0')]               ],        # Prefer No Riot
-                            ['True',  [(0,'0'),(4,'1')]       ],        # Prefer to Tax if no boycott
-                            ['True',  [(0,'1'),(4,'0')]       ],        # Prefer to Tax if no boycott
-                            ['True',  [(5,'1'), (1,'1')]      ],        # Prefer Military if Riots
-                            ['True',  [(5,'1'), (0,'1')]      ],        # Prefer Military if Boycotts
-                            ['True',  [(5,'0')]               ],        # Prefer No Military
-                            ['True',  [(6,'0'), (1,'0')]      ],        # Prefer No Suppression if No Riots
-                            ['True',  [(6,'1'), (1,'1')]      ],        # Prefer Suppression if Riots
-                            ['True',  [(5,'1'), (3,'1')]      ]         # Prefer Military if Declaration
-                        ]
-                   ]
-
-
-    # #################### actual testing
-    testconflict = ConflictModel()
-
-    testconflict.setFile('AmRv2.gmcr')
-
-    infoDict = {'dms'     :DMnames,
-                'opts'    :Options,
-                'infeas'  :infeasible,
-                'irrev'   :irreversible,
-                'prefVec' :prefVec,
-                'prefPri' :PrefPriorities,
-                'payoffs' :payoffs}
-
-    testconflict.dImport(infoDict)
-
-    testconflict.saveVals()
-
-
-
-if __name__ == '__main__':
-    main()
