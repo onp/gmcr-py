@@ -15,6 +15,9 @@ class InverseFrame(ttk.Frame):
 
         self.buttonLabel= 'Inverse Approach'     #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
+        
+        if game.numDMs() <= 0:
+            return None
 
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='information here reflects \nthe state of the module')

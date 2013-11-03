@@ -16,9 +16,14 @@ class LogResultDisp(ttk.Frame):
         self.rowconfigure(3,weight=1)
 
         self.game = game
-
-        self.dmVar     = StringVar(value = self.game.dmList[0])
-        self.stateVar  = StringVar(value = self.game.feasDec[0])
+        
+        if self.game.numDMs() > 0:
+            self.dmVar     = StringVar(value = self.game.decisionMakers[0].name)
+            self.stateVar  = StringVar(value = self.game.feasDec[0])
+        else:
+            self.dmVar     = StringVar()
+            self.stateVar  = StringVar()
+            
         self.eqTypeVar = StringVar(value = 'Nash')
 
         self.resDisp = ttk.Treeview(self)
@@ -96,6 +101,8 @@ class LogResultDisp(ttk.Frame):
 
 
     def refreshSolution(self):
+        if self.game.numDMs() <= 0:
+            return None
         self.sol = LogicalSolver(self.game)
         self.sol.findEquilibria()
         for chld in self.resDisp.get_children():

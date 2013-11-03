@@ -22,7 +22,7 @@ class RMGenerator:
         # Generate move value lists for each player
         mvNm=0
         movelists = []
-        for dmMv in [len(x) for x in game.optList]:
+        for dmMv in [len(x.options) for x in game.decisionMakers]:
             movelists.append([2**mvNm for mvNm in range(mvNm,dmMv+mvNm)])
             mvNm += dmMv
 

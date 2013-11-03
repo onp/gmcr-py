@@ -9,11 +9,11 @@ from data_01_conflictModel import ConflictModel
 
 class DMInpFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
 
-        # Connect to active game module
-        self.game = game
+        # Connect to active conflict module
+        self.conflict = conflict
 
         self.buttonLabel= 'Decision Makers and Options'     #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/DMs_OPs.gif')         #Image used on button to select frame.
@@ -44,7 +44,7 @@ class DMInpFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
 
-        #Define frame-specific input widgets (with 'self' or a child therof as master)
+        #Define frame-specific input widgets (with 'self' or a child thereof as master)
         self.dmHSep1 = ttk.Separator(self,orient=VERTICAL)
         self.dmHSep2 = ttk.Separator(self,orient=VERTICAL)
 
@@ -98,8 +98,8 @@ class DMInpFrame(ttk.Frame):
 # ############################     METHODS  #######################################
 
     def refreshWidgets(self):
-        self.dmInp.linkVar(self.game.dmList,self.game.optList)
-        self.oldVals = str([self.game.dmList,self.game.optList])
+        self.dmInp.linkOwner(self.conflict.decisionMakers,True)
+        self.oldVals = str([self.conflict.decisionMakers,self.conflict.options])
         self.updateTotals()
 
     def enter(self,*args):
@@ -118,18 +118,19 @@ class DMInpFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
-        if self.oldVals != str([self.game.dmList,self.game.optList]):
-            self.game.setOpts(self.game.optList)
-            self.game.setDMs(self.game.dmList)
-            self.game.setInfeas([])
+        if self.oldVals != str([self.conflict.dmList,self.conflict.optList]):
+            self.conflict.setOpts(self.conflict.optList)
+            self.conflict.setDMs(self.conflict.dmList)
+            self.conflict.setInfeas([])
 
 
     def dmChange(self,*args):
+        """Changes the selected decision maker."""
         idx = int(self.dmInp.listDisp.curselection()[0])
-        if idx != len(self.game.dmList):
-            self.optLabText.set('Options for '+self.game.dmList[idx])
+        if idx != len(self.conflict.decisionMakers):
+            self.optLabText.set('Options for %s'%(self.conflict.decisionMakers[idx]))
             self.optPlaceholder.grid_remove()
-            self.optsInp.linkVar(self.game.optList[idx])
+            self.optsInp.linkOwner(self.conflict.decisionMakers[idx].options)
             self.optsInp.grid()
         else:
             self.optsInp.grid_remove()
@@ -139,9 +140,9 @@ class DMInpFrame(ttk.Frame):
 
 
     def updateTotals(self,*args):
-        self.dmCount.set('Number of Decision Makers: ' + str(len(self.game.dmList)))
-        self.optCount.set('Number of Options: ' + str(sum([len(x) for x in self.game.optList])))
-        self.stateCount.set('Total States: ' + str(2**sum([len(x) for x in self.game.optList])))
+        self.dmCount.set('Number of Decision Makers: ' + str(len(self.conflict.decisionMakers)))
+        self.optCount.set('Number of Options: ' + str(sum([len(x.options) for x in self.conflict.decisionMakers])))
+        self.stateCount.set('Total States: ' + str(2**sum([len(x.options) for x in self.conflict.decisionMakers])))
 
 
 

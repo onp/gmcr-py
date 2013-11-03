@@ -91,7 +91,7 @@ class RadiobuttonEntry(Frame):
         self.event_generate('<<AddPref>>')
 
     def reloadOpts(self):
-        dms,options = self.game.dmList,self.game.optList
+        dms,options = self.game.decisionMakers,self.game.options
 
         self.rdBtnFrame.destroy()
         self.rdBtnFrame = ttk.Frame(self)

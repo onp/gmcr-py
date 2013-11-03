@@ -2,7 +2,7 @@
 
 from tkinter import *
 from tkinter import ttk
-from data_01_conflictModel import ConflictModel
+
 
 
 
@@ -11,12 +11,10 @@ class ListInput(ttk.Frame):
     def __init__(self,master=None,lHeight=None,*args):
         ttk.Frame.__init__(self,master,*args)
 
-        self.lVarExt2 = None
-
-        self.lVar       = StringVar(value=tuple(['Double Click to Add Item']))
-        self.entryBxVar = StringVar(value='')
-        self.listDisp   = Listbox(self,listvariable=self.lVar,height=lHeight,width=40)
-        self.scrl       = ttk.Scrollbar(self, orient=VERTICAL,command = self.listDisp.yview)
+        self.listVariable = StringVar(value=tuple(['Double Click to Add Item']))
+        self.entryBxVar   = StringVar(value='')
+        self.listDisp     = Listbox(self,listvariable=self.listVariable,height=lHeight,width=40)
+        self.scrl         = ttk.Scrollbar(self, orient=VERTICAL,command = self.listDisp.yview)
         self.listDisp.configure(yscrollcommand=self.scrl.set)
 
         self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )
@@ -50,23 +48,24 @@ class ListInput(ttk.Frame):
 
 
 
-    def linkVar(self,var,var2=None):
-        """Links the listbox content to 'var'.  If 'var2' is defined, it will be
-        treated as lists of the children of each element of 'var'."""
-        self.lVarExt = var
-        self.lVarExt2 = var2
-        self.lVar.set(tuple(self.lVarExt+['Double Click to Add Item']))
-        for idx in range(len(self.lVarExt)):
+    def linkOwner(self,var,areDMs=False):
+        """Links the listbox content to 'var'.  If 'areDMs' is not false,
+        the items in var will be treated as DMs with attached options.
+        """
+        self.owner = var
+        if areDMs:
+            self.areDMs = True
+        self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
+        for idx in range(len(self.owner)):
             self.listDisp.itemconfigure(idx, foreground='black')
-        self.listDisp.itemconfigure(len(self.lVarExt), foreground='#A0A0A0')
+        self.listDisp.itemconfigure(len(self.owner), foreground='#A0A0A0')
         self.event_generate('<<Chg>>')
 
 
     def moveEntry(self,idx,idx2):
-        self.lVarExt.insert(idx2,self.lVarExt.pop(idx))
-        if self.lVarExt2:
-            self.lVarExt2.insert(idx2,self.lVarExt2.pop(idx))
-        self.lVar.set(tuple(self.lVarExt+['Double Click to Add Item']))
+        """Moves an item from idx to idx2."""
+        self.owner.insert(idx2,self.owner.pop(idx))
+        self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
         self.listDisp.selection_clear(idx)
         self.listDisp.selection_set(idx2)
         self.selChgCmd()
@@ -74,23 +73,22 @@ class ListInput(ttk.Frame):
     def upCmd(self,*args):
         """Moves the selected element up one space in the list"""
         idx = self.listDisp.selIdx
-        if idx not in [-1,0,len(self.lVarExt)]:
+        if idx not in [-1,0,len(self.owner)]:   #check that there is an entry selected, and it isn't the first entry.
             self.moveEntry(idx,idx-1)
 
     def downCmd(self,*args):
         """Moves the selected element down one space in the list."""
         idx = self.listDisp.selIdx
-        if idx not in [-1,len(self.lVarExt)-1,len(self.lVarExt)]:
+        if idx not in [-1,len(self.owner)-1,len(self.owner)]:   #check that there is an entry selected, and it isn't the last entry
             self.moveEntry(idx,idx+1)
 
     def delCmd(self,*args):
         """Deletes the selected element from the list."""
         idx = self.listDisp.selIdx
-        if idx != len(self.lVarExt):
-            self.lVarExt.__delitem__(idx)
-            self.lVarExt2.__delitem__(idx)
-            self.lVar.set(tuple(self.lVarExt+['Double Click to Add Item']))
-            self.listDisp.itemconfigure(len(self.lVarExt), foreground='#A0A0A0')
+        if idx != len(self.owner):
+            del self.owner[idx]
+            self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
+            self.listDisp.itemconfigure(len(self.owner), foreground='#A0A0A0')
         self.event_generate('<<Chg>>')
 
     def selChgCmd(self,*args):
@@ -99,9 +97,9 @@ class ListInput(ttk.Frame):
         self.event_generate('<<Sel2>>')
 
     def editCmd(self,*args):
-        """Called when a list entry is selected for editting."""
+        """Called when a list entry is selected for editing."""
         try:
-            self.entryBxVar.set(self.lVarExt[self.listDisp.selIdx])
+            self.entryBxVar.set(self.owner[self.listDisp.selIdx].name)
         except IndexError:
             self.entryBxVar.set('')
         self.tempEntry.state(['!disabled'])
@@ -116,15 +114,13 @@ class ListInput(ttk.Frame):
     def svChgCmd(self,newItem,idx):
         """Called when leaving the entry box. Updates the relevant list entry."""
         if newItem:
-            if (idx == len(self.lVarExt)):
-                self.lVarExt.append(newItem)
-                if self.lVarExt2 is not None:
-                    self.lVarExt2.append([])
+            if (idx == len(self.owner)):
+                self.owner.append(newItem)
                 self.listDisp.itemconfigure(idx, foreground='black')
             else:
-                self.lVarExt[idx]=newItem
-            self.lVar.set(tuple(self.lVarExt+['Double Click to Add Item']))
-            self.listDisp.itemconfigure(len(self.lVarExt), foreground='#A0A0A0')
+                self.owner[idx].name=newItem
+            self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
+            self.listDisp.itemconfigure(len(self.owner), foreground='#A0A0A0')
         self.tempEntry.unbind('<FocusOut>')
         self.tempEntry.unbind('<Return>')
         self.tempEntry.state(['disabled'])
@@ -138,11 +134,9 @@ class ListInput(ttk.Frame):
 
 
 
+# ####################     testing
 
-
-
-
-# ####################     running the program
+from data_01_conflictModel import ConflictModel
 
 def main():
     root = Tk()

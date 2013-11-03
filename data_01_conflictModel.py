@@ -1,147 +1,159 @@
-# class to hold all information about the current state of the game,
+# class to hold all information about the current state of the conflict,
 # and serve it up to the UI elements and calculators.
 
-import pickle as pkl
+import json
 import itertools
+import data_03_gmcrUtilities as gmcrUtil
 
-class GMCRcalc:
-    """A parent class to contain all of the necessary calculation methods"""
 
-    bitFlip = {'0':'1','1':'0',
-               'N':'Y','Y':'N'}
-
-    toYN = {'0':'N','1':'Y','-':'-'}
-    fromYN = {'N':'0','n':'0','Y':'1','y':'1','-':'-'}
-
-    def reducePatterns(self,patterns):
-        """Reduce patterns into compact dash notation. Effectively a partial
-        implementation of the Quine-McCluskey Algorithm."""
-        newPatterns = []
-        matched = []
-        for x,p1 in enumerate(patterns):
-            if x in matched: continue
-            for y,p2 in enumerate(patterns[x+1:],1):
-                if x+y in matched: continue
-                diffs=0
-                for idx,bit in enumerate(zip(p1,p2)):
-                    if bit[0] != bit [1]:
-                        diffs += 1
-                        dbit  = idx
-                    if diffs >1:break
-                if diffs ==1:
-                    newPatterns.append(p1[:dbit]+'-'+p1[dbit+1:])
-                    matched+=[x,x+y]
-                    break
-            if x not in matched: newPatterns.append(p1)
-        if matched:
-            newPatterns = self.reducePatterns(newPatterns)
-        return newPatterns
-
-    def expandPatterns(self,patterns):
-        """Expands patterns so that they contain no dashes"""
-        newPatterns = []
-        for pat in patterns:
-            if '-' in pat:
-                adding = [pat.replace('-','1',1),pat.replace('-','0',1)]
-                newPatterns += self.expandPatterns(adding)
-            else:
-                newPatterns += [pat]
-        return newPatterns
-
-    def bin2dec(self,binState):
-        """Converts a binary string into a decimal number."""
-        bit= 0
-        output=0
-        for m in binState:
-            if m=='1':
-                output += 2**bit
-            bit+=1
-        return output
-
-    def dec2bin(self,decState):
-        """converts a decimal number into a binary string of appropriate length."""
-        output = bin(decState).lstrip("0b").zfill(self.numOpts())[::-1]
-        return output
-
-    def _toIndex(self,stateList):
-        """Translates a binary pattern from dash notation to index notation"""
-        out = []
-        for x in range(len(stateList)):
-            if stateList[x] != '-':
-                out.append((x,stateList[x]))
-        return out
-
-    def _fromIndex(self,idxList):
-        """Translates a binary pattern form index notation to dash notation"""
-        out = ['-']*self.numOpts()
-        for x in idxList:
-            out[x[0]]=x[1]
-        return ''.join(out)
-
-    def _subtractPattern(self,feas,sub):
-        """Remove infeasible state pattern 'sub' from feasible list 'feas' """
-        sub = [x for x in enumerate(sub) if x[1] != '-']
-        #check if targ overlaps with state:
-        for x in sub:
-            idx,val = x
-            if feas[idx] == self.bitFlip[val]:
-                return [feas]
-        #subtract overlap if it exists
-        remainingStates = []
-        curr = feas
-        for x in sub:
-            idx,val = x
-            if curr[idx] == '-':
-                remainingStates.append(curr[:idx]+self.bitFlip[val]+curr[idx+1:])
-                curr = curr[:idx]+val+curr[idx+1:]
-        return remainingStates
-
-    def rmvSt(self,feas,infeas):
-        """Subtract states 'infeas' from states 'currFeas'. """
-        orig = sum([2**x.count('-') for x in feas])
-        newfeas = []
-        for pattern in feas:
-            newfeas += self._subtractPattern(pattern,infeas)
-        feas = newfeas
-        numRmvd = orig - sum([2**x.count('-') for x in feas])
-        return feas,numRmvd
-
-    def mutuallyExclusive(self,mutEx):
-        """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
-        states = self._toIndex(mutEx)
-        toRemove = itertools.combinations(states,2)
-        remove = [self._fromIndex(x) for x in toRemove]
-        return remove
-
-    def orderedNumbers(self,decimalList):
-        """creates translation dictionaries for using ordered numbers.
+class Option:
+    def __init__(self,name):
+        self.name = str(name)
+    
+    def __str__(self):
+        return self.name
         
-        Generates the decimal->ordered and ordered->decimal translation
-        dictionaries for a list of decimal values.
-        """
-        ordered  = {}        #decimal -> ordered dictionary
-        expanded = {}        #ordered -> decimal dictionary
-        for i,x in enumerate(decimalList,1):
-            ordered[x]=i
-            expanded[i]=x
-        return ordered,expanded
+    def export_rep(self):
+        return {'name':str(self.name)}
+        
+class DecisionMaker:
+    def __init__(self,name,masterOptionList):
+        self.name = str(name)
+        self.options = OptionList(masterOptionList)
+
+    def __str__(self):
+        return self.name
+        
+    def export_rep(self):
+        return {'name':str(self.name),'options':self.options.export_rep()}
+
+    def addOption(self,option):
+        if option not in self.options:
+            self.options.append(option)
+        
+    def removeOption(self,option):
+        if option in self.options:
+            self.options.remove(option)
+            
+class Condition:
+    """A list of options either taken or not taken against which a state can be tested."""
+    def __init__(self,name=''):
+        self.name = str(name)
+        self.options = []
+        self.taken = []
+
+    def __str__(self):
+        return self.name +': '+ str(list(self.asReferences))
+
+    def addCondition(self,option,taken):
+        self.options.append(option)
+        self.taken.append(taken)
+
+    def asReferences(self):
+        return zip(self.options,self.taken)
 
 
-class ConflictModel(GMCRcalc):
+
+class ObjectList:
+    def __init__(self,masterList=None):
+        self.itemList = []
+        self.masterList = masterList
+        
+    def __len__(self):
+        return len(self.itemList)
+        
+    def __getitem__(self,key):
+        return self.itemList[key]
+        
+    def __setitem__(self,key,value):
+        self.itemList[key] = value
+        
+    def __delitem__(self,key):
+        del self.itemList[key]
+        
+    def __iter__(self):
+        return iter(self.itemList)
+        
+    def __reversed__(self):
+        return reversed(self.itemList)
+        
+    def __contains__(self,item):
+        return item in self.itemList
+        
+    def set_indexes(self):
+        for idx,item in enumerate(self.itemList):
+            item.master_index = idx
+            
+class DecisionMakerList(ObjectList):
+    def __init__(self,masterOptionList):
+        ObjectList.__init__(self)
+        self.masterOptionList = masterOptionList
+        
+    def export_rep(self):
+        return [x.export_rep() for x in self.itemList]
+
+    def append(self,item):
+        if isinstance(item,DecisionMaker):
+            self.itemList.append(item)
+        elif isinstance(item,str):
+            self.itemList.append(DecisionMaker(item,self.masterOptionList))
+            
+class OptionList(ObjectList):
+    def __init__(self,masterList=None):
+        ObjectList.__init__(self,masterList)
+        
+    def export_rep(self):
+        if self.masterList is not None:
+            self.masterList.set_indexes()
+            return [x.master_index for x in self.itemList]
+        else:
+            return [x.export_rep() for x in self.itemList]
+
+    def append(self,item):
+        if isinstance(item,Option):
+            self.itemList.append(item)
+            if (self.masterList is not None) and (item not in self.masterList):
+                self.masterList.append(item)
+        elif isinstance(item,str):
+            newOption = Option(item)
+            self.itemList.append(newOption)
+            if self.masterList is not None:
+                self.masterList.append(newOption)
+            
+class ConditionList(ObjectList):
+    def __init__(self):
+        ObjectList.__init__(self)
+        
+    def export_rep(self):
+        return [x.export_rep() for x in self.itemList]
+
+    def append(self,item):
+        if isinstance(item,Condition):
+            self.itemList.append(item)
+        else:
+            raise TypeError('%s is not a valid Condition Object'%(item))
+
+
+
+
+
+
+class ConflictModel:
     def __init__(self,file=None):
-        """Initializes a new, empty game.  If 'file' is given, loads values from 'file'"""
-        self.dmList = []        #stored as Strings
+        """Initializes a new, empty conflict.  If 'file' is given, loads values from 'file'"""
 
-        self.optList = []     #stored as lists of Strings
+        self.options = OptionList()       #list of Option objects
+        self.decisionMakers = DecisionMakerList(self.options)        #list of DecisonMaker objects
 
-        self.infeas  = []       #stored as dash patterns
+        self.infeas  = ConditionList()       #list of Condition objects
+        
         self.feasDec = []       #stored as decimal values
         self.feasDash= []       #stored as dash patterns
-        self.ordered = {}        #decimal -> ordered dictionary
+        self.ordered = {}       #decimal -> ordered dictionary
         self.expanded = {}      #ordered -> decimal dictionary
         self.numFeas = 0        #number of feasible states, integer
 
-        self.irrev = []       #stored as (idx,'val') tuples
+        self.irrev = []         #stored as (idx,'val') tuples
 
         self.prefVec = []    
         self.prefVecOrd = []
@@ -150,64 +162,66 @@ class ConflictModel(GMCRcalc):
 
         self.payoffs = []     #stored as lists of decimal payoffs
 
-        if file:
-            self.file = file
+        self.file = file
+        if self.file:
             self.loadVals()
 
+    def export_rep(self):
+        return {'decisionMakers':self.decisionMakers.export_rep(),
+                'options':self.options.export_rep()}
 
+    def json_export(self):
+        return json.dumps(self.export_rep())
 
-    def dExport(self):
-        """ Returns the game description as a dictionary """
-        exptDict = {'dms'     :self.dmList,
-                    'opts'    :self.optList,
-                    'infeas'  :self.infeas,
-                    'prefVec' :self.prefVec,
-                    'irrev'   :self.irrev,
-                    'prefPri' :self.prefPri,
-                    'payoffs' :self.payoffs}
-        return exptDict
+#    def dExport(self):
+#        """ Returns the conflict description as a dictionary """
+#        exptDict = {'decisionMakers' :self.dmList,
+#                    'options' :self.optList,
+#                    'infeas'  :self.infeas,
+#                    'prefVec' :self.prefVec,
+#                    'irrev'   :self.irrev,
+#                    'prefPri' :self.prefPri,
+#                    'payoffs' :self.payoffs}
+#        return exptDict
 
     def dImport(self,d):
-        """Imports values into the game from dictionary 'd'"""
-        self.setDMs (   d['dms'])
-        self.setOpts(   d['opts'])
-        self.setInfeas( d['infeas'])
-        self.setPref(   d['prefVec'])
-        self.setIrrev(  d['irrev'])
-        self.setPayoffs(d['payoffs'])
+        """Imports values into the conflict from dictionary 'd'"""
+        self.setDMs (   d['decisionMakers'])
+        self.setOpts(   d['options'])
         try:
+            self.setInfeas( d['infeas'])
+            self.setPref(   d['prefVec'])
+            self.setIrrev(  d['irrev'])
+            self.setPayoffs(d['payoffs'])
             self.setPrefPri(d['prefPri'])
         except KeyError:
             pass
 
-    def loadVals(self):
-        """Load a game from the file location in self.file"""
+    def load_from_file(self,file):
+        """Load a conflict from the file given."""
         try:
-            savFile = open(self.file,mode='rb')
+            fileData = open(file,mode='r')
         except IOError:
             print('file not readable')
             raise Exception('the loaded file was invalid')
             return
         try:
-            self.dImport(pkl.load(savFile))
+            self.json_import(json.loads(fileData))
         except EOFError:
             print('file is empty')
             return
         savFile.close()
 
-    def saveVals(self):
-        """Saves the current game to the file location in self.file"""
+    def save_to_file(self,file):
+        """Saves the current conflict to the file location given."""
+        print(self.json_export())
         try:
-            savFile = open(self.file,mode='wb')
+            savFile = open(self.file,mode='w')
         except IOError:
             print('file not readable')
             return
-        pkl.dump(self.dExport(),savFile)
-        savFile.close
-
-    def setFile(self,file):
-        """Changes the file save/load location used."""
-        self.file = file
+        
+        savFile.close()
 
     def getStateList(self,infeasIdx=-1):
         """Interface function.  Returns the list of infeasible states in
@@ -225,35 +239,42 @@ class ConflictModel(GMCRcalc):
         return states
 
     def getFlatOpts(self):
-        """ Returns a list of all of the options in the game as a flat list."""
-        flatOpts = []
-        for x in self.optList:
-            flatOpts+=x
-        return flatOpts
+        """ Returns a list of all of the options in the conflict as a flat list."""
+        return [x.name for x in self.options]
 
-    def setDMs(self,dms):
-        """Interface function. Sets DMs in the game."""
-        self.dmList  = dms
-        self.prefVec = [[] for x in range(self.numDMs())]
-        self.prefVecOrd = [[] for x in range(self.numDMs())]
-        self.prefPri = [[] for x in range(self.numDMs())]
-        self.payoffs = [[] for x in range(self.numDMs())]
+    def setDMs(self,data):
+        """Creates decision makers from save data."""
+        self.decisionMakers = []
+        for dmData in dms:
+            dm = DecisionMaker(dmData.name)
+            for index in dmData.options:
+                dm.addOption(self.options[index])
+            self.decisionMakers.append(dm)
+            
+    #    self.prefVec = [[] for x in range(self.numDMs())]
+    #    self.prefVecOrd = [[] for x in range(self.numDMs())]
+    #    self.prefPri = [[] for x in range(self.numDMs())]
+    #    self.payoffs = [[] for x in range(self.numDMs())]
 
     def numDMs(self):
-        """Return the number of DMs in the game."""
-        return len(self.dmList)
+        """Return the number of DMs in the conflict."""
+        return len(self.decisionMakers)
 
-    def setOpts(self,opts):
-        """Interface function. Sets Options in the game"""
-        self.optList = opts
+    def setOpts(self,data):
+        """Creates options in the conflict from save data."""
+        self.options = []
+        for optData in data:
+            opt = Option(optData)
+            self.options.append(opt)
 
     def numOpts(self):
-        """Return the number of options in the game."""
-        return sum([len(x) for x in self.optList])
+        """Return the number of options in the conflict."""
+        return len(self.options)
 
-    def setInfeas(self,infeas):
-        """Interface function. Sets infeasible states in the game."""
+    def setInfeas(self,data):
+        """Interface function. Sets infeasible states in the conflict."""
         self.infeas= []
+        
         self.infeasMetaData = {}
         self.feasDash = ['-'*self.numOpts()]
         for pattern in infeas:
@@ -263,7 +284,7 @@ class ConflictModel(GMCRcalc):
         self.numFeas = len(self.feasDec)
 
     def addInfeas(self,infeas,external=True):
-        """Add infeasible states to the game.  Input in dash format.
+        """Add infeasible states to the conflict.  Input in dash format.
         
         The 'external' flag is set to false by some calls to prevent excessive
         recalculation of values when a large number of infeasibles are being
@@ -284,16 +305,16 @@ class ConflictModel(GMCRcalc):
             self.numFeas = len(self.feasDec)
 
     def setIrrev(self,irrev):
-        """Interface function. Sets irreversible states in the game."""
+        """Interface function. Sets irreversible states in the conflict."""
         self.irrev = irrev
 
     def setPref(self,prefs):
-        """Interface function. Sets Preferences in the game."""
+        """Interface function. Sets Preferences in the conflict."""
         self.prefVec = prefs
         self.payoffs = [[0]*(self.numOpts()**2) for x in range(self.numDMs())]
 
     def setPayoffs(self,payoffs):
-        """Interface function. Sets Payoffs in the game.
+        """Interface function. Sets Payoffs in the conflict.
         
         Conflicts with setPref, and is not used by the GUI program"""
         self.payoffs = payoffs
@@ -322,7 +343,7 @@ class ConflictModel(GMCRcalc):
             print('invalid format')
 
     def getFeas(self,fmt):
-        """Interface function.  Returns the feasible states in the game in the specified format.
+        """Interface function.  Returns the feasible states in the conflict in the specified format.
         
         Valid formats are:
         'dash': uses '1','0', and '-' to represent feasible states compactly.
@@ -333,12 +354,12 @@ class ConflictModel(GMCRcalc):
         'ord': lists all feasible states in ordered form.
         'ord_dec': lists all feasible states, as the ordered value followed by
             the decimal one in square brackets
-  """
+        """
         if fmt == 'dash':
             return self.reducePatterns(self.feasDash)
         if fmt == 'YN-':
             ynFeas = []
-            for state in self.reducePatterns(self.feasDash):
+            for state in gmcrUtil.reducePatterns(self.feasDash):
                 ynFeas.append(''.join([self.toYN[x] for x in state]))
             return ynFeas
         if fmt == 'YN':
@@ -415,7 +436,7 @@ class ConflictModel(GMCRcalc):
                     raise Exception("feasible state '%s' for DM '%s' was not included in the preference vector" %(state,dm))
 
     def setPrefPri(self,prefPri):
-        """If data is provided, populate the game's preference priority settings with it.
+        """If data is provided, populate the conflict's preference priority settings with it.
         Otherwise, reinitialize the preference priorities to blank."""
         if prefPri:
             self.prefPri = prefPri
@@ -574,9 +595,9 @@ def main():
 
 
     # #################### actual testing
-    testGame = ConflictModel()
+    testconflict = ConflictModel()
 
-    testGame.setFile('AmRv2.gmcr')
+    testconflict.setFile('AmRv2.gmcr')
 
     infoDict = {'dms'     :DMnames,
                 'opts'    :Options,
@@ -586,9 +607,9 @@ def main():
                 'prefPri' :PrefPriorities,
                 'payoffs' :payoffs}
 
-    testGame.dImport(infoDict)
+    testconflict.dImport(infoDict)
 
-    testGame.saveVals()
+    testconflict.saveVals()
 
 
 

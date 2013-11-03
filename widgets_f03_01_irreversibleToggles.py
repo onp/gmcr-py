@@ -71,8 +71,8 @@ class IrreversibleSetter(Frame):
         for chld in self.mainFrame.winfo_children():
             chld.destroy()
         optcnt=0
-        for dmi,dm in enumerate(self.game.dmList):
-            currframe = ttk.LabelFrame(self.mainFrame,text=dm)
+        for dmi,dm in enumerate(self.game.decisionMakers):
+            currframe = ttk.LabelFrame(self.mainFrame,text=dm.name)
             currframe.grid(column=0,row=dmi,sticky=(N,S,E,W))
             currframe.columnconfigure(0,weight=1)
             for movei,move in enumerate(self.game.optList[dmi]):

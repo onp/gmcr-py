@@ -33,7 +33,7 @@ class DescriptionBase:
     name = property(__str__,setName,doc="Name of the item")
 
 class DecisionMaker(DescriptionBase):
-    """Fully describes a Decision Mak
+    """Fully describes a Decision Maker
 
     Tracks references to all options that they control.
     Maintains optional Bio information.

@@ -10,7 +10,7 @@ from frame_05_equilibria import ResultFrame
 from frame_06_inverseApproach import InverseFrame
 
 class MainAppWindow:
-    def __init__(self,launchGame=None):
+    def __init__(self,file=None):
         self.root= Tk()
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
@@ -53,8 +53,7 @@ class MainAppWindow:
             self.root.wm_title(self.activeGame.file)
             fresh_start=False
         else:
-            self.activeGame = ConflictModel('save_files/Prisoners.gmcr')
-            fresh_start = True
+            self.activeGame = ConflictModel()
 
         self.contentFrame.currFrame=1
 
@@ -66,8 +65,6 @@ class MainAppWindow:
         self.addMod(InverseFrame)
 
         self.frameBtnCmds[0](self)
-        if fresh_start:
-            self.newGame()
         
         self.root.mainloop()
 
@@ -100,6 +97,9 @@ class MainAppWindow:
 
     def saveGame(self):
         """Saves all information to the currently active file."""
+        print(str([x.name for x in self.activeGame.options]))
+        print(self.activeGame.json_export())
+        return None
         if not self.activeGame.file:
             self.saveAs()
         self.contentFrame.currFrame.leave()

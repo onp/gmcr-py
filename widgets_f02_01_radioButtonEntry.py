@@ -103,7 +103,7 @@ class RadiobuttonEntry(Frame):
         self.event_generate('<<AddMutEx>>')
 
     def reloadOpts(self):
-        dms,options = self.game.dmList,self.game.optList
+        dms,options = self.game.decisionMakers,self.game.options
 
         self.rdBtnFrame.destroy()
         self.rdBtnFrame = ttk.Frame(self)
@@ -116,7 +116,7 @@ class RadiobuttonEntry(Frame):
         for x,dm in enumerate(dms):
             a = RadiobuttonSeries(self.rdBtnFrame,dm)
             self.rdBtnSrs.append(a)
-            a.setOpts(options[x])
+            a.setOpts(dm.options)
             a.grid(column=0,row=int(x),sticky=(N,S,E,W))
             self.stringVarList += a.stringVarList
 

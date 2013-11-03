@@ -36,7 +36,8 @@ class PreferenceRankingMaster(ttk.Frame):
         self.columnconfigure(0,weight=1)
         self.cframe.columnconfigure(0,weight=1)
         self.dmIdx=0
-        self.refresh()
+        if self.game.numDMs() > 0:
+            self.refresh()
 
     def update(self):
         for ranking in self.rankings:
