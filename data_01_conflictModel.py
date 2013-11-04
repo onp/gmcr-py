@@ -183,20 +183,17 @@ class ConflictModel:
         return {'decisionMakers':self.decisionMakers.export_rep(),
                 'options':self.options.export_rep(),
                 'program':'gmcr-py'}
-
-    def json_export(self):
-        return json.dumps(self.export_rep())
         
     def save_to_file(self,file):
         """Saves the current conflict to the file location given."""
-        print(self.json_export())
+        print(self.export_rep())
         try:
             fileObj = open(file,mode='w')
         except IOError:
             print('file not readable')
             return
         try:
-            json.dump(self.json_export(),fileObj)
+            json.dump(self.export_rep(),fileObj)
         finally:
             fileObj.close()
 

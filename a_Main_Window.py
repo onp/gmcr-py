@@ -98,10 +98,7 @@ class MainAppWindow:
 
     def saveGame(self):
         """Saves all information to the currently active file."""
-        print(str([x.name for x in self.activeGame.options]))
-        print(self.activeGame.json_export())
-        return None
-        if self.file is None:
+        if not self.file:
             self.saveAs()
             return
         self.contentFrame.currFrame.leave()
@@ -111,6 +108,8 @@ class MainAppWindow:
 
     def saveAs(self):
         """Opens a file dialog that prompts for name and location for saving the game."""
+        print(self.file)
+        print('running saveAs')
         self.file = filedialog.asksaveasfilename(defaultextension= '.gmcr',
                                                 filetypes = (("GMCRo Save Files", "*.gmcr")
                                                              ,("All files", "*.*") ),

@@ -99,7 +99,6 @@ class DMInpFrame(ttk.Frame):
 
     def refreshWidgets(self):
         self.dmInp.linkOwner(self.conflict.decisionMakers,True)
-        self.oldVals = str([self.conflict.decisionMakers,self.conflict.options])
         self.updateTotals()
 
     def enter(self,*args):
@@ -118,10 +117,6 @@ class DMInpFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
-        if self.oldVals != str([self.conflict.dmList,self.conflict.optList]):
-            self.conflict.setOpts(self.conflict.optList)
-            self.conflict.setDMs(self.conflict.dmList)
-            self.conflict.setInfeas([])
 
 
     def dmChange(self,*args):
