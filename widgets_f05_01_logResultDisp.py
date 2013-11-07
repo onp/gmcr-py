@@ -17,7 +17,7 @@ class LogResultDisp(ttk.Frame):
 
         self.game = game
         
-        if self.game.numDMs() > 0:
+        if len(self.game.decisionMakers) > 0:
             self.dmVar     = StringVar(value = self.game.decisionMakers[0].name)
             self.stateVar  = StringVar(value = self.game.feasDec[0])
         else:
@@ -101,7 +101,7 @@ class LogResultDisp(ttk.Frame):
 
 
     def refreshSolution(self):
-        if self.game.numDMs() <= 0:
+        if len(self.game.decisionMakers) <= 0:
             return None
         self.sol = LogicalSolver(self.game)
         self.sol.findEquilibria()

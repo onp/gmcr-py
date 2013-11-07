@@ -67,6 +67,8 @@ class MainAppWindow:
 
         self.frameBtnCmds[0](self)
         
+        self.root.bind_all("<<DataChanged>>",self.refreshActiveFrames)
+        
         self.root.mainloop()
 
     def addMod(self,newMod):
@@ -88,6 +90,13 @@ class MainAppWindow:
         self.frameBtnList.append(newButton)
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
 
+    def refreshActiveFrames(self,event=None):
+        for idx,frame in enumerate(self.frameList):
+            if frame.hasRequiredData():
+                self.frameBtnList[idx].config(state = "normal")
+            else:
+                self.frameBtnList[idx].config(state = "disabled")
+        
     def frameLeave(self):
         """ Ungrids the current frame and performs other exit tasks"""
         try:
@@ -95,6 +104,7 @@ class MainAppWindow:
             self.contentFrame.currFrame = None
         except AttributeError:
             pass
+        self.refreshActiveFrames()
 
     def saveGame(self):
         """Saves all information to the currently active file."""

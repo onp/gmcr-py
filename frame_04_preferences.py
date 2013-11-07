@@ -18,7 +18,7 @@ class PreferencesFrame(ttk.Frame):
         self.bigIcon=PhotoImage(file='icons/Preference.gif')         #Image used on button to select frame.
 
         #Define variables that will display in the infoFrame
-        self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(self.game.numDMs(),self.game.numDMs()))
+        self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.game.decisionMakers),len(self.game.decisionMakers)))
 
         #Define variables that will display in the helpFrame
         self.helpText = StringVar(value="Select a decision maker from the column at left by clicking its "
@@ -79,6 +79,14 @@ class PreferencesFrame(ttk.Frame):
 
 
 # ############################     METHODS  #######################################
+
+    def hasRequiredData(self):
+        if len(self.game.decisionMakers) < 1:
+            return False
+        if len(self.game.options) < 1:
+            return False
+        else:
+            return True
 
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,

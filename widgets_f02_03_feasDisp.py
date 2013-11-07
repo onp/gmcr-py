@@ -48,8 +48,12 @@ class FeasDisp(ttk.Frame):
 
     def refreshList(self):
         fmt = self.fmts[self.dispFormat.get()]
-        feas = sorted(self.game.getFeas(fmt))
-        #formatting operation needs to happen. fetch view from game?
+        if fmt == "YN-":
+            feas = self.game.feasibles.dash
+        if fmt == "YN":
+            feas = self.game.feasibles.yn
+        if fmt == "ord_dec":
+            feas = self.game.feasibles.ordDec
         self.dispList.set(tuple(feas))
 
 

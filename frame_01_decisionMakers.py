@@ -97,6 +97,9 @@ class DMInpFrame(ttk.Frame):
 
 # ############################     METHODS  #######################################
 
+    def hasRequiredData(self):
+        return True
+
     def refreshWidgets(self):
         self.dmInp.linkOwner(self.conflict.decisionMakers,True)
         self.updateTotals()

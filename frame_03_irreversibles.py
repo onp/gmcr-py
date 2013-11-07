@@ -65,6 +65,13 @@ class IrrevInpFrame(ttk.Frame):
 
 # ############################     METHODS  #######################################
 
+    def hasRequiredData(self):
+        if len(self.game.decisionMakers) < 1:
+            return False
+        if len(self.game.options) < 1:
+            return False
+        else:
+            return True
 
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,

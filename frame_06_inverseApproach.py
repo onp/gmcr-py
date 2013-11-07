@@ -16,7 +16,7 @@ class InverseFrame(ttk.Frame):
         self.buttonLabel= 'Inverse Approach'     #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
         
-        if game.numDMs() <= 0:
+        if len(self.game.decisionMakers) <= 0:
             return None
 
         #Define variables that will display in the infoFrame
@@ -67,6 +67,15 @@ class InverseFrame(ttk.Frame):
 
 # ############################     METHODS  #######################################
 
+    def hasRequiredData(self):
+        if len(self.game.decisionMakers) < 1:
+            return False
+        if len(self.game.options) < 1:
+            return False
+        if len(self.game.feasibles) < 1:
+            return False
+        else:
+            return True
 
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,

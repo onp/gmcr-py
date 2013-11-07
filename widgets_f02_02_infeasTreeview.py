@@ -45,11 +45,12 @@ class TreeInfeas(ttk.Frame):
         chldn = self.tDisp.get_children()
         for chld in chldn:
             self.tDisp.delete(chld)
-        for x,y in zip(self.game.getInfeas('dash'),self.game.getInfeas('YN')):
-            self.tDisp.insert('','end',x,text=x)
-            self.tDisp.set(x,'state',y)
-            self.tDisp.set(x,'stDes',str(2**(x.count('-'))))
-            self.tDisp.set(x,'stRem',str(self.game.infeasMetaData[x][1]))
+        for infeas in self.game.infeasibles:
+            key = infeas.ynd()
+            self.tDisp.insert('','end',key,text=key)
+            self.tDisp.set(key,'state',key)
+            self.tDisp.set(key,'stDes',str(2**(key.count('-'))))
+            self.tDisp.set(key,'stRem',str(infeas.statesRemoved))
 
 
     def selChgCmd(self,*args):
@@ -70,7 +71,7 @@ class TreeInfeas(ttk.Frame):
     def downCmd(self,*args):
         """Called whenever an item is moved downwards."""
         idx = self.tDisp.selIdx
-        if idx != len(self.game.infeas)-1:
+        if idx != len(self.game.infeasibles)-1:
             self.game.moveInfeas(idx,idx+1)
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
@@ -81,11 +82,11 @@ class TreeInfeas(ttk.Frame):
         idx = self.tDisp.selIdx
         self.game.removeInfeas(idx)
         self.event_generate('<<ValueChange>>')
-        if self.game.infeas:
+        if self.game.infeasibles:
             try:
-                self.tDisp.selection_set(self.game.infeas[idx])
+                self.tDisp.selection_set(self.game.infeasibles[idx].ynd())
             except IndexError:
-                self.tDisp.selection_set(self.game.infeas[idx-1])
+                self.tDisp.selection_set(self.game.infeasibles[idx-1].ynd())
 
 
 def main():

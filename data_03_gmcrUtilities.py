@@ -1,8 +1,4 @@
-bitFlip = {'0':'1','1':'0',
-           'N':'Y','Y':'N'}
-
-toYN = {'0':'N','1':'Y','-':'-'}
-fromYN = {'N':'0','n':'0','Y':'1','y':'1','-':'-'}
+bitFlip = {'N':'Y','Y':'N'}
 
 def reducePatterns(patterns):
     """Reduce patterns into compact dash notation. Effectively a partial
@@ -33,25 +29,25 @@ def expandPatterns(patterns):
     newPatterns = []
     for pat in patterns:
         if '-' in pat:
-            adding = [pat.replace('-','1',1),pat.replace('-','0',1)]
+            adding = [pat.replace('-','Y',1),pat.replace('-','N',1)]
             newPatterns += expandPatterns(adding)
         else:
             newPatterns += [pat]
     return newPatterns
 
-def bin2dec(binState):
+def yn2dec(binState):
     """Converts a binary string into a decimal number."""
     bit= 0
     output=0
     for m in binState:
-        if m=='1':
+        if m=='Y':
             output += 2**bit
         bit+=1
     return output
 
-def dec2bin(decState,numOpts):
+def dec2yn(decState,numOpts):
     """converts a decimal number into a binary string of appropriate length."""
-    output = bin(decState).lstrip("0b").zfill(numOpts)[::-1]
+    output = bin(decState).lstrip("0b").zfill(numOpts)[::-1].replace('1','Y').replace('0','N')
     return output
 
 def _toIndex(stateList):
@@ -93,9 +89,10 @@ def rmvSt(feas,infeas):
     newfeas = []
     for pattern in feas:
         newfeas += _subtractPattern(pattern,infeas)
-    feas = newfeas
-    numRmvd = orig - sum([2**x.count('-') for x in feas])
-    return feas,numRmvd
+    numRmvd = orig - sum([2**x.count('-') for x in newfeas])
+    print(feas)
+    print(newfeas)
+    return newfeas,numRmvd
 
 def mutuallyExclusive(mutEx):
     """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""

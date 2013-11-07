@@ -90,6 +90,7 @@ class ListInput(ttk.Frame):
             self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
             self.listDisp.itemconfigure(len(self.owner), foreground='#A0A0A0')
         self.event_generate('<<Chg>>')
+        self.event_generate('<<DataChanged>>')
 
     def selChgCmd(self,*args):
         """Called when the selection changes."""
@@ -127,6 +128,7 @@ class ListInput(ttk.Frame):
         self.entryBxVar.set('')
         self.listDisp.focus_set()
         self.event_generate('<<Chg>>')
+        self.event_generate('<<DataChanged>>')
         self.listDisp.selection_clear(0,'end')
         self.listDisp.selection_set(self.listDisp.selIdx)
         self.selChgCmd()

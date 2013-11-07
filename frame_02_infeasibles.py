@@ -96,23 +96,32 @@ class InfeasInpFrame(Frame):
 
 # ############################     METHODS  #######################################
 
+    def hasRequiredData(self):
+        if len(self.game.decisionMakers) < 1:
+            return False
+        if len(self.game.options) < 1:
+            return False
+        else:
+            return True
+            
+
     def refreshWidgets(self,*args):
         """Refresh information in the widgets.  Triggered when information changes."""
         self.infeasDisp.refreshView()
         self.feasList.refreshList()
-        self.originalStatesText.set('Original States: %s' %(2**self.game.numOpts()))
-        self.feasStatesText.set('Feasible States: %s'%(self.game.numFeas))
-        self.removedStatesText.set('States Removed: %s'%(2**self.game.numOpts() - self.game.numFeas))
+        self.originalStatesText.set('Original States: %s' %(2**len(self.game.options)))
+        self.feasStatesText.set('Feasible States: %s'%(len(self.game.feasibles)))
+        self.removedStatesText.set('States Removed: %s'%(2**len(self.game.options) - len(self.game.feasibles)))
 
     def addInfeas(self,*args):
-        """Add an infeasible state to the game."""
+        """Remove an infeasible state from the game."""
         infeas = self.optsInp.getStates()
-        if len(infeas) == self.game.numOpts():
-            self.game.addInfeas(infeas,1)
-            self.refreshWidgets()
+        self.game.addInfeasibleState(infeas)
+        self.game.recalculateFeasibleStates()
+        self.refreshWidgets()
 
     def addMutEx(self,*args):
-        """Remove a set of Mutually Exculsive States to the game."""
+        """Remove a set of Mutually Exclusive States from the game."""
         mutEx = self.optsInp.getStates()
         if len(mutEx) == self.game.numOpts():
             mutEx = self.game.mutuallyExclusive(mutEx)
@@ -120,14 +129,9 @@ class InfeasInpFrame(Frame):
                 self.game.addInfeas(infeas,1)
             self.refreshWidgets()
 
-
-    def editInfeas(self):
-        """Not implemented"""
-        pass
-
     def selChg(self,event):
         """Triggered when the selection changes in the treeview."""
-        state = self.game.infeas[event.x]
+        state = self.game.infeasibles[event.x].ynd()
         self.optsInp.setStates(state)
 
     def enter(self):

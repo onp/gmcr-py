@@ -40,20 +40,34 @@ class DecisionMaker:
             
 class Condition:
     """A list of options either taken or not taken against which a state can be tested."""
-    def __init__(self,name,masterOptionList):
-        self.name = str(name)
+    def __init__(self,condition,masterOptionList):
         self.options = OptionList(masterOptionList)
+        self.masterOptionList = masterOptionList
         self.taken = []
+        for opt,taken in condition:
+            self.options.append(opt)
+            self.taken.append(taken)
+        self.name = self.ynd()
 
     def __str__(self):
-        return self.name +': '+ str(list(self.asReferences))
-
-    def addCondition(self,option,taken):
-        self.options.append(option)
-        self.taken.append(taken)
-
-    def asReferences(self):
+        return self.name + " object"
+        
+    def cond(self):
+        """The condition represented tuples of options and whether or not they are taken."""
         return zip(self.options,self.taken)
+        
+    def ynd(self):
+        """Returns the condition in 'Yes No Dash' notation."""
+        self.masterOptionList.set_indexes()
+        ynd = ['-']*len(self.masterOptionList)
+        for opt,taken in self.cond():
+            ynd[opt.master_index] = taken
+        return ''.join(ynd)
+        
+        
+    def export_rep(self):
+        self.masterOptionList.set_indexes()
+        return [(opt.master_index,taken) for opt,taken in self.cond()]
 
 
 
@@ -83,9 +97,16 @@ class ObjectList:
     def __contains__(self,item):
         return item in self.itemList
         
+    def insert(self,i,x):
+        self.itemList.insert(i,x)
+        
+    def pop(self,i=None):
+        return self.itemList.pop(i)
+        
     def set_indexes(self):
         for idx,item in enumerate(self.itemList):
             item.master_index = idx
+
             
 class DecisionMakerList(ObjectList):
     def __init__(self,masterOptionList):
@@ -134,8 +155,9 @@ class OptionList(ObjectList):
         self.append(newOption)
             
 class ConditionList(ObjectList):
-    def __init__(self):
+    def __init__(self,masterOptionList):
         ObjectList.__init__(self)
+        self.masterOptionList = masterOptionList
         
     def export_rep(self):
         return [x.export_rep() for x in self.itemList]
@@ -143,12 +165,43 @@ class ConditionList(ObjectList):
     def append(self,item):
         if isinstance(item,Condition):
             self.itemList.append(item)
+        elif isinstance(item,list):
+            self.itemList.append(Condition(item,self.masterOptionList))
         else:
             raise TypeError('%s is not a valid Condition Object'%(item))
+            
+    def format(self,fmt="YN-"):
+        """Returns the conditions in the specified format.
+        
+        Valid formats are:
+        'YN-': uses 'Y','N', and '-' to represent infeasible states compactly.
+        'YN': lists all infeasible states using 'Y' and 'N'.
+        'dec': lists all infeasible states in decimal form.
+        """
+        if fmt == 'YN-':
+            return [x.ynd() for x in self]
+        if fmt == 'YN':
+            return sorted(set(gmcrUtil.expandPatterns(self.format('YN-'))))
+        if fmt == 'dec':
+            return sorted(set([self.bin2dec(state) for state in self.expandPatterns(self.infeas)]))
+        else:
+            print('invalid format')
 
-
-
-
+class FeasibleList:
+    def __init__(self,dash=None):
+        if not dash:
+            self.decimal = []
+            self.dash = []
+            return
+        self.dash = gmcrUtil.reducePatterns(dash)                               #as 'Y,N,-' compact patterns
+        self.yn = gmcrUtil.expandPatterns(self.dash)                            #as 'Y,N' patterns
+        self.decimal   = sorted([gmcrUtil.yn2dec(state) for state in self.yn])  #as decimal values
+        self.toOrdered,self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)   #conversion dictionaries
+        self.ordered = sorted(self.toOrdered.keys())                            #as ordered numbers
+        self.ordDec = ['%3d  [%s]'%(self.toOrdered[x],x) for x in reversed(self.decimal)]     #special display notation
+    
+    def __len__(self):
+        return len(self.decimal)
 
 
 class ConflictModel:
@@ -157,14 +210,8 @@ class ConflictModel:
 
         self.options = OptionList()       #list of Option objects
         self.decisionMakers = DecisionMakerList(self.options)        #list of DecisonMaker objects
-
-        self.infeas  = ConditionList()       #list of Condition objects
-        
-        self.feasDec = []       #stored as decimal values
-        self.feasDash= []       #stored as dash patterns
-        self.ordered = {}       #decimal -> ordered dictionary
-        self.expanded = {}      #ordered -> decimal dictionary
-        self.numFeas = 0        #number of feasible states, integer
+        self.infeasibles  = ConditionList(self.options)       #list of Condition objects
+        self.feasibles = FeasibleList()
 
         self.irrev = []         #stored as (idx,'val') tuples
 
@@ -180,8 +227,10 @@ class ConflictModel:
             self.load_from_file(self.file)
 
     def export_rep(self):
+        """Generates a representation of the conflict suitable for JSON encoding."""
         return {'decisionMakers':self.decisionMakers.export_rep(),
                 'options':self.options.export_rep(),
+                'infeasibles':self.infeasibles.export_rep(),
                 'program':'gmcr-py'}
         
     def save_to_file(self,file):
@@ -198,13 +247,13 @@ class ConflictModel:
             fileObj.close()
 
     def json_import(self,d):
-        """Imports values into the conflict from dictionary 'd'"""
+        """Imports values into the conflict from JSON data d"""
         for optData in d['options']:
             self.options.from_json(optData)
         for dmData in d['decisionMakers']:
             self.decisionMakers.from_json(dmData)
+        # load infeasible states
         try:
-            self.setInfeas( d['infeas'])
             self.setPref(   d['prefVec'])
             self.setIrrev(  d['irrev'])
             self.setPayoffs(d['payoffs'])
@@ -229,171 +278,52 @@ class ConflictModel:
             fileObj.close()
 
 
-
-    def getStateList(self,infeasIdx=-1):
-        """Interface function.  Returns the list of infeasible states in
-        dash notation"""
-        if infeasIdx != -1:
-            stateIter = iter(self._fromIndex(self.infeas[infeasIdx]))
-        else:
-            stateIter = iter(['-']*self.numOpts())
-        states=[]
-
-        for x in range(len(self.optList)):
-            states.append([])
-            for y in self.optList[x]:
-                states[x].append([y,next(stateIter)])
-        return states
-
-    def getFlatOpts(self):
-        """ Returns a list of all of the options in the conflict as a flat list."""
-        return [x.name for x in self.options]
-
-    def numDMs(self):
-        """Return the number of DMs in the conflict."""
-        return len(self.decisionMakers)
-
-    def numOpts(self):
-        """Return the number of options in the conflict."""
-        return len(self.options)
-
-    def setInfeas(self,data):
-        """Interface function. Sets infeasible states in the conflict."""
-        self.infeas= []
+    def addInfeasibleState(self,infeas):
+        """Add infeasible states to the conflict.
         
-        self.infeasMetaData = {}
-        self.feasDash = ['-'*self.numOpts()]
-        for pattern in infeas:
-            self.addInfeas(pattern,external=False)
-        self.feasDec   = sorted([self.bin2dec(state) for state in self.expandPatterns(self.feasDash)])
-        self.ordered,self.expanded = self.orderedNumbers(self.feasDec)
-        self.numFeas = len(self.feasDec)
-
-    def addInfeas(self,infeas,external=True):
-        """Add infeasible states to the conflict.  Input in dash format.
-        
-        The 'external' flag is set to false by some calls to prevent excessive
-        recalculation of values when a large number of infeasibles are being
-        added simultaneously.
+        Input is as a list of tuples of the form (Option object, Option state)
+        where Option Object is an Option Object that is already in the conflict,
+        and Option state is the value of either 'Y' or 'N'
         """
-        if (not self.infeas) & bool(external) :  #adding a first infeasible state should go through "setInfeas"
-             self.setInfeas([infeas])
-             return None
-        if infeas in self.infeas:
-            return None
-        self.infeas.append(infeas)
-        res = self.rmvSt(self.feasDash,infeas)
-        self.feasDash = res[0]
-        self.infeasMetaData[infeas] = res
-        if external:
-            self.feasDec   = sorted([self.bin2dec(state) for state in self.expandPatterns(self.feasDash)])
-            self.ordered,self.expanded = self.orderedNumbers(self.feasDec)
-            self.numFeas = len(self.feasDec)
-
-    def setIrrev(self,irrev):
-        """Interface function. Sets irreversible states in the conflict."""
-        self.irrev = irrev
+        
+        self.infeasibles.append(infeas)
 
     def setPref(self,prefs):
-        """Interface function. Sets Preferences in the conflict."""
+        """Sets Preferences in the conflict."""
         self.prefVec = prefs
         self.payoffs = [[0]*(self.numOpts()**2) for x in range(self.numDMs())]
 
     def setPayoffs(self,payoffs):
-        """Interface function. Sets Payoffs in the conflict.
+        """Sets Payoffs in the conflict.
         
         Conflicts with setPref, and is not used by the GUI program"""
         self.payoffs = payoffs
-
-    def getInfeas(self,fmt='dash'):
-        """Interface function.  Returns the infeasible states in the specified format.
         
-        Valid formats are:
-        dash: uses '1','0', and '-' to represent infeasible states compactly.
-        'YN': lists all infeasible states using 'Y' and 'N'.
-        'bin': lists all infeasible states using '1' and '0'.
-        'dec': lists all infeasible states in decimal form.
-        """
-        if fmt == 'dash':
-            return self.infeas
-        if fmt == 'YN':
-            ynInf = []
-            for state in self.infeas:
-                ynInf.append(''.join([self.toYN[x] for x in state]))
-            return ynInf
-        if fmt == 'bin':
-            return sorted(set(self.expandPatterns(self.infeas)))
-        if fmt == 'dec':
-            return sorted(set([self.bin2dec(state) for state in self.expandPatterns(self.infeas)]))
-        else:
-            print('invalid format')
-
-    def getFeas(self,fmt):
-        """Interface function.  Returns the feasible states in the conflict in the specified format.
-        
-        Valid formats are:
-        'dash': uses '1','0', and '-' to represent feasible states compactly.
-        'YN-': uses 'Y','N', and '-' to represent feasible states compactly.
-        'YN': lists all feasible states using 'Y' and 'N'.
-        'bin': lists all feasible states using '1' and '0'.
-        'dec': lists all feasible states in decimal form.
-        'ord': lists all feasible states in ordered form.
-        'ord_dec': lists all feasible states, as the ordered value followed by
-            the decimal one in square brackets
-        """
-        if fmt == 'dash':
-            return self.reducePatterns(self.feasDash)
-        if fmt == 'YN-':
-            ynFeas = []
-            for state in gmcrUtil.reducePatterns(self.feasDash):
-                ynFeas.append(''.join([self.toYN[x] for x in state]))
-            return ynFeas
-        if fmt == 'YN':
-            ynFeas = []
-            for state in self.expandPatterns(self.feasDash):
-                ynFeas.append(''.join([self.toYN[x] for x in state]))
-            return ynFeas
-        if fmt == 'bin':
-            return self.expandPatterns(self.feasDash)
-        if fmt == 'dec':
-            return self.feasDec
-        if fmt == 'ord':
-            return list(self.ordered.keys())
-        if fmt == 'ord_dec':
-            return ['%3d  [%s]'%(self.ordered[x],x) for x in reversed(self.feasDec)]
-        else:
-            print('invalid format')
 
     def moveInfeas(self,idx,targ):
         """move an infeasible state from position idx in the list to position targ."""
-        self.infeas.insert(targ,self.infeas.pop(idx))
-        self.updateInfeas(min(idx,targ))
+        print(self.infeasibles[idx])
+        print(self.infeasibles)
+        j = self.infeasibles.pop(idx)
+        print(j)
+        self.infeasibles.insert(targ,j)
+        self.recalculateFeasibleStates()
 
     def removeInfeas(self,idx):
         """remove the infeasible state at position idx"""
-        del self.infeasMetaData[self.infeas[idx]]
-        del self.infeas[idx]
-        self.updateInfeas(idx)
-        self.feasDec   = sorted([self.bin2dec(state) for state in self.expandPatterns(self.feasDash)])
-        self.ordered,self.expanded = self.orderedNumbers(self.feasDec)
-        self.numFeas = len(self.feasDec)
+        del self.infeasibles[idx]
+        self.recalculateFeasibleStates()
 
-    def updateInfeas(self,idx=None):
-        """Updates all infeasible calculations below idx. If idx not given, update all."""
-        if not self.infeas:
-            self.feasDash = ['-'*self.numOpts()]
-        if not idx:
-            idx = 0
-            self.feasDash = ['-'*self.numOpts()]
-        else:
-            self.feasDash = self.infeasMetaData[self.infeas[idx-1]][0]
-        if idx< len(self.infeas):
-            infeas = self.infeas[idx]
-            res = self.rmvSt(self.feasDash,infeas)
-            self.feasDash = res[0]
-            self.infeasMetaData[infeas] = res
 
-            self.updateInfeas(idx+1)
+    def recalculateFeasibleStates(self):
+        """Updates all feasible state calculations."""
+        print("recalculating feasible states")
+        feasDash = ['-'*len(self.options)]
+        for infeas in self.infeasibles:
+            res = gmcrUtil.rmvSt(feasDash,infeas.ynd())
+            feasDash = res[0]
+            infeas.statesRemoved = res[1]
+        self.feasibles = FeasibleList(res[0])
 
     def mapPayoffs(self):
         """Map the preference vectors provided into payoff values for each state."""
