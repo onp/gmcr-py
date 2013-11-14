@@ -6,11 +6,15 @@ from widgets_f02_01_radioButtonEntry import RadiobuttonEntry
 from widgets_f02_02_infeasTreeview import TreeInfeas
 from widgets_f02_03_feasDisp import FeasDisp
 from data_01_conflictModel import ConflictModel
+import data_03_gmcrUtilities as gmcrUtil
 
 class InfeasInpFrame(Frame):
 # ########################     INITIALIZATION  ####################################
     def __init__(self,master,game,*args):
         ttk.Frame.__init__(self,master,*args)
+        
+        self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
+        self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
         # Connect to active game module
         self.game = game
@@ -18,6 +22,23 @@ class InfeasInpFrame(Frame):
         self.buttonLabel= 'Infeasible States'               #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/Infeasible.gif')         #Image used on button to select frame.
 
+        self.built = False
+
+
+
+# ############################     METHODS  #######################################
+
+    def hasRequiredData(self):
+        if len(self.game.decisionMakers) < 1:
+            return False
+        if len(self.game.options) < 1:
+            return False
+        else:
+            return True
+            
+    def buildFrame(self):
+        if self.built:
+            return
         #Define variables that will display in the infoFrame
         self.originalStatesText = StringVar(value='Original States: '+'init')
         self.removedStatesText = StringVar(value='States Removed: '+'init')
@@ -32,13 +53,11 @@ class InfeasInpFrame(Frame):
         self.warnText = StringVar(value='')
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
-        self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')      #infoFrame master must be 'master'
         self.originalStatesLabel  = ttk.Label(self.infoFrame,textvariable = self.originalStatesText)
         self.removedStatesLabel  = ttk.Label(self.infoFrame,textvariable = self.removedStatesText)
         self.feasStatesLabel  = ttk.Label(self.infoFrame,textvariable = self.feasStatesText)
 
         # helpFrame : frame and label definitions (with master of 'self.helpFrame')
-        self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')      # helpFrame master must be 'master'
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' as master)
@@ -91,19 +110,17 @@ class InfeasInpFrame(Frame):
         self.hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
         self.refreshWidgets()
-
-
-
-# ############################     METHODS  #######################################
-
-    def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
-            return False
-        if len(self.game.options) < 1:
-            return False
-        else:
-            return True
+        
+        self.built = True
             
+    def clearFrame(self):
+        if not self.built:
+            return
+        self.built = False
+        for child in self.winfo_children():
+            child.destroy()
+        self.infoFrame.grid_forget()
+        self.helpFrame.grid_forget()
 
     def refreshWidgets(self,*args):
         """Refresh information in the widgets.  Triggered when information changes."""
@@ -116,18 +133,19 @@ class InfeasInpFrame(Frame):
     def addInfeas(self,*args):
         """Remove an infeasible state from the game."""
         infeas = self.optsInp.getStates()
-        self.game.addInfeasibleState(infeas)
+        self.game.infeasibles.append(infeas)
         self.game.recalculateFeasibleStates()
         self.refreshWidgets()
 
     def addMutEx(self,*args):
         """Remove a set of Mutually Exclusive States from the game."""
         mutEx = self.optsInp.getStates()
-        if len(mutEx) == self.game.numOpts():
-            mutEx = self.game.mutuallyExclusive(mutEx)
-            for infeas in mutEx:
-                self.game.addInfeas(infeas,1)
-            self.refreshWidgets()
+        mutEx = gmcrUtil.mutuallyExclusive(mutEx)
+        print(mutEx)
+        print(mutEx[0])
+        for infeas in mutEx:
+            self.game.infeasibles.append(list(infeas))
+        self.refreshWidgets()
 
     def selChg(self,event):
         """Triggered when the selection changes in the treeview."""

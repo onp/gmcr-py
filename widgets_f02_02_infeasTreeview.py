@@ -45,6 +45,8 @@ class TreeInfeas(ttk.Frame):
         chldn = self.tDisp.get_children()
         for chld in chldn:
             self.tDisp.delete(chld)
+        if len(self.game.infeasibles)>0:
+            self.game.recalculateFeasibleStates()
         for infeas in self.game.infeasibles:
             key = infeas.ynd()
             self.tDisp.insert('','end',key,text=key)
@@ -63,7 +65,8 @@ class TreeInfeas(ttk.Frame):
         """Called whenever an item is moved upwards."""
         idx = self.tDisp.selIdx
         if idx !=0:
-            self.game.moveInfeas(idx,idx-1)
+            self.game.infeasibles.moveCondition(idx,idx-1)
+            self.game.recalculateFeasibleStates()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
@@ -72,7 +75,8 @@ class TreeInfeas(ttk.Frame):
         """Called whenever an item is moved downwards."""
         idx = self.tDisp.selIdx
         if idx != len(self.game.infeasibles)-1:
-            self.game.moveInfeas(idx,idx+1)
+            self.game.infeasibles.moveCondition(idx,idx+1)
+            self.game.recalculateFeasibleStates()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
@@ -80,7 +84,8 @@ class TreeInfeas(ttk.Frame):
     def delCmd(self,*args):
         """Called when an item is deleted."""
         idx = self.tDisp.selIdx
-        self.game.removeInfeas(idx)
+        self.game.infeasibles.removeCondition(idx)
+        self.game.recalculateFeasibleStates()
         self.event_generate('<<ValueChange>>')
         if self.game.infeasibles:
             try:

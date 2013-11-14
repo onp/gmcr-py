@@ -6,11 +6,12 @@ from data_01_conflictModel import ConflictModel
 
 
 class RadiobuttonSeries(ttk.Labelframe):
+    """State entry for a single decision maker"""
     def __init__(self,master=None,text=None,width=None,*args):
         ttk.Labelframe.__init__(self,master,text=text,width=width,*args)
         self.columnconfigure(0,weight=1)
 
-        self.varList = []
+        self.options = []
         self.stringVarList = []
 
         self.yLabel = ttk.Label(self,text='Y ',anchor="w")
@@ -23,7 +24,7 @@ class RadiobuttonSeries(ttk.Labelframe):
 
         self.placeholder = False
 
-        self.setOpts(self.varList)
+        self.setOpts(self.options)
 
     def setOpts(self,options,*args):
         if not options:
@@ -32,37 +33,34 @@ class RadiobuttonSeries(ttk.Labelframe):
             return None
         if self.placeholder:
             self.placeholder.grid_forget()
-        self.varList=options
+        self.options=options
         self.stringVarList=[]
 
-        for x in range(len(self.varList)):
-            var = self.varList[x]
+        for idx,opt in enumerate(self.options):
             self.stringVarList.append(StringVar(value='-'))
-            yb = ttk.Radiobutton(self,variable=self.stringVarList[x],value='1',command=self.chgEvent)
-            nb = ttk.Radiobutton(self,variable=self.stringVarList[x],value='0',command=self.chgEvent)
-            ob = ttk.Radiobutton(self,variable=self.stringVarList[x],value='-',command=self.chgEvent)
-            name = ttk.Label(self,text=var)
+            yb = ttk.Radiobutton(self,variable=self.stringVarList[idx],value='Y',command=self.chgEvent)
+            nb = ttk.Radiobutton(self,variable=self.stringVarList[idx],value='N',command=self.chgEvent)
+            ob = ttk.Radiobutton(self,variable=self.stringVarList[idx],value='-',command=self.chgEvent)
+            name = ttk.Label(self,text=opt.name)
 
-            yb.grid(column=1,row=int(x+1),padx=(15,10),pady=5)
-            nb.grid(column=2,row=int(x+1),padx=(15,10))
-            ob.grid(column=3,row=int(x+1),padx=(15,10))
-            name.grid(column=0,row=int(x+1))
-
-    def setStates(self,dashOne,*args):
-        if len(dashOne) != len(self.varList):
-            raise Exception('string is wrong length for setting button states')
-        for x,y in enumerate(self.stringVarList):
-            y.set(dashOne[x])
+            yb.grid(column=1,row=int(idx+1),padx=(15,10),pady=5)
+            nb.grid(column=2,row=int(idx+1),padx=(15,10))
+            ob.grid(column=3,row=int(idx+1),padx=(15,10))
+            name.grid(column=0,row=int(idx+1))
 
     def getStates(self,*args):
-        dashOne = ''.join([x.get() for x in self.stringVarList])
-        return dashOne
+        states = []
+        for idx,bit in enumerate([x.get() for x in self.stringVarList]):
+            if bit != '-':
+                states.append( (self.options[idx],bit) )
+        return states
 
     def chgEvent(self):
         self.master.event_generate('<<RdBtnChg>>')
 
 
 class RadiobuttonEntry(Frame):
+    """State entry for the entire conflict, as a set of RadioButtonSeries elements."""
     def __init__(self,master,game):
         ttk.Frame.__init__(self,master)
 
@@ -91,8 +89,6 @@ class RadiobuttonEntry(Frame):
         self.event_generate('<<AddPref>>')
 
     def reloadOpts(self):
-        dms,options = self.game.decisionMakers,self.game.options
-
         self.rdBtnFrame.destroy()
         self.rdBtnFrame = ttk.Frame(self)
         self.rdBtnFrame.grid(column=0,row=0,columnspan=2,sticky=(N,S,E,W))
@@ -101,10 +97,10 @@ class RadiobuttonEntry(Frame):
         self.rdBtnSrs = []
         self.stringVarList=[]
 
-        for x,dm in enumerate(dms):
+        for x,dm in enumerate(self.game.decisionMakers):
             a = RadiobuttonSeries(self.rdBtnFrame,dm)
             self.rdBtnSrs.append(a)
-            a.setOpts(options[x])
+            a.setOpts(dm.options)
             a.grid(column=0,row=int(x),sticky=(N,S,E,W))
             self.stringVarList += a.stringVarList
 
@@ -115,15 +111,16 @@ class RadiobuttonEntry(Frame):
             raise Exception('string is wrong length for setting button states: %s'%dashOne)
         for x,y in enumerate(dashOne):
             self.stringVarList[x].set(y)
-        dashOne = ''.join([self.game.toYN[x] for x in dashOne])
         self.entryText.set(dashOne)
 
     def getStates(self):
-        dashOne = ''.join([x.get() for x in self.stringVarList])
-        return dashOne
+        states = []
+        for srs in self.rdBtnSrs:
+            states.extend(srs.getStates())
+        return states
 
     def onValidate(self,chg,res):
-        if chg in ['0','1','-']:
+        if chg in ['Y','N','y','n','-']:
             if len(res) < len(self.stringVarList):
                 self.warnText.set('Entry too short')
                 return True
@@ -131,12 +128,11 @@ class RadiobuttonEntry(Frame):
                 self.setStates(res)
                 self.warnText.set('')
                 return True
-        else: return False
+        return False
 
     def rdBtnChgCmd(self,*args):
-        state = self.getStates()
-        state = ''.join([self.game.toYN[x] for x in state])
-        self.entryText.set(state)
+        val = ''.join([x.get() for x in self.stringVarList])
+        self.entryText.set(val)
 
 
 

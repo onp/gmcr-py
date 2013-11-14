@@ -10,15 +10,34 @@ class InverseFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
     def __init__(self,master,game,*args):
         ttk.Frame.__init__(self,master,*args)
+        
+        self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
+        self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
         self.game = game
 
         self.buttonLabel= 'Inverse Approach'     #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
         
-        if len(self.game.decisionMakers) <= 0:
-            return None
+        self.built = False
 
+
+# ############################     METHODS  #######################################
+
+    def hasRequiredData(self):
+        if len(self.game.decisionMakers) < 1:
+            return False
+        if len(self.game.options) < 1:
+            return False
+        if len(self.game.feasibles) < 1:
+            return False
+        else:
+            return False
+            
+    def buildFrame(self):
+        if self.built:
+            return
+            
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='information here reflects \nthe state of the module')
 
@@ -29,11 +48,9 @@ class InverseFrame(ttk.Frame):
 
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
-        self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')      #infoFrame master must be 'master'
         self.infoLabel  = ttk.Label(self.infoFrame,textvariable = self.infoText)
 
         # helpFrame : frame and label definitions (with master of 'self.helpFrame')
-        self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')      # helpFrame master must be 'master'
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
@@ -63,19 +80,17 @@ class InverseFrame(ttk.Frame):
 
         # bindings
             #None
-
-
-# ############################     METHODS  #######################################
-
-    def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
-            return False
-        if len(self.game.options) < 1:
-            return False
-        if len(self.game.feasibles) < 1:
-            return False
-        else:
-            return True
+            
+        self.built = True
+        
+    def clearFrame(self):
+        if not self.built:
+            return
+        self.built = False
+        for child in self.winfo_children():
+            child.destroy()
+        self.infoFrame.grid_forget()
+        self.helpFrame.grid_forget()
 
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,

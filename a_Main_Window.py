@@ -79,7 +79,7 @@ class MainAppWindow:
 
 
         def FSelect(self,*args):
-            print('fselect '+str(newFrame.buttonLabel))
+            print('Loading %s frame...'%(str(newFrame.buttonLabel)))
             self.frameLeave()
             newFrame.enter()
             self.contentFrame.currFrame=newFrame
@@ -93,8 +93,10 @@ class MainAppWindow:
     def refreshActiveFrames(self,event=None):
         for idx,frame in enumerate(self.frameList):
             if frame.hasRequiredData():
+                frame.buildFrame()
                 self.frameBtnList[idx].config(state = "normal")
             else:
+                frame.clearFrame()
                 self.frameBtnList[idx].config(state = "disabled")
         
     def frameLeave(self):
@@ -142,8 +144,9 @@ class MainAppWindow:
 
     def newGame(self):
         """Clears all data in the game, allowing a new game to be entered."""
+        print("Initializing new conflict...")
         self.frameLeave()
-        self.activeGame = ConflictModel()
+        self.activeGame.__init__()
         self.frameBtnCmds[0](self)
         self.root.wm_title('New GMCR Model')
     

@@ -11,13 +11,27 @@ class DMInpFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
     def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
+        
+        self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
+        self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
         # Connect to active conflict module
         self.conflict = conflict
 
         self.buttonLabel= 'Decision Makers and Options'     #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/DMs_OPs.gif')         #Image used on button to select frame.
+        
+        self.built = False
 
+
+# ############################     METHODS  #######################################
+
+    def hasRequiredData(self):
+        return True
+        
+    def buildFrame(self):
+        if self.built:
+            return
         #Define variables that will display in the infoFrame
         self.dmCount  = StringVar(value='Number of Decision Makers: ' + 'init')
         self.optCount = StringVar(value='Number of Options: ' + 'init')
@@ -34,13 +48,11 @@ class DMInpFrame(ttk.Frame):
         self.optLabText = StringVar(value='')
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
-        self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.dmCountLabel  = ttk.Label(self.infoFrame,textvariable = self.dmCount)
         self.optCountLabel = ttk.Label(self.infoFrame,textvariable = self.optCount)
         self.stateCountLabel = ttk.Label(self.infoFrame,textvariable = self.stateCount)
 
         # helpFrame : frame and label definitions (with master of 'self.helpFrame')
-        self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
 
@@ -93,13 +105,18 @@ class DMInpFrame(ttk.Frame):
         self.dmInp.bind('<<Sel2>>', self.dmChange)
         self.dmInp.bind('<<Chg>>',  self.updateTotals)
         self.optsInp.bind('<<Chg>>',self.updateTotals)
-
-
-# ############################     METHODS  #######################################
-
-    def hasRequiredData(self):
-        return True
-
+        
+        self.built = True
+        
+    def clearFrame(self):
+        if not self.built:
+            return
+        self.built = False
+        for child in self.winfo_children():
+            child.destroy()
+        self.infoFrame.grid_forget()
+        self.helpFrame.grid_forget()
+    
     def refreshWidgets(self):
         self.dmInp.linkOwner(self.conflict.decisionMakers,True)
         self.updateTotals()

@@ -1,16 +1,19 @@
 from tkinter import *
 from tkinter import ttk
+import data_03_gmcrUtilities as gmcrUtil
 
 class PreferenceRanking(ttk.Frame):
-    def __init__(self,master,game,dmIdx):
+    """Displays the state ranking for a single DM, and allows that DM to be selected."""
+    def __init__(self,master,game,dm,idx):
         ttk.Frame.__init__(self,master,borderwidth=2)
 
         self.game = game
-        self.dmIdx = dmIdx
-        self.dmText = StringVar(value=self.game.dmList[dmIdx]+': ')
+        self.decisionMaker = dm
+        self.dmIdx = idx
+        self.dmText = StringVar(value = dm.name + ': ')
         self.dmLabel = ttk.Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
-        self.prefRankText = StringVar(value=str(self.game.rankPreferences(self.dmIdx)))
+        self.prefRankText = StringVar(value='not implemented yet') #str(self.game.rankPreferences(self.dmIdx)))
         self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
         self.prefRank.grid(row=0,column=1,sticky=(N,S,E,W))
         self.selectBtn = ttk.Button(self,text="Edit",command=self.selectCmd)
@@ -19,23 +22,24 @@ class PreferenceRanking(ttk.Frame):
         self.columnconfigure(1,weight=1)
 
     def update(self,*args):
-        self.prefRankText.set(str(self.game.prefRank(self.dmIdx)))
+        self.prefRankText.set('still not implemented') #str(self.game.prefRank(self.dmIdx)))
 
     def selectCmd(self,*args):
-        self.event_generate('<<DMselect>>',x=self.dmIdx)
+        self.event_generate('<<DMselect>>',x=self.decisionMaker)
 
     def deselect(self,*args):
         self.configure(relief='flat')
 
 
 class PreferenceRankingMaster(ttk.Frame):
+    """Displays a PreferenceRanking widget for each DM."""
     def __init__(self,master,game):
         ttk.Frame.__init__(self,master)
         self.game = game
         self.cframe = ttk.Frame(self)
         self.columnconfigure(0,weight=1)
         self.cframe.columnconfigure(0,weight=1)
-        self.dmIdx=0
+        self.dmSelIdx=0
         if len(self.game.decisionMakers) > 0:
             self.refresh()
 
@@ -44,9 +48,9 @@ class PreferenceRankingMaster(ttk.Frame):
             ranking.update()
 
     def chgDM(self,event):
-        self.rankings[self.dmIdx].deselect()
-        self.dmIdx = event.x
-        self.rankings[self.dmIdx].configure(relief='raised')
+        self.rankings[self.dmSelIdx].deselect()
+        self.dmSelIdx = event.x
+        self.rankings[self.dmSelIdx].configure(relief='raised')
         self.event_generate('<<DMchg>>',x=event.x)
 
     def refresh(self):
@@ -55,14 +59,15 @@ class PreferenceRankingMaster(ttk.Frame):
         self.cframe.grid(row=0,column=0,sticky=(N,S,E,W))
         self.cframe.columnconfigure(0,weight=1)
         self.rankings = []
-        for idx in range(self.game.numDMs()):
-            self.rankings.append(PreferenceRanking(self.cframe,self.game,idx))
+        for idx,dm in enumerate(self.game.decisionMakers):
+            self.rankings.append(PreferenceRanking(self.cframe,self.game,dm,idx))
             self.rankings[-1].grid(row=idx,column=0,padx=3,pady=3,sticky=(N,S,E,W))
             self.rankings[-1].bind('<<DMselect>>',self.chgDM)
-        self.rankings[self.dmIdx].configure(relief='raised')
+        self.rankings[self.dmSelIdx].configure(relief='raised')
 
 
 class PreferenceEditDisplay(ttk.Frame):
+    """Displays the preference statements for the selected DM."""
     def __init__(self,master,game):
         ttk.Frame.__init__(self,master)
 
@@ -100,10 +105,13 @@ class PreferenceEditDisplay(ttk.Frame):
         for child in self.disp.get_children():
             self.disp.delete(child)
         if self.dmIdx is not None:
-            for i,x in enumerate(self.game.prefPri[self.dmIdx]):
-                self.disp.insert('','end',x,text=x)
-                self.disp.set(x,'state',''.join([self.game.toYN[y] for y in x]))
-                self.disp.set(x,'weight',str(2**(len(self.game.prefPri[self.dmIdx])-i-1)))
+            dm = self.game.decisionMakers[self.dmIdx]
+            dm.weightPreferences()
+            for pref in dm.preferences:
+                key  = pref.ynd()
+                self.disp.insert('','end',key,text=key)
+                self.disp.set(key,'state',key)
+                self.disp.set(key,'weight',pref.weight)
 
     def changeDM(self,dmIdx):
         """Changes which Decision Maker is displayed."""
@@ -158,6 +166,7 @@ class PreferenceLongDisp(ttk.Frame):
         self.disp = ttk.Treeview(self,columns=('state','bin','payoff'))
         self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
         self.dmIdx = 0
+        self.decisionMaker = self.game.decisionMakers[self.dmIdx]
 
         # ##########
 
@@ -175,13 +184,14 @@ class PreferenceLongDisp(ttk.Frame):
 
     def refresh(self):
         """Fully refreshes the list displayed"""
+        self.decisionMaker = self.game.decisionMakers[self.dmIdx]
         for child in self.disp.get_children():
             self.disp.delete(child)
         if self.dmIdx is not None:
-            for i,x in enumerate(self.game.getFeas('dec')):
-                self.disp.insert('','end',text=x,values=(str(self.game.ordered[x])+' '+
-                                 ''.join([self.toYN[y] for y in self.game.dec2bin(x)])+
-                                 ' '+str(self.game.payoffs[self.dmIdx][x])))
+            for state in self.game.feasibles.decimal:
+                self.disp.insert('','end',text=state,values=(str(self.game.feasibles.toOrdered[state])+' '+
+                                 gmcrUtil.dec2yn(state,len(self.game.options)) +
+                                 ' '+str(self.decisionMaker.payoff[state])))
 
 
     def changeDM(self,dmIdx):

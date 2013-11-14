@@ -48,12 +48,6 @@ class RadiobuttonSeries(ttk.Labelframe):
             ob.grid(column=3,row=int(idx+1),padx=(15,10))
             name.grid(column=0,row=int(idx+1))
 
-    def setStates(self,dashOne,*args):
-        if len(dashOne) != len(self.options):
-            raise Exception('string is wrong length for setting button states')
-        for x,y in enumerate(self.stringVarList):
-            y.set(dashOne[x])
-
     def getStates(self,*args):
         states = []
         for idx,bit in enumerate([x.get() for x in self.stringVarList]):
@@ -63,8 +57,6 @@ class RadiobuttonSeries(ttk.Labelframe):
 
     def chgEvent(self):
         self.master.event_generate('<<RdBtnChg>>')
-
-
 
 
 class RadiobuttonEntry(Frame):
@@ -92,7 +84,6 @@ class RadiobuttonEntry(Frame):
         self.warnLab.grid(column=0,row=2,sticky=(N,S,E,W))
         self.addBtn.grid(column=0,row=3,columnspan=2,sticky=(N,S,E,W))
         self.mutExBtn.grid(column=0,row=4,columnspan=2,sticky=(N,S,E,W))
-
 
         self.reloadOpts()
 
@@ -133,7 +124,6 @@ class RadiobuttonEntry(Frame):
             states.extend(srs.getStates())
         return states
 
-
     def onValidate(self,chg,res):
         if chg in ['Y','N','y','n','-']:
             if len(res) < len(self.stringVarList):
@@ -143,7 +133,7 @@ class RadiobuttonEntry(Frame):
                 self.setStates(res)
                 self.warnText.set('')
                 return True
-        else: return False
+        return False
 
     def rdBtnChgCmd(self,*args):
         val = ''.join([x.get() for x in self.stringVarList])

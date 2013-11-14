@@ -1,3 +1,5 @@
+import itertools
+
 bitFlip = {'N':'Y','Y':'N'}
 
 def reducePatterns(patterns):
@@ -96,10 +98,7 @@ def rmvSt(feas,infeas):
 
 def mutuallyExclusive(mutEx):
     """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
-    states = _toIndex(mutEx)
-    toRemove = itertools.combinations(states,2)
-    remove = [_fromIndex(x) for x in toRemove]
-    return remove
+    return list(itertools.combinations(mutEx,2))
 
 def orderedNumbers(decimalList):
     """creates translation dictionaries for using ordered numbers.
@@ -113,3 +112,65 @@ def orderedNumbers(decimalList):
         ordered[x]=i
         expanded[i]=x
     return ordered,expanded
+    
+def mapPrefVec2PayoffVec(prefVec):
+    """Map the preference vectors provided into payoff values for each state."""
+    for dmi,dm in enumerate(self.decisionMakers):
+        for state in dm.preferenceVector:
+            if state not in self.feasibles.decimal:
+                try:
+                    for subSt in state:
+                        if subSt not in self.feasDec:
+                            raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'%(subSt,dmi))
+                except TypeError:
+                    raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'%(state,dmi))
+
+    self.payoffs =[[0]*(2**self.numOpts()) for x in range(self.numDMs())]   
+
+    for dm in range(self.numDMs()):
+        for x,y in enumerate(self.prefVec[dm]):
+            try:
+                for z in y:
+                    self.payoffs[dm][z] = self.numFeas - x
+            except TypeError:
+                self.payoffs[dm][y] = self.numFeas - x
+
+        for state in self.feasDec:
+            if self.payoffs[dm][state] == 0:
+                raise Exception("feasible state '%s' for DM '%s' was not included in the preference vector" %(state,dm))
+
+def rankStates(dm):
+    """Ranks the states for a DM, generating payoff values.
+    
+    Ranking is based on Preference Prioritization, and output payoff values
+    are sequential. Calculated payoffs are stored in self.payoffs[dmIdx]
+    """
+    self.payoffs[dmIdx] = [0]*(2**self.numOpts())
+    pVal=len(self.prefPri[dmIdx])-1
+    for Pstatement in self.prefPri[dmIdx]:
+        for state in self.feasDec:
+            if self.matchesCrit(state,Pstatement):
+                self.payoffs[dmIdx][state] += 2**pVal
+        pVal-=1
+
+    uniquePayoffs = sorted(set(self.payoffs[dmIdx]))
+
+    pVec = []
+    pVecOrd = []
+
+    for i,x in enumerate(uniquePayoffs):
+        stateSet = [idx for idx,pay in enumerate(self.payoffs[dmIdx]) if pay==x]
+        stateOrd = [self.ordered[idx] for idx,pay in enumerate(self.payoffs[dmIdx]) if (pay==x) and (idx in self.feasDec)]
+        pVec.append(stateSet)
+        pVecOrd.append(stateOrd)
+
+    pVec.reverse()
+    pVecOrd.reverse()
+    for i,x in enumerate(pVecOrd):
+        if len(x)==1:
+            pVecOrd[i]=x[0]
+    for i,x in enumerate(pVec):
+        if len(x)==1:
+            pVec[i]=x[0]
+    self.prefVec[dmIdx] = pVec
+    self.prefVecOrd[dmIdx] = pVecOrd

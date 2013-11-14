@@ -5,55 +5,48 @@ from data_01_conflictModel import ConflictModel
 
 
 class ToggleButton(ttk.Labelframe):
-    def __init__(self,master=None,optNumber=0,name='option',*args):
+    def __init__(self,master,option,*args):
         ttk.Frame.__init__(self,master,*args)
         self.columnconfigure(0,weight=1)
+        
+        self.option = option
 
         self.fwdIcon=PhotoImage(file='icons/fwdArrow.gif')
         self.backIcon=PhotoImage(file='icons/backArrow.gif')
         self.bothIcon=PhotoImage(file='icons/bothArrow.gif')
 
-        self.optNum = optNumber
-
-        ttk.Label(self,text=name).grid(column=0,row=0,sticky=(N,S,E,W))
+        ttk.Label(self,text=option.name).grid(column=0,row=0,sticky=(N,S,E,W))
         ttk.Label(self,text='  N  ').grid(column=1,row=0,sticky=(N,S,E,W))
         ttk.Label(self,text='  Y  ').grid(column=3,row=0,sticky=(N,S,E,W))
 
-        self.fwd = ttk.Button(self,image=self.fwdIcon,  command=lambda: self.chg('0'))
-        self.back = ttk.Button(self,image=self.backIcon,command=lambda: self.chg('-'))
-        self.both = ttk.Button(self,image=self.bothIcon,command=lambda: self.chg('1'))
+        self.fwd = ttk.Button(self,image=self.fwdIcon,  command=lambda: self.chg('back'))
+        self.back = ttk.Button(self,image=self.backIcon,command=lambda: self.chg('both'))
+        self.both = ttk.Button(self,image=self.bothIcon,command=lambda: self.chg('fwd'))
 
         self.both.grid(column=2,row=0,sticky=(N,S,E,W))
-
         self.curr = self.both
-
-        self.irrev = '-'
+        
+        self.chg(option.reversibility)
 
     def chg(self,new):
         self.curr.grid_remove()
-        if new == '0':
+        if new == 'back':
             self.back.grid(column=2,row=0,sticky=(N,S,E,W))
             self.curr= self.back
-            self.irrev='0'
-        elif new == '1':
+            self.option.reversibility = 'back'
+        elif new == 'fwd':
             self.fwd.grid(column=2,row=0,sticky=(N,S,E,W))
-            self.curr= self.fwd
-            self.irrev='1'
-        elif new == '-':
+            self.curr = self.fwd
+            self.option.reversibility = 'fwd'
+        elif new == 'both':
             self.both.grid(column=2,row=0,sticky=(N,S,E,W))
             self.curr= self.both
-            self.irrev='-'
-        self.master.master.master.event_generate('<<IrrevChange>>')
-
-    def getIrrev(self):
-        if self.irrev != '-':
-            return (self.optNum,self.irrev)
+            self.option.reversibility = 'both'
 
 
 class IrreversibleSetter(Frame):
     def __init__(self,master,game):
         ttk.Frame.__init__(self,master)
-
 
         self.opts= []
         self.game = game
@@ -64,31 +57,19 @@ class IrreversibleSetter(Frame):
 
         self.refreshDisplay()
 
-        self.bind('<<IrrevChange>>',self.irrevChg)
-
     def refreshDisplay(self):
         self.opts=[]
         for chld in self.mainFrame.winfo_children():
             chld.destroy()
-        optcnt=0
-        for dmi,dm in enumerate(self.game.decisionMakers):
+        for dmIdx,dm in enumerate(self.game.decisionMakers):
             currframe = ttk.LabelFrame(self.mainFrame,text=dm.name)
-            currframe.grid(column=0,row=dmi,sticky=(N,S,E,W))
+            currframe.grid(column=0,row=dmIdx,sticky=(N,S,E,W))
             currframe.columnconfigure(0,weight=1)
-            for movei,move in enumerate(self.game.optList[dmi]):
-                newtog = ToggleButton(currframe,optcnt,move)
-                newtog.grid(column=0,row=movei,sticky=(N,S,E,W))
+            for optIdx,opt in enumerate(dm.options):
+                newtog = ToggleButton(currframe,opt)
+                newtog.grid(column=0,row=optIdx,sticky=(N,S,E,W))
                 self.opts.append(newtog)
-                optcnt+=1
-        for optNum,direction in self.game.irrev:
-            self.opts[optNum].chg(direction)
 
-
-    def irrevChg(self,*args):
-        irrev = []
-        for opt in self.opts:
-            if opt.getIrrev(): irrev.append(opt.getIrrev())
-        self.game.setIrrev(irrev)
 
 
 
