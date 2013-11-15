@@ -44,6 +44,8 @@ class DecisionMaker:
             pref.weight = 2**(len(self.preferences)-idx-1)
             
     def calculatePayoffs(self):
+        pass
+        # NOT USED RIGHT NOW
         #check if using preference prioritization, or manual input
         #generate payoffs and preference vector
         #OR map preference vector into payoffs
@@ -75,10 +77,11 @@ class Condition:
         return ''.join(ynd)
         
     def test(self,state):
-        """Returns True if state meets the Condition."""
+        """Test against a decimal state. Returns True if state meets the Condition."""
+        self.masterOptionList.set_indexes()
         state = gmcrUtil.dec2yn(state,len(self.masterOptionList))
         for opt,taken in self.cond():
-            if state[opt.masterIndex] != taken:
+            if state[opt.master_index] != taken:
                 return False
         return True
         
@@ -118,6 +121,9 @@ class ObjectList:
         
     def pop(self,i=None):
         return self.itemList.pop(i)
+        
+    def index(self,i):
+        return self.itemList.index(i)
         
     def set_indexes(self):
         for idx,item in enumerate(self.itemList):
@@ -257,6 +263,7 @@ class ConflictModel:
 
     def export_rep(self):
         """Generates a representation of the conflict suitable for JSON encoding."""
+        self.reorderOptionsByDM()
         return {'decisionMakers':self.decisionMakers.export_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
@@ -283,6 +290,7 @@ class ConflictModel:
             self.decisionMakers.from_json(dmData)
         for infData in d['infeasibles']:
             self.infeasibles.from_json(infData)
+        self.reorderOptionsByDM()
         self.recalculateFeasibleStates()
 
 #            self.setPref(   d['prefVec'])
@@ -317,13 +325,13 @@ class ConflictModel:
             infeas.statesRemoved = res[1]
         self.feasibles = FeasibleList(res[0])
 
-    def rankPreferences(self,dmIdx):
-        """returns a refreshed preference vector for the given DM."""
-        self.rankStates(dmIdx)
-        return str(self.prefVecOrd[dmIdx])[1:-1]
-
-    def rankAll(self):
-        """calls rankState for every DM in the conflict."""
-        for dm in range(self.numDMs()):
-            self.rankStates(dm)
+    def reorderOptionsByDM(self):
+        moved = []
+        for dm in self.decisionMakers:
+            for option in dm.options:
+                if option not in moved:
+                    moved.append(option)
+                    self.options.insert(len(moved),self.options.pop(self.options.index(option)))
+        self.options.set_indexes()
+                
 

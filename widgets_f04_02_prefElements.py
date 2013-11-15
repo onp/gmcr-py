@@ -8,12 +8,12 @@ class PreferenceRanking(ttk.Frame):
         ttk.Frame.__init__(self,master,borderwidth=2)
 
         self.game = game
-        self.decisionMaker = dm
+        self.dm = dm
         self.dmIdx = idx
         self.dmText = StringVar(value = dm.name + ': ')
         self.dmLabel = ttk.Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
-        self.prefRankText = StringVar(value='not implemented yet') #str(self.game.rankPreferences(self.dmIdx)))
+        self.prefRankText = StringVar(value=str(dm.preferenceVector)) #str(self.game.rankPreferences(self.dmIdx)))
         self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
         self.prefRank.grid(row=0,column=1,sticky=(N,S,E,W))
         self.selectBtn = ttk.Button(self,text="Edit",command=self.selectCmd)
@@ -25,7 +25,7 @@ class PreferenceRanking(ttk.Frame):
         self.prefRankText.set('still not implemented') #str(self.game.prefRank(self.dmIdx)))
 
     def selectCmd(self,*args):
-        self.event_generate('<<DMselect>>',x=self.decisionMaker)
+        self.event_generate('<<DMselect>>',x=self.dmIdx)
 
     def deselect(self,*args):
         self.configure(relief='flat')
@@ -50,8 +50,9 @@ class PreferenceRankingMaster(ttk.Frame):
     def chgDM(self,event):
         self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = event.x
+        self.dm = self.game.decisionMakers[event.x]
         self.rankings[self.dmSelIdx].configure(relief='raised')
-        self.event_generate('<<DMchg>>',x=event.x)
+        self.event_generate('<<DMchg>>')
 
     def refresh(self):
         self.cframe.destroy()
@@ -77,7 +78,7 @@ class PreferenceEditDisplay(ttk.Frame):
         self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )
         self.downBtn = ttk.Button(self,width=10,text='Down',   command = self.downCmd)
         self.delBtn  = ttk.Button(self,width=10,text='Delete', command = self.delCmd)
-        self.dmIdx = 0
+        self.dm = self.game.decisionMakers[0]
         self.selIdx = None
         self.selId = None
 
@@ -104,18 +105,17 @@ class PreferenceEditDisplay(ttk.Frame):
         """Fully refreshes the list displayed"""
         for child in self.disp.get_children():
             self.disp.delete(child)
-        if self.dmIdx is not None:
-            dm = self.game.decisionMakers[self.dmIdx]
-            dm.weightPreferences()
-            for pref in dm.preferences:
+        if self.dm is not None:
+            self.dm.weightPreferences()
+            for pref in self.dm.preferences:
                 key  = pref.ynd()
                 self.disp.insert('','end',key,text=key)
                 self.disp.set(key,'state',key)
                 self.disp.set(key,'weight',pref.weight)
 
-    def changeDM(self,dmIdx):
+    def changeDM(self,dm):
         """Changes which Decision Maker is displayed."""
-        self.dmIdx = dmIdx
+        self.dm = dm
         self.refresh()
 
     def selChgCmd(self,*args):
@@ -127,8 +127,8 @@ class PreferenceEditDisplay(ttk.Frame):
     def upCmd(self,*args):
         """Called whenever an item is moved upwards."""
         idx = self.selIdx
-        if (idx !=0) and (self.dmIdx is not None):
-            self.game.movePreference(self.dmIdx,idx,idx-1)
+        if (idx !=0) and (self.dm is not None):
+            self.dm.preferences.moveCondition(idx,idx-1)
             self.event_generate('<<ValueChange>>')
             self.disp.selection_set(self.selId)
             self.selChgCmd()
@@ -136,8 +136,8 @@ class PreferenceEditDisplay(ttk.Frame):
     def downCmd(self,*args):
         """Called whenever an item is moved downwards."""
         idx = self.selIdx
-        if (idx != len(self.game.prefPri[self.dmIdx])-1) and (self.dmIdx is not None):
-            self.game.movePreference(self.dmIdx,idx,idx+1)
+        if (idx != len(self.dm.preferences)-1) and (self.dm is not None):
+            self.dm.preferences.moveCondition(idx,idx+1)
             self.event_generate('<<ValueChange>>')
             self.disp.selection_set(self.selId)
             self.selChgCmd()
@@ -145,13 +145,13 @@ class PreferenceEditDisplay(ttk.Frame):
     def delCmd(self,*args):
         """Called when an item is deleted."""
         idx = self.selIdx
-        self.game.removePreference(self.dmIdx,idx)
+        self.dm.preferences.removeCondition(idx)
         self.event_generate('<<ValueChange>>')
         try:
-            self.disp.selection_set(self.game.prefPri[self.dmIdx][idx])
+            self.disp.selection_set(self.dm.preferences[idx].ynd())
         except IndexError:
             try:
-                self.disp.selection_set(self.game.prefPri[self.dmIdx][idx-1])
+                self.disp.selection_set(self.dm.preferences[idx-1].ynd())
             except IndexError:
                 self.selIdx = None
 
@@ -165,8 +165,7 @@ class PreferenceLongDisp(ttk.Frame):
         self.game = game
         self.disp = ttk.Treeview(self,columns=('state','bin','payoff'))
         self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
-        self.dmIdx = 0
-        self.decisionMaker = self.game.decisionMakers[self.dmIdx]
+        self.dm = self.game.decisionMakers[0]
 
         # ##########
 
@@ -184,17 +183,16 @@ class PreferenceLongDisp(ttk.Frame):
 
     def refresh(self):
         """Fully refreshes the list displayed"""
-        self.decisionMaker = self.game.decisionMakers[self.dmIdx]
         for child in self.disp.get_children():
             self.disp.delete(child)
-        if self.dmIdx is not None:
+        if self.dm is not None:
             for state in self.game.feasibles.decimal:
                 self.disp.insert('','end',text=state,values=(str(self.game.feasibles.toOrdered[state])+' '+
                                  gmcrUtil.dec2yn(state,len(self.game.options)) +
-                                 ' '+str(self.decisionMaker.payoff[state])))
+                                 ' '+str(self.dm.payoffs[self.game.feasibles.toOrdered[state]-1])))
 
 
-    def changeDM(self,dmIdx):
+    def changeDM(self,dm):
         """Changes which Decision Maker is displayed."""
-        self.dmIdx = dmIdx
+        self.dm = dm
         self.refresh()

@@ -5,9 +5,9 @@ from data_01_conflictModel import ConflictModel
 from frame_01_decisionMakers import DMInpFrame
 from frame_02_infeasibles import InfeasInpFrame
 from frame_03_irreversibles import IrrevInpFrame
-from frame_04_preferences import PreferencesFrame
-from frame_05_equilibria import ResultFrame
-from frame_06_inverseApproach import InverseFrame
+from frame_04_preferencePrioritization import PreferencesFrame
+from frame_06_equilibria import ResultFrame
+from frame_07_inverseApproach import InverseFrame
 
 class MainAppWindow:
     def __init__(self,file=None):
@@ -86,7 +86,7 @@ class MainAppWindow:
 
         self.frameBtnCmds.append(FSelect)
 
-        newButton = ttk.Button(self.pageSelectFrame,text=newFrame.buttonLabel,image=newFrame.bigIcon,compound="top",width=25,command=lambda: FSelect(self))
+        newButton = ttk.Button(self.pageSelectFrame,text=newFrame.buttonLabel,image=newFrame.bigIcon,compound="top",width=20,command=lambda: FSelect(self))
         self.frameBtnList.append(newButton)
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
 

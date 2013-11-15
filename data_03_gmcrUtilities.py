@@ -113,64 +113,85 @@ def orderedNumbers(decimalList):
         expanded[i]=x
     return ordered,expanded
     
-def mapPrefVec2PayoffVec(prefVec):
+def mapPrefVec2PayoffVec(dm,feasibles):
     """Map the preference vectors provided into payoff values for each state."""
-    for dmi,dm in enumerate(self.decisionMakers):
-        for state in dm.preferenceVector:
-            if state not in self.feasibles.decimal:
-                try:
-                    for subSt in state:
-                        if subSt not in self.feasDec:
-                            raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'%(subSt,dmi))
-                except TypeError:
-                    raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'%(state,dmi))
-
-    self.payoffs =[[0]*(2**self.numOpts()) for x in range(self.numDMs())]   
-
-    for dm in range(self.numDMs()):
-        for x,y in enumerate(self.prefVec[dm]):
+    
+    #test that all values in the preference vector are valid.
+    alreadySeen = []
+    for state in dm.preferenceVector:
+        if state in feasibles.decimal:
+            if state in alreadySeen:
+                raise ValueError("State %s cannot appear more than once in DM %s's preference vector"
+                        %(state,dm.name))
+            alreadySeen.append(state)
+        else:
             try:
-                for z in y:
-                    self.payoffs[dm][z] = self.numFeas - x
+                for subSt in state:
+                    if subSt in feasibles.decimal:
+                        if subSt in alreadySeen:
+                            raise ValueError("State %s cannot appear more than once in DM %s's preference vector"
+                                    %(subSt,dm.name))
+                        alreadySeen.append(subSt)
+                    else:
+                        raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'        %(subSt,dmi))
             except TypeError:
-                self.payoffs[dm][y] = self.numFeas - x
+                raise Exception('State %s (occuring in preference vector for DM %s) is not a feasible state'%(state,dm.name))
 
-        for state in self.feasDec:
-            if self.payoffs[dm][state] == 0:
-                raise Exception("feasible state '%s' for DM '%s' was not included in the preference vector" %(state,dm))
+    #Make a clean payoffs vector                
+    payoffs =[0]*len(feasibles)
 
-def rankStates(dm):
+    #use position in preference vector to give a payoff value.
+    for idx,state in enumerate(dm.preferenceVector):
+        try:
+            for subState in state:
+                payoffs[feasibles.toOrdered[state]-1] = len(feasibles) - idx
+        except TypeError:
+            payoffs[feasibles.toOrdered[state]-1] = len(feasibles) - idx
+
+    if 0 in payoffs:
+        state = feasibles.ordered[payoffs.index(0)]
+        raise Exception("Feasible state '%s' for DM '%s' was not included in the preference vector" %(state,dm.name))
+        
+    dm.payoffs = payoffs
+    return payoffs
+
+def prefPriorities2payoffs(dm,feasibles):
     """Ranks the states for a DM, generating payoff values.
     
     Ranking is based on Preference Prioritization, and output payoff values
-    are sequential. Calculated payoffs are stored in self.payoffs[dmIdx]
+    are sequential.
     """
-    self.payoffs[dmIdx] = [0]*(2**self.numOpts())
-    pVal=len(self.prefPri[dmIdx])-1
-    for Pstatement in self.prefPri[dmIdx]:
-        for state in self.feasDec:
-            if self.matchesCrit(state,Pstatement):
-                self.payoffs[dmIdx][state] += 2**pVal
-        pVal-=1
+    print("Calculating Payoffs for %s"%(dm.name))
+    dm.weightPreferences()
+    #generate initial payoffs
+    payoffsRaw = [0]*len(feasibles)
+    for preference in dm.preferences:
+        for state in feasibles.decimal:
+            if preference.test(state):
+                payoffsRaw[feasibles.toOrdered[state]-1] += preference.weight
 
-    uniquePayoffs = sorted(set(self.payoffs[dmIdx]))
+    #reduce magnitude of payoffs - do not do this if weights had special meaning.
+    uniquePayoffs = sorted(set(payoffsRaw))
+    print(payoffsRaw)
+    print(uniquePayoffs)
+    preferenceVector = []
+    payoffs = list(payoffsRaw)  #creates a copy
 
-    pVec = []
-    pVecOrd = []
+    for idx,value in enumerate(uniquePayoffs):
+        for jdx,pay in enumerate(payoffsRaw):
+            if pay==value:
+                payoffs[jdx] = idx+1
+        stateSet = [idx+1 for idx,pay in enumerate(payoffsRaw) if pay==value]
+        if len(stateSet) > 1:
+            preferenceVector.append(stateSet)
+        else:
+            preferenceVector.append(stateSet[0])
 
-    for i,x in enumerate(uniquePayoffs):
-        stateSet = [idx for idx,pay in enumerate(self.payoffs[dmIdx]) if pay==x]
-        stateOrd = [self.ordered[idx] for idx,pay in enumerate(self.payoffs[dmIdx]) if (pay==x) and (idx in self.feasDec)]
-        pVec.append(stateSet)
-        pVecOrd.append(stateOrd)
+    preferenceVector.reverse()      #necessary to put most preferred states at beginning instead of end
 
-    pVec.reverse()
-    pVecOrd.reverse()
-    for i,x in enumerate(pVecOrd):
-        if len(x)==1:
-            pVecOrd[i]=x[0]
-    for i,x in enumerate(pVec):
-        if len(x)==1:
-            pVec[i]=x[0]
-    self.prefVec[dmIdx] = pVec
-    self.prefVecOrd[dmIdx] = pVecOrd
+    print(payoffs)
+    
+    dm.payoffs = payoffs
+    dm.preferenceVector = preferenceVector
+    
+    return payoffs, preferenceVector

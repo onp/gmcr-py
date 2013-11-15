@@ -87,7 +87,7 @@ class TreeInfeas(ttk.Frame):
         self.game.infeasibles.removeCondition(idx)
         self.game.recalculateFeasibleStates()
         self.event_generate('<<ValueChange>>')
-        if self.game.infeasibles:
+        if len(self.game.infeasibles)>0:
             try:
                 self.tDisp.selection_set(self.game.infeasibles[idx].ynd())
             except IndexError:

@@ -6,6 +6,7 @@ from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 from widgets_f04_01_prefRadioButton import RadiobuttonEntry
 from widgets_f04_02_prefElements import *
+import data_03_gmcrUtilities as gmcrUtil
 
 class PreferencesFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
@@ -31,6 +32,8 @@ class PreferencesFrame(ttk.Frame):
             return False
         if len(self.game.options) < 1:
             return False
+        if len(self.game.feasibles) < 1:
+            return False
         else:
             return True
             
@@ -38,6 +41,11 @@ class PreferencesFrame(ttk.Frame):
     def buildFrame(self):
         if self.built:
             return
+        
+        #calculate initial preferences
+        for dm in self.game.decisionMakers:
+            gmcrUtil.prefPriorities2payoffs(dm,self.game.feasibles)
+            
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.game.decisionMakers),len(self.game.decisionMakers)))
 
@@ -48,7 +56,7 @@ class PreferencesFrame(ttk.Frame):
                 "important at the bottom")
 
         #Define frame-specific variables
-        self.dmIdx = 0
+        self.dm = self.game.decisionMakers[0]
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
         self.infoLabel  = ttk.Label(self.infoFrame,textvariable = self.infoText)
@@ -123,28 +131,29 @@ class PreferencesFrame(ttk.Frame):
         self.helpFrame.grid_remove()
 
     def refresh(self,*args):
+        for dm in self.game.decisionMakers:
+            gmcrUtil.prefPriorities2payoffs(dm,self.game.feasibles)
         self.editor.reloadOpts()
         self.vectors.refresh()
         self.statDisp.refresh()
         self.prefDisp.refresh()
 
     def dmChgHandler(self,event):
-        self.dmIdx = event.x
-        self.statDisp.changeDM(self.dmIdx)
-        self.prefDisp.changeDM(self.dmIdx)
+        """Bound to <<DMchg>>."""
+        self.dm = self.vectors.dm
+        self.statDisp.changeDM(self.dm)
+        self.prefDisp.changeDM(self.dm)
 
     def addPref(self,*args):
         """Add a preference for the active decision maker."""
-        pref = self.editor.entryText.get()
-        pref = ''.join([self.game.fromYN[x] for x in pref])
-        if len(pref) == self.game.numOpts():
-            self.game.addPreference(self.dmIdx,pref)
-            self.refresh()
+        pref = self.editor.getStates()
+        self.dm.preferences.append(pref)
+        self.refresh()
 
     def selChg(self,event):
         """Triggered when the selection changes in the treeview."""
-        state = self.game.prefPri[self.dmIdx][event.x]
-        self.editor.setStates(state)
+        condition = self.dm.preferences[event.x]
+        self.editor.setStates(condition.ynd())
 
 
 
