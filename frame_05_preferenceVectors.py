@@ -1,23 +1,26 @@
+"""Template for input frames.  Shows the methods and attributes necessary for
+interfacing with the main program
+"""
 
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
-from widgets_f07_01_inverseContent import InverseContent
+from widgets_f05_01_PrefVectors import PVecEditMaster
+import data_03_gmcrUtilities as gmcrUtil
 
-
-
-class InverseFrame(ttk.Frame):
+class PreferenceVectorFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
     def __init__(self,master,game,*args):
         ttk.Frame.__init__(self,master,*args)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
-
+        
+        # Load up active game, if any
         self.game = game
 
-        self.buttonLabel= 'Inverse Approach'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
+        self.buttonLabel= 'Preference Vectors'     #Label used for button to select frame in the main program.
+        self.bigIcon=PhotoImage(file='icons/Preference.gif')         #Image used on button to select frame.
         
         self.built = False
 
@@ -32,17 +35,25 @@ class InverseFrame(ttk.Frame):
         if len(self.game.feasibles) < 1:
             return False
         else:
-            return False
+            return True
+            
             
     def buildFrame(self):
         if self.built:
             return
+        
+        #calculate initial preferences
+        for dm in self.game.decisionMakers:
+            gmcrUtil.prefPriorities2payoffs(dm,self.game.feasibles)
             
         #Define variables that will display in the infoFrame
-        self.infoText = StringVar(value='information here reflects \nthe state of the module')
+        self.infoText = StringVar(value='No Message')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value="help box for the inverse approach screen.")
+        self.helpText = StringVar(value="Use this screen to manually make small adjustments to "
+                "preference vectors.  Any Changes made on this screen override preference "
+                "prioritization inputs. Preference priorities will not be lost, in case you "
+                "wish to revert to them later.")
 
         #Define frame-specific variables
 
@@ -54,16 +65,13 @@ class InverseFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.invDisp = InverseContent(self,self.game)
-
+        self.content = PVecEditMaster(self,self.game)
 
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
         self.grid(column=0,row=0,rowspan=5,sticky=(N,S,E,W))
         self.grid_remove()
-        self.columnconfigure(0,weight=1)
-        self.rowconfigure(1,weight=1)
 
         #configuring infoFrame & infoFrame widgets
         self.infoFrame.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
@@ -76,11 +84,11 @@ class InverseFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
-        self.invDisp.grid(column=0,row=1,sticky=(N,S,E,W))
+        self.content.grid(row=0,column=0,sticky=(N,S,E,W))
 
         # bindings
-            #None
-            
+
+    
         self.built = True
         
     def clearFrame(self):
@@ -95,20 +103,20 @@ class InverseFrame(ttk.Frame):
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,
         and performs any other update tasks required on loading the frame."""
+        self.refresh()
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
-        self.invDisp.refreshDisplay()
-        self.invDisp.refreshSolution()
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
         and performs any other update tasks required on exiting the frame."""
         self.grid_remove()
-        del self.invDisp.sol
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
 
+    def refresh(self,*args):
+        self.content.refresh()
 
 
 
@@ -119,9 +127,7 @@ class InverseFrame(ttk.Frame):
 # Code in this section is only run when this module is run by itself. It serves
 # as a test of module functionality.
 
-
 def main():
-
     root = Tk()
     root.columnconfigure(0,weight=1)
     root.rowconfigure(0,weight=1)
@@ -134,12 +140,10 @@ def main():
     hSep = ttk.Separator(cFrame,orient=VERTICAL)
     hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
-    testGame = ConflictModel('pris.gmcr')
+    testGame = ConflictModel('SyriaIraq.gmcr')
 
-    testFrame = InverseFrame(cFrame,testGame)
+    testFrame = PreferencesFrame(cFrame,testGame)
     testFrame.enter()
-
-
 
     root.mainloop()
 

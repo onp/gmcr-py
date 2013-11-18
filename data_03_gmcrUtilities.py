@@ -113,38 +113,40 @@ def orderedNumbers(decimalList):
         expanded[i]=x
     return ordered,expanded
     
-def mapPrefVec2PayoffVec(dm,feasibles):
-    """Map the preference vectors provided into payoff values for each state."""
+def validatePreferenceVector(prefVec,feasibles):
+    """Check that the preference vector given is valid."""
     
-    #test that all values in the preference vector are valid.
     alreadySeen = []
-    for state in dm.preferenceVector:
-        if state in feasibles.decimal:
+    for state in prefVec:
+        if state in feasibles.ordered:
             if state in alreadySeen:
-                raise ValueError("State %s cannot appear more than once in DM %s's preference vector"
-                        %(state,dm.name))
+                return "State %s cannot appear more than once."%(state)
             alreadySeen.append(state)
         else:
             try:
                 for subSt in state:
-                    if subSt in feasibles.decimal:
+                    if subSt in feasibles.ordered:
                         if subSt in alreadySeen:
-                            raise ValueError("State %s cannot appear more than once in DM %s's preference vector"
-                                    %(subSt,dm.name))
+                            return "State %s cannot appear more than once."%(subSt)
                         alreadySeen.append(subSt)
                     else:
-                        raise Exception('State %s (occuring in preference vector for dm %s) is not a feasible state'        %(subSt,dmi))
+                        return "State %s is not a feasible state."%(subSt)
             except TypeError:
-                raise Exception('State %s (occuring in preference vector for DM %s) is not a feasible state'%(state,dm.name))
-
-    #Make a clean payoffs vector                
-    payoffs =[0]*len(feasibles)
+                return "State %s is not a feasible state"%(state)
+                
+    for state in feasibles.ordered:
+        if state not in alreadySeen:
+            return "State %s is missing."%(subSt)
+    
+def mapPrefVec2Payoffs(dm,feasibles):
+    """Map the preference vectors provided into payoff values for each state."""             
+    payoffs =[0]*len(feasibles)     #Make a clean payoffs vector   
 
     #use position in preference vector to give a payoff value.
     for idx,state in enumerate(dm.preferenceVector):
         try:
             for subState in state:
-                payoffs[feasibles.toOrdered[state]-1] = len(feasibles) - idx
+                payoffs[feasibles.toOrdered[subState]-1] = len(feasibles) - idx
         except TypeError:
             payoffs[feasibles.toOrdered[state]-1] = len(feasibles) - idx
 

@@ -6,6 +6,7 @@ from frame_01_decisionMakers import DMInpFrame
 from frame_02_infeasibles import InfeasInpFrame
 from frame_03_irreversibles import IrrevInpFrame
 from frame_04_preferencePrioritization import PreferencesFrame
+from frame_05_preferenceVectors import PreferenceVectorFrame
 from frame_06_equilibria import ResultFrame
 from frame_07_inverseApproach import InverseFrame
 
@@ -62,6 +63,7 @@ class MainAppWindow:
         self.addMod(InfeasInpFrame)
         self.addMod(IrrevInpFrame)
         self.addMod(PreferencesFrame)
+        self.addMod(PreferenceVectorFrame)
         self.addMod(ResultFrame)
         self.addMod(InverseFrame)
 

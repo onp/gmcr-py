@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
-from widgets_f05_01_logResultDisp import LogResultDisp
+from widgets_f06_01_logResultDisp import LogResultDisp
 
 
 

@@ -235,7 +235,7 @@ class FeasibleList:
         self.yn = gmcrUtil.expandPatterns(self.dash)                            #as 'Y,N' patterns
         self.decimal   = sorted([gmcrUtil.yn2dec(state) for state in self.yn])  #as decimal values
         self.toOrdered,self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)   #conversion dictionaries
-        self.ordered = sorted(self.toOrdered.keys())                            #as ordered numbers
+        self.ordered = sorted(self.toDecimal.keys())                            #as ordered numbers
         self.ordDec = ['%3d  [%s]'%(self.toOrdered[x],x) for x in reversed(self.decimal)]     #special display notation
     
     def __len__(self):
