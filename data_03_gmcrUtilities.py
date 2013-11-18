@@ -136,7 +136,9 @@ def validatePreferenceVector(prefVec,feasibles):
                 
     for state in feasibles.ordered:
         if state not in alreadySeen:
-            return "State %s is missing."%(subSt)
+            return "State %s is missing."%(state)
+            
+    return None
     
 def mapPrefVec2Payoffs(dm,feasibles):
     """Map the preference vectors provided into payoff values for each state."""             
@@ -146,9 +148,9 @@ def mapPrefVec2Payoffs(dm,feasibles):
     for idx,state in enumerate(dm.preferenceVector):
         try:
             for subState in state:
-                payoffs[feasibles.toOrdered[subState]-1] = len(feasibles) - idx
+                payoffs[subState-1] = len(feasibles) - idx
         except TypeError:
-            payoffs[feasibles.toOrdered[state]-1] = len(feasibles) - idx
+            payoffs[state-1] = len(feasibles) - idx
 
     if 0 in payoffs:
         state = feasibles.ordered[payoffs.index(0)]

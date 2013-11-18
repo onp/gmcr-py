@@ -251,14 +251,7 @@ class ConflictModel:
         self.infeasibles  = ConditionList(self.options)       #list of Condition objects
         self.feasibles = FeasibleList()
 
-        self.irrev = []         #stored as (idx,'val') tuples
-
-        self.prefVec = []    
-        self.prefVecOrd = []
-
-        self.prefPri = []     #stored as lists of dash patterns
-
-        self.payoffs = []     #stored as lists of decimal payoffs
+        self.useManualPreferenceVectors = False
 
 
     def export_rep(self):
@@ -323,7 +316,7 @@ class ConflictModel:
             res = gmcrUtil.rmvSt(feasDash,infeas.ynd())
             feasDash = res[0]
             infeas.statesRemoved = res[1]
-        self.feasibles = FeasibleList(res[0])
+        self.feasibles = FeasibleList(feasDash)
 
     def reorderOptionsByDM(self):
         moved = []

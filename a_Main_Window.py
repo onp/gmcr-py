@@ -66,6 +66,8 @@ class MainAppWindow:
         self.addMod(PreferenceVectorFrame)
         self.addMod(ResultFrame)
         self.addMod(InverseFrame)
+        
+        self.refreshActiveFrames()
 
         self.frameBtnCmds[0](self)
         
@@ -93,6 +95,7 @@ class MainAppWindow:
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
 
     def refreshActiveFrames(self,event=None):
+        self.activeGame.recalculateFeasibleStates()
         for idx,frame in enumerate(self.frameList):
             if frame.hasRequiredData():
                 frame.buildFrame()
@@ -108,7 +111,6 @@ class MainAppWindow:
             self.contentFrame.currFrame = None
         except AttributeError:
             pass
-        self.refreshActiveFrames()
 
     def saveGame(self):
         """Saves all information to the currently active file."""
@@ -141,6 +143,7 @@ class MainAppWindow:
         print('loading: %s'%(self.file))
         self.root.wm_title(self.file)
         self.activeGame.load_from_file(self.file)
+        self.refreshActiveFrames()
         self.frameBtnCmds[0](self)
         
 
@@ -149,6 +152,7 @@ class MainAppWindow:
         print("Initializing new conflict...")
         self.frameLeave()
         self.activeGame.__init__()
+        self.refreshActiveFrames()
         self.frameBtnCmds[0](self)
         self.root.wm_title('New GMCR Model')
     

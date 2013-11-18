@@ -65,6 +65,10 @@ class PreferenceRankingMaster(ttk.Frame):
             self.rankings[-1].grid(row=idx,column=0,padx=3,pady=3,sticky=(N,S,E,W))
             self.rankings[-1].bind('<<DMselect>>',self.chgDM)
         self.rankings[self.dmSelIdx].configure(relief='raised')
+        
+        if self.game.useManualPreferenceVectors:
+            for ranking in self.rankings:
+                ranking.selectBtn['state'] = 'disabled'
 
 
 class PreferenceEditDisplay(ttk.Frame):
@@ -112,6 +116,17 @@ class PreferenceEditDisplay(ttk.Frame):
                 self.disp.insert('','end',key,text=key)
                 self.disp.set(key,'state',key)
                 self.disp.set(key,'weight',pref.weight)
+        
+        if self.game.useManualPreferenceVectors:
+            self.disp['selectmode'] = 'none'
+            self.upBtn['state'] = 'disabled'
+            self.downBtn['state'] = 'disabled'
+            self.delBtn['state'] = 'disabled'
+        else:
+            self.disp['selectmode'] = 'browse'
+            self.upBtn['state'] = 'normal'
+            self.downBtn['state'] = 'normal'
+            self.delBtn['state'] = 'normal'
 
     def changeDM(self,dm):
         """Changes which Decision Maker is displayed."""
@@ -190,6 +205,9 @@ class PreferenceLongDisp(ttk.Frame):
                 self.disp.insert('','end',text=state,values=(str(self.game.feasibles.toOrdered[state])+' '+
                                  gmcrUtil.dec2yn(state,len(self.game.options)) +
                                  ' '+str(self.dm.payoffs[self.game.feasibles.toOrdered[state]-1])))
+                                 
+        if self.game.useManualPreferenceVectors:
+            self.disp['selectmode'] = 'none'
 
 
     def changeDM(self,dm):

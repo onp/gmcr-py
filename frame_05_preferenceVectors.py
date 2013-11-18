@@ -1,6 +1,4 @@
-"""Template for input frames.  Shows the methods and attributes necessary for
-interfacing with the main program
-"""
+"""Host for the widgets used in manually modifying preference vectors."""
 
 from tkinter import *
 from tkinter import ttk
@@ -70,7 +68,7 @@ class PreferenceVectorFrame(ttk.Frame):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0,row=0,rowspan=5,sticky=(N,S,E,W))
+        self.grid(column=0,row=0,sticky=(N,S,E,W))
         self.grid_remove()
 
         #configuring infoFrame & infoFrame widgets
@@ -85,6 +83,7 @@ class PreferenceVectorFrame(ttk.Frame):
 
         #configuring frame-specific options
         self.content.grid(row=0,column=0,sticky=(N,S,E,W))
+        self.columnconfigure(0,weight=1)
 
         # bindings
 

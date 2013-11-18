@@ -57,6 +57,10 @@ class RadiobuttonSeries(ttk.Labelframe):
 
     def chgEvent(self):
         self.master.event_generate('<<RdBtnChg>>')
+        
+    def disableWidget(self):
+        for child in self.winfo_children():
+            child['state'] = 'disabled'
 
 
 class RadiobuttonEntry(Frame):
@@ -105,6 +109,15 @@ class RadiobuttonEntry(Frame):
             self.stringVarList += a.stringVarList
 
         self.rdBtnChgCmd()
+        
+        if self.game.useManualPreferenceVectors:
+            self.entryBx['state'] = 'disabled'
+            self.addBtn['state'] = 'disabled'
+            for srs in self.rdBtnSrs:
+                srs.disableWidget()
+        else:
+            self.entryBx['state'] = 'normal'
+            self.addBtn['state'] = 'normal'
 
     def setStates(self,dashOne):
         if len(dashOne) != len(self.stringVarList):

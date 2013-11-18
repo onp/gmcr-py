@@ -26,7 +26,6 @@ class PreferenceVectorEditor(ttk.Frame):
         self.prefVecEntry.bind("<FocusOut>",self.onFocusOut)
         
     def onFocusOut(self,event):
-        print('focused out')
         prefVec = eval(self.prefVecVar.get())
         self.errorDetails = gmcrUtil.validatePreferenceVector(prefVec,self.game.feasibles)
         if self.errorDetails:
@@ -34,8 +33,15 @@ class PreferenceVectorEditor(ttk.Frame):
             self.master.event_generate("<<errorChange>>")
             return
         print('passed test')
+        self.master.event_generate("<<errorChange>>")
         self.dm.preferenceVector = prefVec
         gmcrUtil.mapPrefVec2Payoffs(self.dm,self.game.feasibles)
+        
+    def enableWidget(self):
+        self.prefVecEntry['state'] = 'normal'
+        
+    def disableWidget(self):
+        self.prefVecEntry['state'] = 'disabled'
         
         
 class PVecEditMaster(ttk.Frame):
@@ -46,6 +52,11 @@ class PVecEditMaster(ttk.Frame):
         
         self.game = game
         
+        if self.game.useManualPreferenceVectors:
+            self.enabled = True
+        else:
+            self.enabled = False
+        
         self.columnconfigure(0,weight=1)
         
         self.activateButton = ttk.Button(self,
@@ -54,39 +65,63 @@ class PVecEditMaster(ttk.Frame):
         self.activateButton.grid(row=0,column=0,sticky=(N,S,E,W))
         
         self.editorFrame = ttk.Frame(self)
-        self.editorFrame.grid(row=1,column=0,sticky=(N,S,E,W))
+        self.editorFrame.grid(row=2,column=0,sticky=(N,S,E,W))
+        self.editorFrame.columnconfigure(0,weight=1)
         
         self.errorDisplay = Text(self,height=6)
         self.errorDisplay['state'] = 'disabled'
-        self.errorDisplay.grid(row=2,column=0,sticky=(N,E,W))
+        self.errorDisplay.grid(row=3,column=0,sticky=(N,E,W))
         
-        self.bind('<<errorChange>>',self.updateErrors)
-        
-        
+        self.editorFrame.bind('<<errorChange>>',self.updateErrors)
+
+
     def refresh(self):
         for child in self.editorFrame.winfo_children():
             child.destroy()
-            
+
         self.vectorEditors = []
-        
+
         for idx,dm in enumerate(self.game.decisionMakers):
-            newEditor = PreferenceVectorEditor(self,self.game,dm)
+            newEditor = PreferenceVectorEditor(self.editorFrame,self.game,dm)
             self.vectorEditors.append(newEditor)
             newEditor.grid(row=idx,column=0,sticky=(N,S,E,W))
+
+        if not self.enabled:
+            for editor in self.vectorEditors:
+                editor.disableWidget()
+        
+        self.updateErrors()
+        
+        if not self.game.useManualPreferenceVectors:
+            self.activateButton['text'] = "Press to enable manual preference vector changes"
+            self.activateButton['state'] = 'normal'
+            for editor in self.vectorEditors:
+                editor.disableWidget()
             
-        self.errorDisplay['state'] = 'normal'
-        self.errorDisplay.delete('1.0','end')
-        self.errorDisplay['state'] = 'disabled'
-           
-    def enableEditing(self,event):
+
+    def enableEditing(self):
+        """Switches on manual editing of the preference vectors."""
+        self.activateButton['text'] = "Preference Vectors entered below will be used in analysis."
+        self.activateButton['state'] = 'disabled'
+        for editor in self.vectorEditors:
+            editor.enableWidget()
+        self.enabled = True
+        self.game.useManualPreferenceVectors = True
         pass
 
-    def updateErrors(self,event):
+    def updateErrors(self,event=None):
         messages = [editor.errorDetails for editor in self.vectorEditors if editor.errorDetails]
-        text = '\n'.join(messages)
+        self.game.preferenceErrors = len(messages)
+
         self.errorDisplay['state'] = 'normal'
         self.errorDisplay.delete('1.0','end')
-        self.errorDisplay.insert('1.0',text)
+        if len(messages)>0:
+            text = '\n'.join(messages)
+            self.errorDisplay.insert('1.0',text)
+            self.errorDisplay['foreground'] = 'red'
+        else:
+            self.errorDisplay.insert('1.0',"No Errors.  Preference vectors are valid.")
+            self.errorDisplay['foreground'] = 'black'
         self.errorDisplay['state'] = 'disabled'
 
 
