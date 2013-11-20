@@ -35,7 +35,7 @@ class PreferenceVectorEditor(ttk.Frame):
         print('passed test')
         self.master.event_generate("<<errorChange>>")
         self.dm.preferenceVector = prefVec
-        gmcrUtil.mapPrefVec2Payoffs(self.dm,self.game.feasibles)
+        self.dm.calculatePreferences()
         
     def enableWidget(self):
         self.prefVecEntry['state'] = 'normal'
@@ -51,11 +51,6 @@ class PVecEditMaster(ttk.Frame):
         ttk.Frame.__init__(self,master,borderwidth=2)
         
         self.game = game
-        
-        if self.game.useManualPreferenceVectors:
-            self.enabled = True
-        else:
-            self.enabled = False
         
         self.columnconfigure(0,weight=1)
         
@@ -85,10 +80,6 @@ class PVecEditMaster(ttk.Frame):
             newEditor = PreferenceVectorEditor(self.editorFrame,self.game,dm)
             self.vectorEditors.append(newEditor)
             newEditor.grid(row=idx,column=0,sticky=(N,S,E,W))
-
-        if not self.enabled:
-            for editor in self.vectorEditors:
-                editor.disableWidget()
         
         self.updateErrors()
         
@@ -97,7 +88,9 @@ class PVecEditMaster(ttk.Frame):
             self.activateButton['state'] = 'normal'
             for editor in self.vectorEditors:
                 editor.disableWidget()
-            
+        else:
+            self.activateButton['text'] = "Preference Vectors entered below will be used in analysis."
+            self.activateButton['state'] = 'disabled'
 
     def enableEditing(self):
         """Switches on manual editing of the preference vectors."""
@@ -105,9 +98,7 @@ class PVecEditMaster(ttk.Frame):
         self.activateButton['state'] = 'disabled'
         for editor in self.vectorEditors:
             editor.enableWidget()
-        self.enabled = True
         self.game.useManualPreferenceVectors = True
-        pass
 
     def updateErrors(self,event=None):
         messages = [editor.errorDetails for editor in self.vectorEditors if editor.errorDetails]
@@ -123,6 +114,4 @@ class PVecEditMaster(ttk.Frame):
             self.errorDisplay.insert('1.0',"No Errors.  Preference vectors are valid.")
             self.errorDisplay['foreground'] = 'black'
         self.errorDisplay['state'] = 'disabled'
-
-
 

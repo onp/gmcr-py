@@ -17,17 +17,15 @@ class LogResultDisp(ttk.Frame):
 
         self.game = game
         
-        if len(self.game.decisionMakers) > 0:
-            self.dmVar     = StringVar(value = self.game.decisionMakers[0].name)
-            self.stateVar  = StringVar(value = self.game.feasDec[0])
-        else:
-            self.dmVar     = StringVar()
-            self.stateVar  = StringVar()
+        self.dm = self.game.decisionMakers[0]
+        self.dmVar = StringVar(value = self.dm.name)
+        self.dmNameList = [dm.name for dm in self.game.decisionMakers]
+        self.stateVar = StringVar(value = 1)
             
         self.eqTypeVar = StringVar(value = 'Nash')
 
         self.resDisp = ttk.Treeview(self)
-        headings = ('Ordered','Decimal','Binary','Nash','GMR','SEQ','SIM','SEQ & SIM','SMR')
+        headings = ('Ordered','Decimal','YN','Nash','GMR','SEQ','SIM','SEQ & SIM','SMR')
         self.resDisp['columns'] = headings
         for h in headings:
             self.resDisp.column(h,width=80,anchor='center',stretch=1)
@@ -77,9 +75,10 @@ class LogResultDisp(ttk.Frame):
 
     def refreshDisplay(self):
         self.dmVar.set(self.game.dmList[0])
-        self.dmSel['values'] = tuple(self.game.dmList)
-        self.stateVar.set(self.game.feasDec[0])
-        self.stateSel['values'] = tuple(self.game.feasDec)
+        self.dmNameList = [dm.name for dm in self.game.decisionMakers]
+        self.dmSel['values'] = tuple([dm.name for dm in self.game.decisionMakers])
+        self.stateVar.set(1)
+        self.stateSel['values'] = tuple(self.game.feasibles.ordered)
 
     def chgState(self,event):
         eqType = int(self.resDisp.identify("column",event.x,event.y).strip('#'))
@@ -101,14 +100,12 @@ class LogResultDisp(ttk.Frame):
 
 
     def refreshSolution(self):
-        if len(self.game.decisionMakers) <= 0:
-            return None
         self.sol = LogicalSolver(self.game)
         self.sol.findEquilibria()
         for chld in self.resDisp.get_children():
             self.resDisp.delete(chld)
-        for state in self.game.feasDec:
-            values = tuple([self.game.ordered[state],state, ''.join([self.toYN[y] for y in self.game.dec2bin(state)])]+
+        for state in range(len(self.game.feasibles.decimal)):
+            values = tuple([self.game.feasibles.ordered[state],self.game.feasibles.decimal[state], self.game.feasibles.yn[state]]+
                            [x for x in self.sol.allEquilibria[:,state]])
             self.resDisp.insert('','end',iid=str(state),text=str(state),values=values)
 
@@ -122,10 +119,10 @@ class LogResultDisp(ttk.Frame):
                     'SIM':self.sol.sim,
                     'SMR':self.sol.smr}
         self.equilibriumNarrator.delete('1.0','end')
-        dm = self.game.dmList.index(self.dmVar.get())
-        state = int(self.stateVar.get())
+        self.dm = self.game.decisionMakers[self.dmNameList.index(self.dmVar.get())]
+        state = int(self.stateVar.get())-1
         eqType = self.eqTypeVar.get()
-        newText = eqCalcDict[eqType](dm,state)[1]
+        newText = eqCalcDict[eqType](self.dm,state)[1]
         self.equilibriumNarrator.insert('1.0',newText)
 
 

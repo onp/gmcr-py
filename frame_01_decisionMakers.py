@@ -103,8 +103,7 @@ class DMInpFrame(ttk.Frame):
 
         # bindings
         self.dmInp.bind('<<Sel2>>', self.dmChange)
-        self.dmInp.bind('<<Chg>>',  self.updateTotals)
-        self.optsInp.bind('<<Chg>>',self.updateTotals)
+        self.dmInp.bind('<<breakingChange>>',self.breakingChange)
         
         self.built = True
         
@@ -152,7 +151,9 @@ class DMInpFrame(ttk.Frame):
             self.optLabText.set('')
             self.optPlaceholder.grid()
 
-
+    def breakingChange(self,event=None):
+        self.conflict.breakingChange()
+        self.updateTotals()
 
     def updateTotals(self,*args):
         self.dmCount.set('Number of Decision Makers: ' + str(len(self.conflict.decisionMakers)))

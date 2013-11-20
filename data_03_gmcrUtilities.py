@@ -35,13 +35,13 @@ def expandPatterns(patterns):
             newPatterns += expandPatterns(adding)
         else:
             newPatterns += [pat]
-    return newPatterns
+    return sorted(newPatterns)
 
-def yn2dec(binState):
-    """Converts a binary string into a decimal number."""
+def yn2dec(ynState):
+    """Converts a binary YN string into a decimal number."""
     bit= 0
     output=0
-    for m in binState:
+    for m in ynState:
         if m=='Y':
             output += 2**bit
         bit+=1
@@ -140,12 +140,12 @@ def validatePreferenceVector(prefVec,feasibles):
             
     return None
     
-def mapPrefVec2Payoffs(dm,feasibles):
+def mapPrefVec2Payoffs(preferenceVector,feasibles):
     """Map the preference vectors provided into payoff values for each state."""             
     payoffs =[0]*len(feasibles)     #Make a clean payoffs vector   
 
     #use position in preference vector to give a payoff value.
-    for idx,state in enumerate(dm.preferenceVector):
+    for idx,state in enumerate(preferenceVector):
         try:
             for subState in state:
                 payoffs[subState-1] = len(feasibles) - idx
@@ -154,30 +154,25 @@ def mapPrefVec2Payoffs(dm,feasibles):
 
     if 0 in payoffs:
         state = feasibles.ordered[payoffs.index(0)]
-        raise Exception("Feasible state '%s' for DM '%s' was not included in the preference vector" %(state,dm.name))
+        raise Exception("Feasible state '%s' for DM was not included in the preference vector" %(state))
         
-    dm.payoffs = payoffs
     return payoffs
 
-def prefPriorities2payoffs(dm,feasibles):
+def prefPriorities2payoffs(preferences,feasibles):
     """Ranks the states for a DM, generating payoff values.
     
     Ranking is based on Preference Prioritization, and output payoff values
     are sequential.
     """
-    print("Calculating Payoffs for %s"%(dm.name))
-    dm.weightPreferences()
     #generate initial payoffs
     payoffsRaw = [0]*len(feasibles)
-    for preference in dm.preferences:
+    for preference in preferences:
         for state in feasibles.decimal:
             if preference.test(state):
                 payoffsRaw[feasibles.toOrdered[state]-1] += preference.weight
 
     #reduce magnitude of payoffs - do not do this if weights had special meaning.
     uniquePayoffs = sorted(set(payoffsRaw))
-    print(payoffsRaw)
-    print(uniquePayoffs)
     preferenceVector = []
     payoffs = list(payoffsRaw)  #creates a copy
 
@@ -192,10 +187,5 @@ def prefPriorities2payoffs(dm,feasibles):
             preferenceVector.append(stateSet[0])
 
     preferenceVector.reverse()      #necessary to put most preferred states at beginning instead of end
-
-    print(payoffs)
-    
-    dm.payoffs = payoffs
-    dm.preferenceVector = preferenceVector
     
     return payoffs, preferenceVector

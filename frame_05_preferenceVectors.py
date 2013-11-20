@@ -42,7 +42,7 @@ class PreferenceVectorFrame(ttk.Frame):
         
         #calculate initial preferences
         for dm in self.game.decisionMakers:
-            gmcrUtil.prefPriorities2payoffs(dm,self.game.feasibles)
+            dm.calculatePreferences()
             
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='No Message')

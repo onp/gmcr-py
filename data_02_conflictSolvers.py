@@ -1,4 +1,4 @@
-import numpy as np
+import numpy
 import itertools
 import json
 
@@ -19,100 +19,86 @@ class RMGenerator:
 
         self.game = game
 
-        # Generate move value lists for each player
-        mvNm=0
-        movelists = []
-        for dmMv in [len(x.options) for x in game.decisionMakers]:
-            movelists.append([2**mvNm for mvNm in range(mvNm,dmMv+mvNm)])
-            mvNm += dmMv
-
-        #initialize matrices
-        self.reachabilityMatrices = [np.ones((game.numFeas+1,game.numFeas+1),dtype='i4')*-1 for x in range(game.numDMs())]
-
-        for dm in range(game.numDMs()):
-
-            #assign simpler name to the current focal DM's reachability matrix
-            focalReachMat = self.reachabilityMatrices[dm]
+        for dm in self.game.decisionMakers:
+        
+            dm.reachability = numpy.empty((len(game.feasibles),len(game.feasibles)),dtype='i4')
+            dm.reachability.fill(numpy.nan)
 
             # generate a flat list of move values controlled by other DMs
-            oDMmoves = list(movelists)
-            focalDMmoves = oDMmoves.pop(dm)
-            oDMmoves = [val for subl in oDMmoves for val in subl]   #flattening
+            otherDMs = list(self.game.decisionMakers)
+            otherDMs.remove(dm)
+            otherDMsMoves = [option.dec_val for option in dm.options for dm in otherDMs]
+            focalDMmoves = [option.dec_val for option in dm.options]
 
             # translate the list of moves values for other DMs into a list of base states
             fixedStates = [0]
-            for x in oDMmoves:
-                fixedStates = [y+z for y in fixedStates for z in [0, x]]
+            for val in otherDMsMoves:
+                fixedStates = [y+z for y in fixedStates for z in [0, val]]
 
             # translate the list of focal DM move values into a list of focal DM states
-            focalStates = [0]
-            for x in focalDMmoves:
-                focalStates = [y+z for y in focalStates for z in [0, x]]
+            manipulatedStates = [0]
+            for val in focalDMmoves:
+                manipulatedStates = [y+z for y in manipulatedStates for z in [0, val]]
 
             # find the full set of mutually reachable states (controlled by the focal DM) for each fixed state (controlled by the other DMs)
-            for x in fixedStates:
-                reachable = [x]
-                reachable = [y+z for y in reachable for z in focalStates]
-                reachable = [y for y in reachable if (y in game.feasDec)]
+            for state in fixedStates:
+                reachable = [state]     #starting point
+                reachable = [y+z for y in reachable for z in manipulatedStates]   #full reachable set
+                reachable = [y for y in reachable if (y in game.feasibles.decimal)]   #remove infeasibles
 
-                for state0 in reachable:
+                for state0 in reachable:    #add one set of mutually reachable states
+                    s0 = self.game.feasibles.toOrdered[state0]-1
                     for state1 in reachable:
-                        if state0 != state1:
-                            focalReachMat[self.game.ordered[state0],self.game.ordered[state1]] =  game.payoffs[dm][state1]
+                        s1 = self.game.feasibles.toOrdered[state1]-1
+                        if s0 != s1:
+                            dm.reachability[s0,s1] =  dm.payoffs[s1]
 
         # Remove irreversible states ######################################################
             UseIrreversibles = True
             if UseIrreversibles:
-                for move in game.irrev:
-                    for state0 in game.feasDec:
-                        # does state have potential for irreversible move?
-                        state0bin = game.dec2bin(state0)     #DM's current state in binary form
-                        c = state0bin[move[0]]                          # value of the irreversible move option in DMs current state
+                for option in game.options:
+                    if option.permittedDirection != "both":
+                        for idx0,state0yn in enumerate(game.feasibles.yn):
+                            # does state have potential for irreversible move?
+                            val0 = state0yn[option.master_index]           # value of the irreversible move option in DMs current state (Y/N)
+                            if (val0 == "Y") and (option.permittedDirection == "fwd") or (val0 == "N") and (option.permittedDirection == "back"):
+                                for idx1,state1yn in enumerate(game.feasibles.yn):
+                                    #does target move have irreversible move?
+                                    val1 = state1yn[option.master_index]
+                                    if val0 != val1:
+                                    #remove irreversible moves from reachability matrix
+                                        dm.reachability[idx0,idx1]= numpy.nan
 
-                        if c == move[1]:
-                            for state1 in game.feasDec:
-                                #does target move have irreversible move?
-                                state1bin = game.dec2bin(state1)   # DM's target state in binary form
-                                co = state1bin[move[0]]
-
-                                if co != move[1]:
-                         #remove irreversible moves from reachibility matrix
-                                    focalReachMat[self.game.ordered[state0],self.game.ordered[state1]]= 0
-
-    def reachable(self,dm,state):
+    def reachable(self,dm,stateIdx):
         """Returns a list of all states reachable by dm from state.
         
-        dm is the integer index of the decision maker.
-        state is the integer representation of the state in decimal format.
+        dm a DecisionMaker object.
+        stateIdx is the index of the state in the game.
         """
-        stateO = self.game.ordered[state]
-        reachVec = self.reachabilityMatrices[dm][stateO,:].flatten().tolist()
-        reachVec = [x for x,y in enumerate(reachVec) if y != -1]
-        reachVec = [self.game.expanded[x] for x in reachVec]
+        reachVec = dm.reachability[stateIdx-1,:].flatten().tolist()
+        reachVec = [x for x,y in enumerate(reachVec) if y != numpy.nan]
         return(reachVec)
 
-    def UIs(self,dm,state,minPref=None):
+    def UIs(self,dm,stateIdx,minPref=None):
         """Returns a list of a unilateral improvements available to dm from state
         
         dm is the integer index of the decision maker.
-        state is the integer representation of the state in decimal format.
+        stateIdx is the index of the state in the game.
         minPref (optional) is a minimum preference for UIs to be returned. This
             is used to find moves that are preferred relative to some other
             initial state rather than the current one.  Used in SMR calculation.
         """
-        stateO = self.game.ordered[state]
-        UIvec = self.reachabilityMatrices[dm][stateO,:].flatten().tolist()
+        UIvec = dm.reachability[stateIdx,:].flatten().tolist()
 
         if minPref is not None:
             UIvec = [i for i,x in enumerate(UIvec) if x>minPref]
         else:
-            UIvec = [i for i,x in enumerate(UIvec) if x>self.game.payoffs[dm][state]]
+            UIvec = [i for i,x in enumerate(UIvec) if x>dm.payoffs[stateIdx]]
 
-        UIvec = [self.game.expanded[x] for x in UIvec]
         return(UIvec)
 
     def gameName(self):
-        """extracts a guess at the game's name from the file name.
+        """Extracts a guess at the game's name from the file name.
         
         Used in generating file names for data dumps (json or npz).
         """
@@ -127,7 +113,7 @@ class RMGenerator:
 
     def saveMatrices(self):
         """Export reachability matrix to numpy format."""
-        np.savez("RMs_for_"+self.gameName(),*self.reachabilityMatrices)
+        numpy.savez("RMs_for_"+self.gameName(),*self.reachabilityMatrices)
 
     def saveJSON(self):
         """Export conflict data to JSON format for presentation.
@@ -147,7 +133,7 @@ class RMGenerator:
                                     self.game.getFeas('YN')):
 
             nodes[str(stateDec)] = ({'id':str(stateDec),'state':str(stateYN),
-                          'ordered':str(self.game.ordered[stateDec]),
+                          'ordered':str(self.game.feasibles.toOrdered[stateDec]),
                           'reachable':[]})
 
             for dmInd,dm in enumerate(self.game.dmList):
@@ -171,19 +157,18 @@ class LogicalSolver(RMGenerator):
 
     def chattyHelper(self,dm,state):
         """Used in generating narration for the verbose versions of the stability calculations"""
-        a= 'state %s (decimal %s, payoff %s)' %(self.game.ordered[state],state,
-                                                self.game.payoffs[dm][state])
-        return a
+        snippet = 'state %s (decimal %s, payoff %s)' %(state+1, self.game.feasibles.decimal[state], dm.payoffs[state])
+        return snippet
 
 
     def nash(self,dm,state):
         """Used to calculate Nash stability. Returns true if state Nash is stable for dm."""
         if not self.UIs(dm,state):
-            narr = self.chattyHelper(dm,state)+' is Nash stable for dm '+ self.game.dmList[dm]+' since they have no UIs from this state.'
-            return 1,narr
+            narr = self.chattyHelper(dm,state)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.'
+            return True,narr
         else:
-            narr = self.chattyHelper(dm,state)+' is NOT Nash stable for dm '+ self.game.dmList[dm]+' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in self.UIs(dm,state)])
-            return 0,narr
+            narr = self.chattyHelper(dm,state)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in self.UIs(dm,state)])
+            return False,narr
 
 
     def seq(self,dm,state):
@@ -193,29 +178,29 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             seqStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is SEQ stable since focal dm '+self.game.dmList[dm]+' has no UIs available.\n'
+            narr += self.chattyHelper(dm,state)+' is SEQ stable since focal DM '+ dm.name +' has no UIs available.\n'
         else:
             for state1 in ui:             #for each potential move...
-                oDMuis = [x for oDM in range(self.game.numDMs()) for x in self.UIs(oDM,state1) if oDM != dm]        #find all possible UIs available to other players
-                if not oDMuis:
+                otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state1)]     #find all possible UIs available to other players
+                if not otherDMuis:
                     seqStab=0
-                    narr += self.chattyHelper(dm,state)+' is unstable by SEQ for focal dm '+self.game.dmList[dm]+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n'
+                    narr += self.chattyHelper(dm,state)+' is unstable by SEQ for focal DM '+dm.name+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n'
                     return seqStab,narr
                 else:
                     stable=0
-                    for state2 in oDMuis:
-                        if self.game.payoffs[dm][state2] <= self.game.payoffs[dm][state]:
+                    for state2 in otherDMuis:
+                        if dm.payoffs[state2] <= dm.payoffs[state]:
                             stable = 1
-                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is SEQ sanctioned for focal dm '+self.game.dmList[dm]+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  check other focal dm UIs for sanctioning... \n'
+                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is SEQ sanctioned for focal DM '+ dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check other focal DN UIs for sanctioning... \n'
                             break
 
                     if not stable:
                         seqStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by SEQ for focal dm '+self.game.dmList[dm]+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '\n'
+                        narr += self.chattyHelper(dm,state)+') is unstable by SEQ for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '\n'
                         return seqStab,narr
 
             seqStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by SEQ for focal dm '+self.game.dmList[dm]+', since all available UIs '+str(ui)+' are sanctioned by other players. \n'
+            narr += self.chattyHelper(dm,state) + ' is stable by SEQ for focal dm ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players. \n'
         return seqStab,narr
 
 
@@ -226,31 +211,33 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             simStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is SIM stable since focal dm '+self.game.dmList[dm]+' has no UIs available.\n'
+            narr += self.chattyHelper(dm,state)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
         else:
-            oDMuis = [x for oDM in range(self.game.numDMs()) for x in self.UIs(oDM,state) if oDM != dm]        #find all possible UIs available to other players from state
-            if not oDMuis:
+            otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state)]     #find all possible UIs available to other players
+            if not otherDMuis:
                 simStab=0
-                narr += self.chattyHelper(dm,state)+' is unstable by SIM for focal dm '+self.game.dmList[dm]+', since their opponents have no UIs from '+self.chattyHelper(dm,state) + '.\n'
+                narr += self.chattyHelper(dm,state)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state) + '.\n'
                 return simStab,narr
             else:
                 for state1 in ui:
                     stable=0
-                    for state2 in oDMuis:
-                        if (state1+state2-state) in self.game.feasDec:
-                            if self.game.payoffs[dm][state1+state2-state] <= self.game.payoffs[dm][state]:
+                    for state2 in otherDMuis:
+                        state2combinedDec = self.game.feasibles.decimal[state1]+self.game.feasibles.decimal[state2]-self.game.feasibles.decimal[state]
+                        if state2combinedDec in self.game.feasibles.decimal:
+                            state2combined = self.game.feasibles.decimal.index(state2combinedDec)
+                            if dm.payoffs[state2combined] <= dm.payoffs[state]:
                                 stable = 1
-                                narr += 'A move to '+self.chattyHelper(dm,state1)+' is SIM sanctioned for focal dm '+self.game.dmList[dm]+' by a move to '+self.chattyHelper(dm,state2)+' by other dms, which would give a final state of ' + self.chattyHelper(dm,(state1+state2-state)) + '.  check other focal dm UIs for sanctioning...\n'
+                                narr += 'A move to '+self.chattyHelper(dm,state1)+' is SIM sanctioned for focal DM ' + dm.name + ' by a move to '+self.chattyHelper(dm,state2)+' by other DMs, which would give a final state of ' + self.chattyHelper(dm,state2combined) + '.  Check other focal DM UIs for sanctioning...\n'
                                 break
-                        else: narr += 'Simultaneous moves to ' + str(state1) + ' and ' + str(state2) + ' are not possible since the resultant state ' + str(state1+state2-state) + ' is infeasible.\n'
+                        else: narr += 'Simultaneous moves towards ' + str(state1) + ' and ' + str(state2) + ' are not possible since the resultant state is infeasible.\n'
 
                     if not stable:
                         simStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by SIM for focal dm '+self.game.dmList[dm]+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n'
+                        narr += self.chattyHelper(dm,state)+') is unstable by SIM for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm,state1) + '.\n'
                         return simStab,narr
 
             simStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by SIM for focal dm '+self.game.dmList[dm]+', since all available UIs '+str(ui)+' are sanctioned by other players.\n'
+            narr += self.chattyHelper(dm,state) + ' is stable by SIM for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players.\n'
         return simStab,narr
 
 
@@ -261,29 +248,29 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             gmrStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is GMR stable since focal dm '+self.game.dmList[dm]+' has no UIs available.\n'
+            narr += self.chattyHelper(dm,state)+' is GMR stable since focal DM '+dm.name+' has no UIs available.\n'
         else:
             for state1 in ui:             #for each potential move...
-                oDMums = [x for oDM in range(self.game.numDMs()) for x in self.reachable(oDM,state1) if oDM != dm]        #find all possible moves (not just UIs) available to other players
-                if not oDMums:
+                otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                if not otherDMums:
                     gmrStab=0
-                    narr += self.chattyHelper(dm,state)+' is unstable by GMR for focal dm '+self.game.dmList[dm]+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n'
+                    narr += self.chattyHelper(dm,state)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n'
                     return gmrStab,narr
                 else:
                     stable=0
-                    for state2 in oDMums:
-                        if self.game.payoffs[dm][state2] <= self.game.payoffs[dm][state]:
+                    for state2 in otherDMums:
+                        if dm.payoffs[state2] <= dm.payoffs[state]:
                             stable = 1
-                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is GMR sanctioned for focal dm '+self.game.dmList[dm]+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  check other focal dm UIs for sanctioning...\n'
+                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is GMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other DMs.  check other focal dm UIs for sanctioning...\n'
                             break
 
                     if not stable:
                         gmrStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by GMR for focal dm '+self.game.dmList[dm]+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n'
+                        narr += self.chattyHelper(dm,state)+') is unstable by GMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n'
                         return gmrStab,narr
 
             gmrStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by GMR for focal dm '+self.game.dmList[dm]+', since all available UIs '+str(ui)+'are sanctioned by other players.\n'
+            narr += self.chattyHelper(dm,state) + ' is stable by GMR for focal DM '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+'are sanctioned by other players.\n'
         return gmrStab,narr
 
 
@@ -294,95 +281,95 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             smrStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is SMR stable since focal dm '+self.game.dmList[dm]+' has no UIs available.\n'
+            narr += self.chattyHelper(dm,state)+' is SMR stable since focal DM '+dm.name+' has no UIs available.\n'
         else:
             for state1 in ui:             #for each potential move...
-                oDMums = [x for oDM in range(self.game.numDMs()) for x in self.reachable(oDM,state1) if oDM != dm]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
 
-                if not oDMums:
+                if not otherDMums:
                     smrStab=0
-                    narr += self.chattyHelper(dm,state)+' is unstable by SMR for focal dm '+self.game.dmList[dm]+', since their opponents have no moves from '+self.chattyHelper(dm,state1) + '.\n'
+                    narr += self.chattyHelper(dm,state)+' is unstable by SMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) + '.\n'
                     return smrStab,narr
                 else:
                     stable=0
-                    for state2 in oDMums:
-                        if self.game.payoffs[dm][state2] <= self.game.payoffs[dm][state]:     # if a sanctioning state exists...
-                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is SMR sanctioned for focal dm '+self.game.dmList[dm]+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check for focal dm countermoves...\n'
+                    for state2 in otherDMums:
+                        if dm.payoffs[state2] <= dm.payoffs[state]:     # if a sanctioning state exists...
+                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is SMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check for possible countermoves...\n'
                             stable = 1
-                            ui2 = self.UIs(dm,state2,self.game.payoffs[dm][state])         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state'
+                            ui2 = self.UIs(dm,state2,dm.payoffs[state])         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state'
 
                             if ui2:     #still unstable since countermove is possible.  Check other sanctionings...
-                                narr += '    The sanctioned state '+self.chattyHelper(dm,state2)+' can be countermoved to ' + str([self.chattyHelper(dm,state3) for state3 in self.UIs(dm,state2,self.game.payoffs[dm][state])])+'. Check other sanctionings...\n'
+                                narr += '    The sanctioned state '+self.chattyHelper(dm,state2)+' can be countermoved to ' + str([self.chattyHelper(dm,state3) for state3 in ui2])+'. Check other sanctionings...\n'
                                 stable =0
 
                             else:        #'state' is stable since there is a sanctioning 'state2' that does not have a countermove
-                                narr += '    '+self.chattyHelper(dm,state1)+' remains sanctioned under SMR for focal dm '+self.game.dmList[dm]+', since they cannot countermove their opponent\'s sanction to '+self.chattyHelper(dm,state2) + '.\n'
+                                narr += '    '+self.chattyHelper(dm,state1)+' remains sanctioned under SMR for focal DM '+dm.name+', since they cannot countermove their opponent\'s sanction to '+self.chattyHelper(dm,state2) + '.\n'
                                 break
 
                     if not stable:
                         smrStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by SMR for focal dm '+self.game.dmList[dm]+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1)+' that cannot be effectively countermoved by the focal dm.\n'
+                        narr += self.chattyHelper(dm,state)+') is unstable by SMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1)+' that cannot be effectively countermoved by the focal dm.\n'
                         return smrStab,narr
 
             smrStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by SMR for focal dm '+self.game.dmList[dm]+', since all available UIs '+str(ui)+' are sanctioned by other players and cannot be countermoved.\n'
+            narr += self.chattyHelper(dm,state) + ' is stable by SMR for focal dm '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+' are sanctioned by other players and cannot be countermoved.\n'
         return smrStab,narr
 
     def findEquilibria(self):
         """Calculates the equalibrium states that exist within the game for each stability concept."""
             #Nash calculation
-        nashStabilities = np.zeros((self.game.numDMs(),2**self.game.numOpts()))
-        for dm in range(self.game.numDMs()):
-            for state in self.game.feasDec:
-                nashStabilities[dm,state]= self.nash(dm,state)[0]
+        nashStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.decisionMakers):
+            for state in range(len(self.game.feasibles.decimal)):
+                nashStabilities[idx,state]= self.nash(dm,state)[0]
 
-        np.invert(nashStabilities.astype('bool'),nashStabilities)
-        self.nashEquilibria = np.invert(sum(nashStabilities,0).astype('bool'))
+        numpy.invert(nashStabilities.astype('bool'),nashStabilities)
+        self.nashEquilibria = numpy.invert(sum(nashStabilities,0).astype('bool'))
 
 
             #SEQ calculation
-        seqStabilities = np.zeros((self.game.numDMs(),2**self.game.numOpts()))
-        for dm in range(self.game.numDMs()):
-            for state in self.game.feasDec:
-                seqStabilities[dm,state]= self.seq(dm,state)[0]
+        seqStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.decisionMakers):
+            for state in range(len(self.game.feasibles.decimal)):
+                seqStabilities[idx,state]= self.seq(dm,state)[0]
 
-        np.invert(seqStabilities.astype('bool'),seqStabilities)
-        self.seqEquilibria = np.invert(sum(seqStabilities,0).astype('bool'))
+        numpy.invert(seqStabilities.astype('bool'),seqStabilities)
+        self.seqEquilibria = numpy.invert(sum(seqStabilities,0).astype('bool'))
 
 
             #SIM calculation
-        simStabilities = np.zeros((self.game.numDMs(),2**self.game.numOpts()))
-        for dm in range(self.game.numDMs()):
-            for state in self.game.feasDec:
-                simStabilities[dm,state] = self.sim(dm,state)[0]
+        simStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.decisionMakers):
+            for state in range(len(self.game.feasibles.decimal)):
+                simStabilities[idx,state] = self.sim(dm,state)[0]
 
-        np.invert(simStabilities.astype('bool'),simStabilities)
-        self.simEquilibria = np.invert(sum(simStabilities,0).astype('bool'))
+        numpy.invert(simStabilities.astype('bool'),simStabilities)
+        self.simEquilibria = numpy.invert(sum(simStabilities,0).astype('bool'))
 
             #SEQ + SIM calculation
-        seqSimStabilities = np.bitwise_and(simStabilities.astype('bool'), seqStabilities.astype('bool'))
-        self.seqSimEquilibria = np.invert(sum(seqSimStabilities,0).astype('bool'))
+        seqSimStabilities = numpy.bitwise_and(simStabilities.astype('bool'), seqStabilities.astype('bool'))
+        self.seqSimEquilibria = numpy.invert(sum(seqSimStabilities,0).astype('bool'))
 
             #GMR calculation
-        gmrStabilities = np.zeros((self.game.numDMs(),2**self.game.numOpts()))
-        for dm in range(self.game.numDMs()):
-            for state in self.game.feasDec:
-                gmrStabilities[dm,state]=self.gmr(dm,state)[0]
+        gmrStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.decisionMakers):
+            for state in range(len(self.game.feasibles.decimal)):
+                gmrStabilities[idx,state]=self.gmr(dm,state)[0]
 
-        np.invert(gmrStabilities.astype('bool'),gmrStabilities)
-        self.gmrEquilibria = np.invert(sum(gmrStabilities,0).astype('bool'))
+        numpy.invert(gmrStabilities.astype('bool'),gmrStabilities)
+        self.gmrEquilibria = numpy.invert(sum(gmrStabilities,0).astype('bool'))
 
 
             #SMR calculations
-        smrStabilities = np.zeros((self.game.numDMs(),2**self.game.numOpts()))
-        for dm in range(self.game.numDMs()):
-            for state in self.game.feasDec:
-                smrStabilities[dm,state]=self.smr(dm,state)[0]
+        smrStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.decisionMakers):
+            for state in range(len(self.game.feasibles.decimal)):
+                smrStabilities[idx,state]=self.smr(dm,state)[0]
 
-        np.invert(smrStabilities.astype('bool'),smrStabilities)
-        self.smrEquilibria = np.invert(sum(smrStabilities,0).astype('bool'))
+        numpy.invert(smrStabilities.astype('bool'),smrStabilities)
+        self.smrEquilibria = numpy.invert(sum(smrStabilities,0).astype('bool'))
 
-        self.allEquilibria = np.vstack((self.nashEquilibria,
+        self.allEquilibria = numpy.vstack((self.nashEquilibria,
                                         self.gmrEquilibria,
                                         self.seqEquilibria,
                                         self.simEquilibria,
@@ -417,9 +404,9 @@ class InverseSolver(RMGenerator):
     def nashCond(self):
         """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
         output=[""]
-        for dm in range(self.game.numDMs()):
-            desEq = self.game.ordered[self.desEq[0]]
-            mblNash = [self.game.ordered[state] for state in self.mustBeLowerNash[0][dm]]
+        for dm in range(len(self.game.decisionMakers)):
+            desEq = self.game.feasibles.toOrdered[self.desEq[0]]
+            mblNash = [self.game.feasibles.toOrdered[state] for state in self.mustBeLowerNash[0][dm]]
             message = "For DM %s: %s must be more preferred than %s"%(dm,desEq,mblNash)
             output.append(message)
         return "\n".join(output)
@@ -427,14 +414,14 @@ class InverseSolver(RMGenerator):
     def gmrCond(self):
         """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
         output=[""]
-        for dm in range(self.game.numDMs()):
-            desEq = self.game.ordered[self.desEq[0]]
-            mblGMR = [self.game.ordered[state] for state in self.mustBeLowerNash[0][dm]]
+        for dm in range(len(self.game.decisionMakers)):
+            desEq = self.game.feasibles.toOrdered[self.desEq[0]]
+            mblGMR = [self.game.feasibles.toOrdered[state] for state in self.mustBeLowerNash[0][dm]]
             mbl2GMR = []
             for stateList in self.mustBeLowerGMR[0][dm]:
                 mbl2GMR.extend(stateList)
             mbl2GMR = list(set(mbl2GMR))
-            mbl2GMR = [self.game.ordered[state] for state in mbl2GMR] 
+            mbl2GMR = [self.game.feasibles.toOrdered[state] for state in mbl2GMR] 
             message = "For DM %s: %s must be more preferred than %s"%(dm,desEq,mblGMR)
             message += "\n    or at least one of %s must be less preferred than %s"%(mbl2GMR,desEq)
             output.append(message)
@@ -443,17 +430,17 @@ class InverseSolver(RMGenerator):
     def seqCond(self):
         """Generates a list of the conditions that preferences must satisfy for SEQ stability to exist."""
         output=[""]
-        for dm in range(self.game.numDMs()):
-            desEq = self.game.ordered[self.desEq[0]]
-            mblSEQ = [self.game.ordered[state] for state in self.mustBeLowerNash[0][dm]]
+        for dm in range(len(self.game.decisionMakers)):
+            desEq = self.game.feasibles.toOrdered[self.desEq[0]]
+            mblSEQ = [self.game.feasibles.toOrdered[state] for state in self.mustBeLowerNash[0][dm]]
             message = "For DM %s: %s must be more preferred than %s"%(dm,desEq,mblSEQ)
-            for dm2 in range(self.game.numDMs()):
+            for dm2 in range(len(self.game.decisionMakers)):
                 if dm2 == dm:
                     continue
                 for state1 in self.mustBeLowerNash[0][dm]:
                     for state2 in self.reachable(dm2,state1):
-                        s1 = self.game.ordered[state1]
-                        s2 = self.game.ordered[state2]
+                        s1 = self.game.feasibles.toOrdered[state1]
+                        s2 = self.game.feasibles.toOrdered[state2]
                         message += "\n    or if %s is preferred to %s for DM %s, %s must be less preferred than %s for DM %s"%(s2,s1,dm2,s2,desEq,dm)
             output.append(message)
         return "\n".join(output)
@@ -461,7 +448,7 @@ class InverseSolver(RMGenerator):
 
     def _mblInit(self):
         """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
-        self.mustBeLowerNash = [[self.reachable(dm,state) for dm in range(self.game.numDMs())] for state in self.desEq]
+        self.mustBeLowerNash = [[self.reachable(dm,state) for dm in range(len(self.game.decisionMakers))] for state in self.desEq]
         #mustBeLowerNash[state0][dm] contains the states that must be less preferred than 'state0' for 'dm'
         # to have a Nash equilibrium at 'state0'.
 
@@ -473,7 +460,7 @@ class InverseSolver(RMGenerator):
         for x,state0 in enumerate(self.mustBeLowerNash):
             for y,dm in enumerate(state0):      #'dm' contains a list of reachable states for dm from 'state0'
                 for z,state1 in enumerate(dm):
-                    for dm2 in range(self.game.numDMs()):
+                    for dm2 in range(len(self.game.decisionMakers)):
                         if y != dm2:
                             self.mustBeLowerGMR[x][y][z]+= self.reachable(dm2,state1)
 
@@ -497,23 +484,23 @@ class InverseSolver(RMGenerator):
         self._mblInit()
         self.pVecs = list(self.prefPermGen(self.game.prefVec,self.vary))
         self.pVecsOrd = list(self.prefPermGen(self.game.prefVecOrd,self.vary))
-        self.nash  = np.ones((len(self.pVecs),self.game.numDMs())).astype('bool')
-        self.gmr   = np.zeros((len(self.pVecs),self.game.numDMs())).astype('bool')
-        self.seq   = np.zeros((len(self.pVecs),self.game.numDMs())).astype('bool')
-        self.smr   = np.zeros((len(self.pVecs),self.game.numDMs())).astype('bool')
+        self.nash  = numpy.ones((len(self.pVecs),len(self.game.decisionMakers))).astype('bool')
+        self.gmr   = numpy.zeros((len(self.pVecs),len(self.game.decisionMakers))).astype('bool')
+        self.seq   = numpy.zeros((len(self.pVecs),len(self.game.decisionMakers))).astype('bool')
+        self.smr   = numpy.zeros((len(self.pVecs),len(self.game.decisionMakers))).astype('bool')
 
         for prefsI,prefsX in enumerate(self.pVecs):
-            payoffs =[[0]*(2**self.game.numOpts()) for x in range(self.game.numDMs())]
+            payoffs =[[0]*(2**len(self.game.options)) for x in range(len(self.game.decisionMakers))]
 
-            for dm in range(self.game.numDMs()):
+            for dm in range(len(self.game.decisionMakers)):
                 for i,y in enumerate(prefsX[dm]):
                     try:
                         for z in y:
-                            payoffs[dm][z] = self.game.numFeas - i
+                            payoffs[dm][z] = len(self.game.feasibles) - i
                     except TypeError:
-                        payoffs[dm][y] = self.game.numFeas - i
+                        payoffs[dm][y] = len(self.game.feasibles) - i
             #check if Nash
-            for dm in range(self.game.numDMs()):
+            for dm in range(len(self.game.decisionMakers)):
                 for state0p,state0d in enumerate(self.desEq):
                     if not self.nash[prefsI,dm]: break
                     pay0=payoffs[dm][state0d]        #payoff of the original state; higher is better
@@ -525,7 +512,7 @@ class InverseSolver(RMGenerator):
             #check if GMR
             self.gmr[prefsI,:]=self.nash[prefsI,:]
 
-            for dm in range(self.game.numDMs()):
+            for dm in range(len(self.game.decisionMakers)):
                 if self.nash[prefsI,dm]:
                     continue
                 for state0p,state0d in enumerate(self.desEq):
@@ -547,13 +534,13 @@ class InverseSolver(RMGenerator):
             for x,state0 in enumerate(self.mustBeLowerNash):
                 for y,dm in enumerate(state0):
                     for z,state1 in enumerate(dm):
-                        for dm2 in range(self.game.numDMs()):
+                        for dm2 in range(len(self.game.decisionMakers)):
                             if y != dm2:
                                 mustBeLowerSEQ[x][y][z]+=[state2 for state2 in self.reachable(dm2,state1) if payoffs[dm2][state2]>payoffs[dm2][state1]]
 
             self.seq[prefsI,:]=self.nash[prefsI,:]
 
-            for dm in range(self.game.numDMs()):
+            for dm in range(len(self.game.decisionMakers)):
                 if self.nash[prefsI,dm]:
                     continue
                 for state0p,state0d in enumerate(self.desEq):
@@ -572,7 +559,7 @@ class InverseSolver(RMGenerator):
             #check if SMR
             self.smr[prefsI,:]=self.nash[prefsI,:]
 
-            for dm in range(self.game.numDMs()):
+            for dm in range(len(self.game.decisionMakers)):
                 if self.nash[prefsI,dm]:
                     continue
                 for state0p,state0d in enumerate(self.desEq):
@@ -592,13 +579,13 @@ class InverseSolver(RMGenerator):
                                             break
                                     break       #check this
 
-        self.equilibriums = np.vstack((self.nash.all(axis=1),self.seq.all(axis=1),self.gmr.all(axis=1),self.smr.all(axis=1)))
+        self.equilibriums = numpy.vstack((self.nash.all(axis=1),self.seq.all(axis=1),self.gmr.all(axis=1),self.smr.all(axis=1)))
 
     def filter(self,filt):
         values = []
         for pVeci,pVecOrd in enumerate(self.pVecsOrd):
             eqms = self.equilibriums[:,pVeci]
-            if np.greater_equal(eqms,filt).all():
+            if numpy.greater_equal(eqms,filt).all():
                 values.append(tuple(list(pVecOrd)+[bool(x) for x in eqms]))
         counts = self.equilibriums.sum(axis=1)
         return values,counts

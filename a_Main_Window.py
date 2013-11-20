@@ -71,7 +71,7 @@ class MainAppWindow:
 
         self.frameBtnCmds[0](self)
         
-        self.root.bind_all("<<DataChanged>>",self.refreshActiveFrames)
+        self.root.bind_all("<<breakingChange>>",self.refreshActiveFrames)
         
         self.root.mainloop()
 

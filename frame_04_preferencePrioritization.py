@@ -44,7 +44,7 @@ class PreferencesFrame(ttk.Frame):
         
         #calculate initial preferences
         for dm in self.game.decisionMakers:
-            gmcrUtil.prefPriorities2payoffs(dm,self.game.feasibles)
+            dm.calculatePreferences()
             
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.game.decisionMakers),len(self.game.decisionMakers)))
@@ -134,9 +134,8 @@ class PreferencesFrame(ttk.Frame):
         self.helpFrame.grid_remove()
 
     def refresh(self,*args):
-        if not self.game.useManualPreferenceVectors:
-            for dm in self.game.decisionMakers:
-                gmcrUtil.prefPriorities2payoffs(dm,self.game.feasibles)
+        for dm in self.game.decisionMakers:
+            dm.calculatePreferences()
         self.editor.reloadOpts()
         self.vectors.refresh()
         self.conditionDisp.refresh()

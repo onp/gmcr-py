@@ -6,30 +6,35 @@ import data_03_gmcrUtilities as gmcrUtil
 
 
 class Option:
-    def __init__(self,name,reversibility='both'):
+    def __init__(self,name,permittedDirection='both'):
         self.name = str(name)
-        self.reversibility = reversibility
+        self.permittedDirection = permittedDirection
     
     def __str__(self):
         return self.name
         
     def export_rep(self):
         return {'name':str(self.name),
-                'reversibility':str(self.reversibility)}
+                'permittedDirection':str(self.permittedDirection)}
         
 class DecisionMaker:
-    def __init__(self,name,masterOptionList):
+    def __init__(self,conflict,name):
         self.name = str(name)
-        self.options = OptionList(masterOptionList)
-        self.preferences = ConditionList(masterOptionList)
+        self.conflict = conflict
+        self.options = OptionList(conflict.options)
+        self.preferences = ConditionList(conflict)
 
     def __str__(self):
         return self.name
         
     def export_rep(self):
-        return {'name':str(self.name),
-                'options':self.options.export_rep(),
-                'preferences':self.preferences.export_rep()}
+        rep  = {}
+        rep['name'] = str(self.name)
+        rep['options'] = self.options.export_rep()
+        rep['preferences'] = self.preferences.export_rep()
+        if self.conflict.useManualPreferenceVectors:
+            rep['preferenceVector'] = self.preferenceVector
+        return rep
 
     def addOption(self,option):
         if option not in self.options:
@@ -43,18 +48,21 @@ class DecisionMaker:
         for idx,pref in enumerate(self.preferences):
             pref.weight = 2**(len(self.preferences)-idx-1)
             
-    def calculatePayoffs(self):
-        pass
-        # NOT USED RIGHT NOW
-        #check if using preference prioritization, or manual input
-        #generate payoffs and preference vector
-        #OR map preference vector into payoffs
-            
+    def calculatePreferences(self):
+        if self.conflict.useManualPreferenceVectors:
+            self.payoffs = gmcrUtil.mapPrefVec2Payoffs(self.preferenceVector,self.conflict.feasibles)
+        else:
+            self.weightPreferences()
+            result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)
+            self.payoffs = result[0]
+            self.preferenceVector = result[1]
+
+
 class Condition:
     """A list of options either taken or not taken against which a state can be tested."""
-    def __init__(self,condition,masterOptionList):
-        self.options = OptionList(masterOptionList)
-        self.masterOptionList = masterOptionList
+    def __init__(self,conflict,condition):
+        self.conflict = conflict
+        self.options = OptionList(conflict.options)
         self.taken = []
         for opt,taken in condition:
             self.options.append(opt)
@@ -70,23 +78,23 @@ class Condition:
         
     def ynd(self):
         """Returns the condition in 'Yes No Dash' notation."""
-        self.masterOptionList.set_indexes()
-        ynd = ['-']*len(self.masterOptionList)
+        self.conflict.options.set_indexes()
+        ynd = ['-']*len(self.conflict.options)
         for opt,taken in self.cond():
             ynd[opt.master_index] = taken
         return ''.join(ynd)
         
     def test(self,state):
         """Test against a decimal state. Returns True if state meets the Condition."""
-        self.masterOptionList.set_indexes()
-        state = gmcrUtil.dec2yn(state,len(self.masterOptionList))
+        self.conflict.options.set_indexes()
+        state = gmcrUtil.dec2yn(state,len(self.conflict.options))
         for opt,taken in self.cond():
             if state[opt.master_index] != taken:
                 return False
         return True
         
     def export_rep(self):
-        self.masterOptionList.set_indexes()
+        self.conflict.options.set_indexes()
         return [(opt.master_index,taken) for opt,taken in self.cond()]
 
 
@@ -128,12 +136,13 @@ class ObjectList:
     def set_indexes(self):
         for idx,item in enumerate(self.itemList):
             item.master_index = idx
+            item.dec_val = 2**(len(self)-idx-1)
 
             
 class DecisionMakerList(ObjectList):
-    def __init__(self,masterOptionList):
+    def __init__(self,conflict):
         ObjectList.__init__(self)
-        self.masterOptionList = masterOptionList
+        self.conflict = conflict
 
     def export_rep(self):
         return [x.export_rep() for x in self.itemList]
@@ -142,14 +151,16 @@ class DecisionMakerList(ObjectList):
         if isinstance(item,DecisionMaker) and item not in self.itemList:
             self.itemList.append(item)
         elif isinstance(item,str):
-            self.itemList.append(DecisionMaker(item,self.masterOptionList))
+            self.itemList.append(DecisionMaker(self.conflict,item))
 
     def from_json(self,dmData):
-        newDM = DecisionMaker(dmData['name'],self.masterOptionList)
+        newDM = DecisionMaker(self.conflict,dmData['name'])
         for optIdx in dmData['options']:
-            newDM.options.append(self.masterOptionList[int(optIdx)])
+            newDM.options.append(self.conflict.options[int(optIdx)])
         for preference in dmData['preferences']:
             newDM.preferences.from_json(preference)
+        if self.conflict.useManualPreferenceVectors:
+            newDM.preferenceVector = dmData['preferenceVector']
         self.append(newDM)
 
 class OptionList(ObjectList):
@@ -175,26 +186,26 @@ class OptionList(ObjectList):
                 self.masterList.append(newOption)
                 
     def from_json(self,optData):
-        newOption = Option(optData['name'],optData['reversibility'])
+        newOption = Option(optData['name'],optData['permittedDirection'])
         self.append(newOption)
             
 class ConditionList(ObjectList):
-    def __init__(self,masterOptionList):
+    def __init__(self,conflict):
         ObjectList.__init__(self)
-        self.masterOptionList = masterOptionList
+        self.conflict = conflict
         
     def export_rep(self):
         return [x.export_rep() for x in self.itemList]
         
     def from_json(self,condData):
-        newCondition = [(self.masterOptionList[opt],taken) for opt,taken in condData]
+        newCondition = [(self.conflict.options[opt],taken) for opt,taken in condData]
         self.append(newCondition)
 
     def append(self,item):
         if isinstance(item,Condition):
             self.itemList.append(item)
         elif isinstance(item,list):
-            self.itemList.append(Condition(item,self.masterOptionList))
+            self.itemList.append(Condition(self.conflict,item))
         else:
             print(item)
             raise TypeError('Not a valid Condition Object')
@@ -221,7 +232,7 @@ class ConditionList(ObjectList):
         if fmt == 'YN':
             return sorted(set(gmcrUtil.expandPatterns(self.format('YN-'))))
         if fmt == 'dec':
-            return sorted(set([self.bin2dec(state) for state in self.expandPatterns(self.infeas)]))
+            return [self.yn2dec(state) for state in self.format('YN')]
         else:
             print('invalid format')
 
@@ -247,8 +258,8 @@ class ConflictModel:
         """Initializes a new, empty conflict.  If 'file' is given, loads values from 'file'"""
 
         self.options = OptionList()       #list of Option objects
-        self.decisionMakers = DecisionMakerList(self.options)        #list of DecisonMaker objects
-        self.infeasibles  = ConditionList(self.options)       #list of Condition objects
+        self.decisionMakers = DecisionMakerList(self)        #list of DecisonMaker objects
+        self.infeasibles  = ConditionList(self)       #list of Condition objects
         self.feasibles = FeasibleList()
 
         self.useManualPreferenceVectors = False
@@ -260,6 +271,7 @@ class ConflictModel:
         return {'decisionMakers':self.decisionMakers.export_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
+                'useManualPreferenceVectors':self.useManualPreferenceVectors,
                 'program':'gmcr-py'}
         
     def save_to_file(self,file):
@@ -277,6 +289,7 @@ class ConflictModel:
 
     def json_import(self,d):
         """Imports values into the conflict from JSON data d"""
+        self.useManualPreferenceVectors = d['useManualPreferenceVectors']
         for optData in d['options']:
             self.options.from_json(optData)
         for dmData in d['decisionMakers']:
@@ -285,10 +298,6 @@ class ConflictModel:
             self.infeasibles.from_json(infData)
         self.reorderOptionsByDM()
         self.recalculateFeasibleStates()
-
-#            self.setPref(   d['prefVec'])
-#          self.setPayoffs(d['payoffs'])
-#         self.setPrefPri(d['prefPri'])
 
 
     def load_from_file(self,file):
@@ -327,4 +336,10 @@ class ConflictModel:
                     self.options.insert(len(moved),self.options.pop(self.options.index(option)))
         self.options.set_indexes()
                 
-
+    def breakingChange(self):
+        self.useManualPreferenceVectors = False
+        self.reorderOptionsByDM()
+        self.recalculateFeasibleStates()
+        for dm in self.decisionMakers:
+            dm.preferenceVector = None
+            dm.calculatePreferences()

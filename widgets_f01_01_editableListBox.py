@@ -59,7 +59,6 @@ class ListInput(ttk.Frame):
         for idx in range(len(self.owner)):
             self.listDisp.itemconfigure(idx, foreground='black')
         self.listDisp.itemconfigure(len(self.owner), foreground='#A0A0A0')
-        self.event_generate('<<Chg>>')
 
 
     def moveEntry(self,idx,idx2):
@@ -69,6 +68,7 @@ class ListInput(ttk.Frame):
         self.listDisp.selection_clear(idx)
         self.listDisp.selection_set(idx2)
         self.selChgCmd()
+        self.event_generate("<<breakingChange>>")
 
     def upCmd(self,*args):
         """Moves the selected element up one space in the list"""
@@ -89,8 +89,7 @@ class ListInput(ttk.Frame):
             del self.owner[idx]
             self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
             self.listDisp.itemconfigure(len(self.owner), foreground='#A0A0A0')
-        self.event_generate('<<Chg>>')
-        self.event_generate('<<DataChanged>>')
+        self.event_generate("<<breakingChange>>")
 
     def selChgCmd(self,*args):
         """Called when the selection changes."""
@@ -118,6 +117,7 @@ class ListInput(ttk.Frame):
             if (idx == len(self.owner)):
                 self.owner.append(newItem)
                 self.listDisp.itemconfigure(idx, foreground='black')
+                self.event_generate("<<breakingChange>>")
             else:
                 self.owner[idx].name=newItem
             self.listVariable.set(tuple([x.name for x in self.owner]+['Double Click to Add Item']))
@@ -127,8 +127,6 @@ class ListInput(ttk.Frame):
         self.tempEntry.state(['disabled'])
         self.entryBxVar.set('')
         self.listDisp.focus_set()
-        self.event_generate('<<Chg>>')
-        self.event_generate('<<DataChanged>>')
         self.listDisp.selection_clear(0,'end')
         self.listDisp.selection_set(self.listDisp.selIdx)
         self.selChgCmd()

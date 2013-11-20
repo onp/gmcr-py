@@ -31,7 +31,7 @@ class ResultFrame(ttk.Frame):
         if len(self.game.feasibles) < 1:
             return False
         else:
-            return False
+            return True
             
     def buildFrame(self):
         if self.built:

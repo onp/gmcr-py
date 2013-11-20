@@ -26,22 +26,22 @@ class ToggleButton(ttk.Labelframe):
         self.both.grid(column=2,row=0,sticky=(N,S,E,W))
         self.curr = self.both
         
-        self.chg(option.reversibility)
+        self.chg(option.permittedDirection)
 
     def chg(self,new):
         self.curr.grid_remove()
         if new == 'back':
             self.back.grid(column=2,row=0,sticky=(N,S,E,W))
             self.curr= self.back
-            self.option.reversibility = 'back'
+            self.option.permittedDirection = 'back'
         elif new == 'fwd':
             self.fwd.grid(column=2,row=0,sticky=(N,S,E,W))
             self.curr = self.fwd
-            self.option.reversibility = 'fwd'
+            self.option.permittedDirection = 'fwd'
         elif new == 'both':
             self.both.grid(column=2,row=0,sticky=(N,S,E,W))
             self.curr= self.both
-            self.option.reversibility = 'both'
+            self.option.permittedDirection = 'both'
 
 
 class IrreversibleSetter(Frame):
