@@ -178,7 +178,7 @@ class PreferenceLongDisp(ttk.Frame):
         ttk.Frame.__init__(self,master)
 
         self.game = game
-        self.disp = ttk.Treeview(self,columns=('state','bin','payoff'))
+        self.disp = ttk.Treeview(self,columns=('state','yn','payoff'))
         self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
         self.dm = self.game.decisionMakers[0]
 
@@ -188,7 +188,7 @@ class PreferenceLongDisp(ttk.Frame):
         self.rowconfigure(0,weight=1)
 
         self.disp.heading('state',text='Ordered State')
-        self.disp.heading('bin',text='Binary')
+        self.disp.heading('yn',text='YN notation')
         self.disp.heading('payoff',text='Payoff')
         self.disp['show'] = 'headings'
 
@@ -201,10 +201,11 @@ class PreferenceLongDisp(ttk.Frame):
         for child in self.disp.get_children():
             self.disp.delete(child)
         if self.dm is not None:
-            for state in self.game.feasibles.decimal:
-                self.disp.insert('','end',text=state,values=(str(self.game.feasibles.toOrdered[state])+' '+
-                                 gmcrUtil.dec2yn(state,len(self.game.options)) +
-                                 ' '+str(self.dm.payoffs[self.game.feasibles.toOrdered[state]-1])))
+            for state in range(len(self.game.feasibles.decimal)):
+                self.disp.insert('','end',text=state,
+                        values=(str(self.game.feasibles.ordered[state]) + ' '
+                                +str(self.game.feasibles.yn[state]) + ' '
+                                +str(self.dm.payoffs[state])))
                                  
         if self.game.useManualPreferenceVectors:
             self.disp['selectmode'] = 'none'

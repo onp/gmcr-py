@@ -95,6 +95,8 @@ class MainAppWindow:
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
 
     def refreshActiveFrames(self,event=None):
+        self.activeGame.reorderOptionsByDM()
+        self.activeGame.options.set_indexes()
         self.activeGame.recalculateFeasibleStates()
         for idx,frame in enumerate(self.frameList):
             if frame.hasRequiredData():
@@ -108,7 +110,6 @@ class MainAppWindow:
         """ Ungrids the current frame and performs other exit tasks"""
         try:
             self.contentFrame.currFrame.leave()
-            self.contentFrame.currFrame = None
         except AttributeError:
             pass
 
@@ -117,14 +118,16 @@ class MainAppWindow:
         if not self.file:
             self.saveAs()
             return
-        self.contentFrame.currFrame.leave()
+        try:
+            self.contentFrame.currFrame.leave()
+        except AttributeError:
+            pass
         self.contentFrame.currFrame.enter()
         self.activeGame.save_to_file(self.file)
         print('Saved')
 
     def saveAs(self):
         """Opens a file dialog that prompts for name and location for saving the game."""
-        print(self.file)
         print('running saveAs')
         self.file = filedialog.asksaveasfilename(defaultextension= '.gmcr',
                                                 filetypes = (("GMCRo Save Files", "*.gmcr")

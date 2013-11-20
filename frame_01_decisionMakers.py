@@ -104,6 +104,7 @@ class DMInpFrame(ttk.Frame):
         # bindings
         self.dmInp.bind('<<Sel2>>', self.dmChange)
         self.dmInp.bind('<<breakingChange>>',self.breakingChange)
+        self.optsInp.bind('<<breakingChange>>',self.breakingChange)
         
         self.built = True
         
@@ -157,8 +158,8 @@ class DMInpFrame(ttk.Frame):
 
     def updateTotals(self,*args):
         self.dmCount.set('Number of Decision Makers: ' + str(len(self.conflict.decisionMakers)))
-        self.optCount.set('Number of Options: ' + str(sum([len(x.options) for x in self.conflict.decisionMakers])))
-        self.stateCount.set('Total States: ' + str(2**sum([len(x.options) for x in self.conflict.decisionMakers])))
+        self.optCount.set('Number of Options: ' + str(sum([len(dm.options) for dm in self.conflict.decisionMakers])))
+        self.stateCount.set('Total States: ' + str(2**sum([len(dm.options) for dm in self.conflict.decisionMakers])))
 
 
 

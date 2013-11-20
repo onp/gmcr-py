@@ -17,12 +17,10 @@ class LogResultDisp(ttk.Frame):
 
         self.game = game
         
-        self.dm = self.game.decisionMakers[0]
-        self.dmVar = StringVar(value = self.dm.name)
-        self.dmNameList = [dm.name for dm in self.game.decisionMakers]
-        self.stateVar = StringVar(value = 1)
+        self.dmVar = StringVar()
+        self.stateVar = StringVar()
             
-        self.eqTypeVar = StringVar(value = 'Nash')
+        self.eqTypeVar = StringVar()
 
         self.resDisp = ttk.Treeview(self)
         headings = ('Ordered','Decimal','YN','Nash','GMR','SEQ','SIM','SEQ & SIM','SMR')
@@ -71,29 +69,30 @@ class LogResultDisp(ttk.Frame):
         self.eqTypeSel.bind('<<ComboboxSelected>>',self.refreshNarration)
         self.resDisp.bind('<Button-1>',self.chgState)
 
+        self.refreshDisplay()
         self.refreshSolution()
 
     def refreshDisplay(self):
-        self.dmVar.set(self.game.dmList[0])
-        self.dmNameList = [dm.name for dm in self.game.decisionMakers]
         self.dmSel['values'] = tuple([dm.name for dm in self.game.decisionMakers])
-        self.stateVar.set(1)
+        self.dmSel.current(0)
         self.stateSel['values'] = tuple(self.game.feasibles.ordered)
+        self.stateSel.current(0)
+        self.eqTypeSel.current(0)
 
     def chgState(self,event):
         eqType = int(self.resDisp.identify("column",event.x,event.y).strip('#'))
         stateNum = self.resDisp.index(self.resDisp.selection())
-
-        self.stateVar.set(self.game.feasDec[stateNum])
-        if eqType <=3:
+        self.stateVar.set(self.game.feasibles.ordered[stateNum])
+        
+        if eqType <=4:
             self.eqTypeVar.set('Nash')
-        elif eqType ==4:
-            self.eqTypeVar.set('GMR')
         elif eqType ==5:
-            self.eqTypeVar.set('SEQ')
+            self.eqTypeVar.set('GMR')
         elif eqType ==6:
+            self.eqTypeVar.set('SEQ')
+        elif eqType ==7:
             self.eqTypeVar.set('SIM')
-        elif eqType ==4:
+        elif eqType >=8:
             self.eqTypeVar.set('SMR')
 
         self.refreshNarration()
@@ -108,6 +107,9 @@ class LogResultDisp(ttk.Frame):
             values = tuple([self.game.feasibles.ordered[state],self.game.feasibles.decimal[state], self.game.feasibles.yn[state]]+
                            [x for x in self.sol.allEquilibria[:,state]])
             self.resDisp.insert('','end',iid=str(state),text=str(state),values=values)
+            
+        for dm in self.game.decisionMakers:
+            print(dm.reachability)
 
         self.refreshNarration()
 
@@ -119,10 +121,10 @@ class LogResultDisp(ttk.Frame):
                     'SIM':self.sol.sim,
                     'SMR':self.sol.smr}
         self.equilibriumNarrator.delete('1.0','end')
-        self.dm = self.game.decisionMakers[self.dmNameList.index(self.dmVar.get())]
-        state = int(self.stateVar.get())-1
+        dm = self.game.decisionMakers[self.dmSel.current()]
+        state = self.stateSel.current()
         eqType = self.eqTypeVar.get()
-        newText = eqCalcDict[eqType](self.dm,state)[1]
+        newText = eqCalcDict[eqType](dm,state)[1]
         self.equilibriumNarrator.insert('1.0',newText)
 
 

@@ -1,4 +1,5 @@
 import itertools
+import traceback
 
 bitFlip = {'N':'Y','Y':'N'}
 
@@ -35,12 +36,14 @@ def expandPatterns(patterns):
             newPatterns += expandPatterns(adding)
         else:
             newPatterns += [pat]
+    newPatterns = sorted(newPatterns)
+    newPatterns.reverse()
     return sorted(newPatterns)
 
 def yn2dec(ynState):
     """Converts a binary YN string into a decimal number."""
-    bit= 0
-    output=0
+    bit = 0
+    output = 0
     for m in ynState:
         if m=='Y':
             output += 2**bit

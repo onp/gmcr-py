@@ -203,12 +203,16 @@ class ConditionList(ObjectList):
 
     def append(self,item):
         if isinstance(item,Condition):
-            self.itemList.append(item)
+            newCondition = item
         elif isinstance(item,list):
-            self.itemList.append(Condition(self.conflict,item))
+            newCondition = Condition(self.conflict,item)
         else:
             print(item)
             raise TypeError('Not a valid Condition Object')
+        if newCondition.ynd() not in [cond.ynd() for cond in self]:
+            self.itemList.append(newCondition)
+        else:
+            print("attempted to add duplicate; ignored")
             
     def moveCondition(self,idx,targ):
         """Move a condition from position idx in the list to position targ."""
@@ -247,7 +251,7 @@ class FeasibleList:
         self.decimal   = sorted([gmcrUtil.yn2dec(state) for state in self.yn])  #as decimal values
         self.toOrdered,self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)   #conversion dictionaries
         self.ordered = sorted(self.toDecimal.keys())                            #as ordered numbers
-        self.ordDec = ['%3d  [%s]'%(self.toOrdered[x],x) for x in reversed(self.decimal)]     #special display notation
+        self.ordDec = ['%3d  [%s]'%(ord,dec) for ord,dec in zip(self.ordered,self.decimal)]     #special display notation
     
     def __len__(self):
         return len(self.decimal)
