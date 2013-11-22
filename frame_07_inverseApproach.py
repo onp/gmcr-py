@@ -31,8 +31,10 @@ class InverseFrame(ttk.Frame):
             return False
         if len(self.game.feasibles) < 1:
             return False
-        else:
+        if self.game.preferenceErrors:
             return False
+        else:
+            return True
             
     def buildFrame(self):
         if self.built:

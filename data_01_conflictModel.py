@@ -267,6 +267,7 @@ class ConflictModel:
         self.feasibles = FeasibleList()
 
         self.useManualPreferenceVectors = False
+        self.preferenceErrors = None
 
 
     def export_rep(self):

@@ -148,6 +148,8 @@ class PreferencesFrame(ttk.Frame):
             
     def usePrioritization(self):
         self.game.useManualPreferenceVectors = False
+        self.game.preferenceErrors = None
+        self.event_generate("<<breakingChange>>")
         self.refresh()
 
     def dmChgHandler(self,event):

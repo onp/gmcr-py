@@ -30,6 +30,8 @@ class ResultFrame(ttk.Frame):
             return False
         if len(self.game.feasibles) < 1:
             return False
+        if self.game.preferenceErrors:
+            return False
         else:
             return True
             

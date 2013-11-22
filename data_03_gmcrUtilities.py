@@ -4,8 +4,9 @@ import traceback
 bitFlip = {'N':'Y','Y':'N'}
 
 def reducePatterns(patterns):
-    """Reduce patterns into compact dash notation. Effectively a partial
-    implementation of the Quine-McCluskey Algorithm."""
+    """Reduce patterns into compact dash notation. 
+    
+    Effectively a partial implementation of the Quine-McCluskey Algorithm?"""
     newPatterns = []
     matched = []
     for x,p1 in enumerate(patterns):

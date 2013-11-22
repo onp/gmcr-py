@@ -103,6 +103,7 @@ class PVecEditMaster(ttk.Frame):
     def updateErrors(self,event=None):
         messages = [editor.errorDetails for editor in self.vectorEditors if editor.errorDetails]
         self.game.preferenceErrors = len(messages)
+        self.event_generate("<<breakingChange>>")
 
         self.errorDisplay['state'] = 'normal'
         self.errorDisplay.delete('1.0','end')
