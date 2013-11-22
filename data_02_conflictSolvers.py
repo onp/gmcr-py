@@ -1,6 +1,7 @@
 import numpy
 import itertools
 import json
+from tkinter import filedialog
 
 class RMGenerator:
     """Reachability matrix class.
@@ -18,9 +19,6 @@ class RMGenerator:
     def __init__(self,game):
 
         self.game = game
-        
-        for option in self.game.options:
-            print(option.name,option.dec_val)
 
         for dm in self.game.decisionMakers:
         
@@ -31,7 +29,6 @@ class RMGenerator:
 
             otherDMsMoves = [option.dec_val for otherDM in self.game.decisionMakers if otherDM!=dm for option in otherDM.options ]
             focalDMmoves = [option.dec_val for option in dm.options]
-            print(dm.name,focalDMmoves,otherDMsMoves)
 
             # translate the list of moves values for other DMs into a list of base states
             fixedStates = [0]
@@ -117,37 +114,36 @@ class RMGenerator:
         """Export reachability matrix to numpy format."""
         numpy.savez("RMs_for_"+self.gameName(),*self.reachabilityMatrices)
 
-    def saveJSON(self):
+    def saveJSON(self,file):
         """Export conflict data to JSON format for presentation.
-        
-        Includes:
-        Nodes: state data,
-        DMs: Decision Maker Names,
-        options: option names,
-        startNode: the first feasible state in the game
+
+        Includes the full normal save file, plus reachability data and payoffs.
         """
-        nodes = {}
-        dms = self.game.dmList
-        options = self.game.getFlatOpts()
-        startNode = self.game.getFeas('dec')[0]
+        gameData = self.game.export_rep()
+        
+        nodes = []
 
-        for stateDec,stateYN in zip(self.game.getFeas('dec'),
-                                    self.game.getFeas('YN')):
+        for stateIdx,stateDec in enumerate(self.game.feasibles.decimal):
+            stateYN = self.game.feasibles.yn[stateIdx]
+            stateOrd = self.game.feasibles.ordered[stateIdx]
+            reachable = []
 
-            nodes[str(stateDec)] = ({'id':str(stateDec),'state':str(stateYN),
-                          'ordered':str(self.game.feasibles.toOrdered[stateDec]),
-                          'reachable':[]})
-
-            for dmInd,dm in enumerate(self.game.dmList):
-                for rchSt in self.reachable(dmInd,stateDec):
-                    nodes[str(stateDec)]['reachable'].append(
-                        {'target':str(rchSt),
-                         'dm': 'dm%s'%dmInd,
-                         'payoff':self.game.payoffs[dmInd][rchSt]-self.game.payoffs[dmInd][stateDec]})
-
-        with open("networkfor_%s.json"%(self.gameName()),'w') as jsonfile:
-            json.dump({"nodes":nodes,"DMs":dms,"options":options,
-                       "startNode":startNode},jsonfile)
+            for dmInd,dm in enumerate(self.game.decisionMakers):
+                for rchSt in self.reachable(dm,stateIdx):
+                    reachable.append({'target':rchSt,
+                                      'dm': 'dm%s'%dmInd,
+                                      'PayoffChange':dm.payoffs[rchSt]-dm.payoffs[stateIdx]})
+                         
+            nodes.append({'id':stateIdx,
+                          'decimal':str(stateDec),
+                          'ordered':str(stateOrd),
+                          'state':str(stateYN),
+                          'reachable':reachable})
+                          
+        gameData["nodes"] = nodes
+                                                
+        with open(file,'w') as jsonfile:
+            json.dump(gameData,jsonfile)
 
 
 class LogicalSolver(RMGenerator):
@@ -258,9 +254,6 @@ class LogicalSolver(RMGenerator):
             narr += 'From ' + self.chattyHelper(dm,state) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
                 otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
-                print(state,state1)
-                print(self.reachable(self.game.decisionMakers[1],state1))
-                print([oDM.name for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)])
                 if not otherDMums:
                     gmrStab=0
                     narr += self.chattyHelper(dm,state)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
@@ -331,7 +324,7 @@ class LogicalSolver(RMGenerator):
             #Nash calculation
         nashStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
         for idx,dm in enumerate(self.game.decisionMakers):
-            for state in range(len(self.game.feasibles.decimal)):
+            for state in range(len(self.game.feasibles)):
                 nashStabilities[idx,state]= self.nash(dm,state)[0]
 
         numpy.invert(nashStabilities.astype('bool'),nashStabilities)
@@ -341,7 +334,7 @@ class LogicalSolver(RMGenerator):
             #SEQ calculation
         seqStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
         for idx,dm in enumerate(self.game.decisionMakers):
-            for state in range(len(self.game.feasibles.decimal)):
+            for state in range(len(self.game.feasibles)):
                 seqStabilities[idx,state]= self.seq(dm,state)[0]
 
         numpy.invert(seqStabilities.astype('bool'),seqStabilities)
@@ -351,7 +344,7 @@ class LogicalSolver(RMGenerator):
             #SIM calculation
         simStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
         for idx,dm in enumerate(self.game.decisionMakers):
-            for state in range(len(self.game.feasibles.decimal)):
+            for state in range(len(self.game.feasibles)):
                 simStabilities[idx,state] = self.sim(dm,state)[0]
 
         numpy.invert(simStabilities.astype('bool'),simStabilities)
@@ -364,7 +357,7 @@ class LogicalSolver(RMGenerator):
             #GMR calculation
         gmrStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
         for idx,dm in enumerate(self.game.decisionMakers):
-            for state in range(len(self.game.feasibles.decimal)):
+            for state in range(len(self.game.feasibles)):
                 gmrStabilities[idx,state]=self.gmr(dm,state)[0]
 
         numpy.invert(gmrStabilities.astype('bool'),gmrStabilities)
@@ -374,7 +367,7 @@ class LogicalSolver(RMGenerator):
             #SMR calculations
         smrStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
         for idx,dm in enumerate(self.game.decisionMakers):
-            for state in range(len(self.game.feasibles.decimal)):
+            for state in range(len(self.game.feasibles)):
                 smrStabilities[idx,state]=self.smr(dm,state)[0]
 
         numpy.invert(smrStabilities.astype('bool'),smrStabilities)
@@ -394,6 +387,9 @@ class InverseSolver(RMGenerator):
         RMGenerator.__init__(self,game)
 
         self.desEq = desiredEquilibria
+        print("desired Equilibria: ", desiredEquilibria)
+        for dm in self.game.decisionMakers:
+            print(dm.preferenceVector)
         self.vary  = vary
 
     def _decPerm(self,full,vary):
@@ -419,8 +415,8 @@ class InverseSolver(RMGenerator):
         """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
         output=[""]
         for dmIdx,dm in enumerate(self.game.decisionMakers):
-            desEq = self.game.feasibles.ordered[self.desEq[0]]
-            mblNash = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[0][dmIdx]]
+            desEq = self.game.feasibles.ordered[self.desEq]
+            mblNash = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblNash)
             output.append(message)
         return "\n\n".join(output)
@@ -429,10 +425,10 @@ class InverseSolver(RMGenerator):
         """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
         output=[""]
         for dmIdx,dm in enumerate(self.game.decisionMakers):
-            desEq = self.game.feasibles.ordered[self.desEq[0]]
-            mblGMR = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[0][dmIdx]]
+            desEq = self.game.feasibles.ordered[self.desEq]
+            mblGMR = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             mbl2GMR = []
-            for stateList in self.mustBeLowerGMR[0][dmIdx]:
+            for stateList in self.mustBeLowerGMR[dmIdx]:
                 mbl2GMR.extend(stateList)
             mbl2GMR = list(set(mbl2GMR))
             mbl2GMR = [self.game.feasibles.ordered[state] for state in mbl2GMR] 
@@ -445,13 +441,13 @@ class InverseSolver(RMGenerator):
         """Generates a list of the conditions that preferences must satisfy for SEQ stability to exist."""
         output=[""]
         for dmIdx,dm in enumerate(self.game.decisionMakers):
-            desEq = self.game.feasibles.ordered[self.desEq[0]]
-            mblSEQ = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[0][dmIdx]]
+            desEq = self.game.feasibles.ordered[self.desEq]
+            mblSEQ = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblSEQ)
             for dmIdx2 in range(len(self.game.decisionMakers)):
                 if dmIdx2 == dmIdx:
                     continue
-                for state1 in self.mustBeLowerNash[0][dmIdx]:
+                for state1 in self.mustBeLowerNash[dmIdx]:
                     for state2 in self.reachable(self.game.decisionMakers[dmIdx2],state1):
                         s1 = self.game.feasibles.ordered[state1]
                         s2 = self.game.feasibles.ordered[state2]
@@ -462,35 +458,33 @@ class InverseSolver(RMGenerator):
 
     def _mblInit(self):
         """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
-        self.mustBeLowerNash = [[self.reachable(dm,state) for dm in self.game.decisionMakers] for state in self.desEq]
-        #mustBeLowerNash[state0][dm] contains the states that must be less preferred than 'state0' for 'dm'
-        # to have a Nash equilibrium at 'state0'.
+        self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.game.decisionMakers]
+        #mustBeLowerNash[dm] contains the states that must be less preferred than the 
+        # desired equilibrium'state0' for 'dm' to have a Nash equilibrium at 'state0'.
 
-        self.mustBeLowerGMR = [[[[] for state1 in dm] for dm in state] for state in self.mustBeLowerNash]
-        #mustBeLowerGMR[state0][dm][idx] contains the states that 'dm' could be sanctioned to after taking
+        self.mustBeLowerGMR = [[[] for state1 in dm] for dm in self.mustBeLowerNash]
+        #mustBeLowerGMR[dm][idx] contains the states that 'dm' could be sanctioned to after taking
         # the move in 'idx' from 'state0'. If, for each 'idx' there is at least one state less preferred
         # than 'state0', then 'state0' is GMR.  Sanctions are UMs for opponents, but not necessarily UIs.
 
-        for x,state0 in enumerate(self.mustBeLowerNash):
-            for y,dm in enumerate(state0):      #'dm' contains a list of reachable states for dm from 'state0'
-                for z,state1 in enumerate(dm):
-                    for dm2 in range(len(self.game.decisionMakers)):
-                        if y != dm2:
-                            self.mustBeLowerGMR[x][y][z]+= self.reachable(self.game.decisionMakers[dm2],state1)
+        for y,dm in enumerate(self.mustBeLowerNash):      #'dm' contains a list of reachable states for dm from 'state0'
+            for z,state1 in enumerate(dm):
+                for dm2 in range(len(self.game.decisionMakers)):
+                    if y != dm2:
+                        self.mustBeLowerGMR[y][z]+= self.reachable(self.game.decisionMakers[dm2],state1)
 
         #seq check uses same 'mustBeLower' as GMR, as sanctions are dependent on the UIs available to
         # opponents, and as such cannot be known until the preference vectors are set.
 
-        self.mustBeLowerSMR = [[[[[] for idx in state1] for state1 in dm] for dm in state0] for state0 in self.mustBeLowerGMR]
-        #mustBeLowerSMR[state0][dm][idx][idx2] contains the states that 'dm' could countermove to
+        self.mustBeLowerSMR = [[[[] for idx in state1] for state1 in dm] for dm in self.mustBeLowerGMR]
+        #mustBeLowerSMR[dm][idx][idx2] contains the states that 'dm' could countermove to
         # if sanction 'idx2' was taken by opponents after 'dm' took move 'idx' from 'state0'.
         # if at least one state is more preferred that 'state0' for each 'idx2', then the state is
         # not SMR for 'dm'.
 
-        for x,state0 in enumerate(self.mustBeLowerGMR):
-            for y,dm in enumerate(state0):
-                for z,idx in enumerate(dm): #idx contains a list of
-                    self.mustBeLowerSMR[x][y][z] = [self.reachable(self.game.decisionMakers[y],state2) for state2 in idx]
+        for y,dm in enumerate(self.mustBeLowerGMR):
+            for z,idx in enumerate(dm): #idx contains a list of
+                self.mustBeLowerSMR[y][z] = [self.reachable(self.game.decisionMakers[y],state2) for state2 in idx]
 
 
     def findEquilibria(self):
@@ -503,24 +497,23 @@ class InverseSolver(RMGenerator):
         self.smr   = numpy.zeros((len(self.preferenceVectors),len(self.game.decisionMakers))).astype('bool')
 
         for prefsIdx,prefsX in enumerate(self.preferenceVectors):
-            payoffs =[[0]*(2**len(self.game.options)) for x in range(len(self.game.decisionMakers))]
+            payoffs =[[0]*len(self.game.feasibles) for x in range(len(self.game.decisionMakers))]
 
             for dm in range(len(self.game.decisionMakers)):
                 for i,y in enumerate(prefsX[dm]):
                     try:
                         for z in y:
-                            payoffs[dm][z] = len(self.game.feasibles) - i
+                            payoffs[dm][z-1] = len(self.game.feasibles) - i
                     except TypeError:
-                        payoffs[dm][y] = len(self.game.feasibles) - i
+                        payoffs[dm][y-1] = len(self.game.feasibles) - i
             #check if Nash
             for dm in range(len(self.game.decisionMakers)):
-                for state0p,state0d in enumerate(self.desEq):
-                    if not self.nash[prefsIdx,dm]: break
-                    pay0=payoffs[dm][state0d]        #payoff of the original state; higher is better
-                    for pay1 in (payoffs[dm][state1] for state1 in self.mustBeLowerNash[state0p][dm]):    #get preferences of all states reachable by 'dm'
-                        if pay0<pay1:       #prefs0>prefs1 means a UI exists
-                            self.nash[prefsIdx,dm]=False
-                            break
+                if not self.nash[prefsIdx,dm]: break
+                pay0=payoffs[dm][self.desEq]        #payoff of the original state; higher is better
+                for pay1 in (payoffs[dm][state1] for state1 in self.mustBeLowerNash[dm]):    #get preferences of all states reachable by 'dm'
+                    if pay0<pay1:       #prefs0>prefs1 means a UI exists
+                        self.nash[prefsIdx,dm]=False
+                        break
 
             #check if GMR
             self.gmr[prefsIdx,:]=self.nash[prefsIdx,:]
@@ -528,46 +521,41 @@ class InverseSolver(RMGenerator):
             for dm in range(len(self.game.decisionMakers)):
                 if self.nash[prefsIdx,dm]:
                     continue
-                for state0p,state0d in enumerate(self.desEq):
-                    pay0=payoffs[dm][state0d]
-                    for state1p,state1d in enumerate(self.mustBeLowerNash[state0p][dm]):
-                        pay1 = payoffs[dm][state1d]
-                        if pay0<pay1:   #if there is a UI available
-                            #nash=False
-                            self.gmr[prefsIdx,dm]=False
-                            #print('%s is unstable by Nash, set dm %s gmr unstable'%(state0d,dm))
-                            for pay2 in (payoffs[dm][state2] for state2 in self.mustBeLowerGMR[state0p][dm][state1p]):
-                                if pay0>pay2:       #if initial state was preferred to sanctioned state
-                                    self.gmr[prefsIdx,dm]=True
-                                    break
+                pay0=payoffs[dm][self.desEq]
+                for state1p,state1d in enumerate(self.mustBeLowerNash[dm]):
+                    pay1 = payoffs[dm][state1d]
+                    if pay0<pay1:   #if there is a UI available
+                        #nash=False
+                        self.gmr[prefsIdx,dm]=False
+                        for pay2 in (payoffs[dm][state2] for state2 in self.mustBeLowerGMR[dm][state1p]):
+                            if pay0>pay2:       #if initial state was preferred to sanctioned state
+                                self.gmr[prefsIdx,dm]=True
+                                break
 
             #check if SEQ
-            mustBeLowerSEQ = [[[[] for state1 in dm] for dm in state] for state in self.mustBeLowerNash]
+            mustBeLowerSEQ = [[[] for state1 in dm] for dm in self.mustBeLowerNash]
 
-            for x,state0 in enumerate(self.mustBeLowerNash):
-                for y,dm in enumerate(state0):
-                    for z,state1 in enumerate(dm):
-                        for dm2 in range(len(self.game.decisionMakers)):
-                            if y != dm2:
-                                mustBeLowerSEQ[x][y][z]+=[state2 for state2 in self.reachable(self.game.decisionMakers[dm2],state1) if payoffs[dm2][state2]>payoffs[dm2][state1]]
+            for y,dm in enumerate(self.mustBeLowerNash):
+                for z,state1 in enumerate(dm):
+                    for dm2 in range(len(self.game.decisionMakers)):
+                        if y != dm2:
+                            mustBeLowerSEQ[y][z]+=[state2 for state2 in self.reachable(self.game.decisionMakers[dm2],state1) if payoffs[dm2][state2]>payoffs[dm2][state1]]
 
             self.seq[prefsIdx,:]=self.nash[prefsIdx,:]
 
             for dm in range(len(self.game.decisionMakers)):
                 if self.nash[prefsIdx,dm]:
                     continue
-                for state0p,state0d in enumerate(self.desEq):
-                    pay0=payoffs[dm][state0d]
-                    for state1p,state1d in enumerate(self.mustBeLowerNash[state0p][dm]):
-                        pay1 = payoffs[dm][state1d]
-                        if pay0<pay1:  #if there is a UI available
-                            #nash=False
-                            self.seq[prefsIdx,dm]=False
-                            #print('%s is unstable by Nash, set dm %s gmr unstable'%(state0d,dm))
-                            for pay2 in (payoffs[dm][state2] for state2 in mustBeLowerSEQ[state0p][dm][state1p]):
-                                if pay0>pay2:       #if initial state was preferred to sanctioned state
-                                    self.seq[prefsIdx,dm]=True        #set to true since sanctioned, however this will be broken if another UI exists.
-                                    break
+                pay0=payoffs[dm][self.desEq]
+                for state1p,state1d in enumerate(self.mustBeLowerNash[dm]):
+                    pay1 = payoffs[dm][state1d]
+                    if pay0<pay1:  #if there is a UI available
+                        #nash=False
+                        self.seq[prefsIdx,dm]=False
+                        for pay2 in (payoffs[dm][state2] for state2 in mustBeLowerSEQ[dm][state1p]):
+                            if pay0>pay2:       #if initial state was preferred to sanctioned state
+                                self.seq[prefsIdx,dm]=True        #set to true since sanctioned, however this will be broken if another UI exists.
+                                break
 
             #check if SMR
             self.smr[prefsIdx,:]=self.nash[prefsIdx,:]
@@ -575,22 +563,21 @@ class InverseSolver(RMGenerator):
             for dm in range(len(self.game.decisionMakers)):
                 if self.nash[prefsIdx,dm]:
                     continue
-                for state0p,state0d in enumerate(self.desEq):
-                    pay0=payoffs[dm][state0d]
-                    for state1p,state1d in enumerate(self.mustBeLowerNash[state0p][dm]):
-                        pay1 = payoffs[dm][state1d]
-                        if pay0<pay1:   #if there is a UI available
-                            #nash=False
-                            self.smr[prefsIdx,dm]=False
-                            for state2p,state2d in enumerate(self.mustBeLowerGMR[state0p][dm][state1p]):
-                                pay2 = payoffs[dm][state2d]
-                                if pay0>pay2:       #if initial state was preferred to sanctioned state
-                                    self.smr[prefsIdx,dm]=True        #set to true since sanctioned, however this will be broken if another UI exists, or if dm can countermove.
-                                    for pay3 in (payoffs[dm][state3] for state3 in self.mustBeLowerSMR[state0p][dm][state1p][state2p]):
-                                        if pay0<pay3:       #if countermove is better than original state.
-                                            self.smr[prefsIdx,dm]=False
-                                            break
-                                    break       #check this
+                pay0=payoffs[dm][self.desEq]
+                for state1p,state1d in enumerate(self.mustBeLowerNash[dm]):
+                    pay1 = payoffs[dm][state1d]
+                    if pay0<pay1:   #if there is a UI available
+                        #nash=False
+                        self.smr[prefsIdx,dm]=False
+                        for state2p,state2d in enumerate(self.mustBeLowerGMR[dm][state1p]):
+                            pay2 = payoffs[dm][state2d]
+                            if pay0>pay2:       #if initial state was preferred to sanctioned state
+                                self.smr[prefsIdx,dm]=True        #set to true since sanctioned, however this will be broken if another UI exists, or if dm can countermove.
+                                for pay3 in (payoffs[dm][state3] for state3 in self.mustBeLowerSMR[dm][state1p][state2p]):
+                                    if pay0<pay3:       #if countermove is better than original state.
+                                        self.smr[prefsIdx,dm]=False
+                                        break
+                                break       #check this
 
         self.equilibriums = numpy.vstack((self.nash.all(axis=1),self.seq.all(axis=1),self.gmr.all(axis=1),self.smr.all(axis=1)))
 
