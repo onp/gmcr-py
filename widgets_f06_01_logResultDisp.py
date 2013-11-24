@@ -1,4 +1,9 @@
+# Copyright:   (c) Oskar Petersons 2013
 
+"""Widgets for displaying a conflict's equilibria.
+
+Loaded by the frame_06_equilibria module.
+"""
 
 from tkinter import *
 from tkinter import ttk
@@ -50,11 +55,8 @@ class LogResultDisp(ttk.Frame):
         self.dumpframe = ttk.Frame(self)
         self.dumpframe.grid(column=3,row=2,sticky=(N,S,E))
 
-        self.RMdumpBtnJSON = ttk.Button(self.dumpframe,text='Save Reachability as JSON',command=lambda: self.sol.saveJSON())
+        self.RMdumpBtnJSON = ttk.Button(self.dumpframe,text='Save Reachability as JSON',command=self.saveToJSON)
         self.RMdumpBtnJSON.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
-
-        self.RMdumpBtnCSV = ttk.Button(self.dumpframe,text='Save Reachability as npz',command=lambda: self.sol.saveMatrices())
-        self.RMdumpBtnCSV.grid(column=1,row=0,sticky=(N,S,E,W),padx=3,pady=3)
 
         self.equilibriumNarrator = Text(self, wrap='word')
         self.equilibriumNarrator.grid(column=0,row=3,columnspan=4,sticky=(N,S,E,W))
@@ -97,7 +99,6 @@ class LogResultDisp(ttk.Frame):
 
         self.refreshNarration()
 
-
     def refreshSolution(self):
         self.sol = LogicalSolver(self.game)
         self.sol.findEquilibria()
@@ -113,7 +114,6 @@ class LogResultDisp(ttk.Frame):
 
         self.refreshNarration()
 
-
     def refreshNarration(self,*args):
         eqCalcDict={'Nash':self.sol.nash,
                     'GMR':self.sol.gmr,
@@ -126,6 +126,16 @@ class LogResultDisp(ttk.Frame):
         eqType = self.eqTypeVar.get()
         newText = eqCalcDict[eqType](dm,state)[1]
         self.equilibriumNarrator.insert('1.0',newText)
+        
+    def saveToJSON(self,event=None):
+        fileName = filedialog.asksaveasfilename(defaultextension= '.json',
+                                        filetypes = (("JSON files", "*.json")
+                                                     ,("All files", "*.*") ),
+                                        parent=self)
+        if fileName:
+            self.sol.saveJSON(fileName)
+                                        
+                                        
 
 
 def main():

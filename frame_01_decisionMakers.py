@@ -1,5 +1,10 @@
-# frame for inputting the dms and options.
-# for future: consider implementing as paned window rather than frame.
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Frame for creating and editing decision makers and options.
+
+Loaded by the a_Main_Window module, and implements all of its required
+interfaces.
+"""
 
 from tkinter import *
 from tkinter import ttk

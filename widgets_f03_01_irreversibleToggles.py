@@ -1,3 +1,9 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Widgets for editing the reversibility of options in the game.
+
+Loaded by the frame_03_irreversibles module.
+"""
 
 from tkinter import *
 from tkinter import ttk

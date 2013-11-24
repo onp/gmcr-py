@@ -1,3 +1,7 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Conflict analysis engines and reachability matrix generators."""
+
 import numpy
 import itertools
 import json

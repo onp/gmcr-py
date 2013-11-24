@@ -1,4 +1,10 @@
+# Copyright:   (c) Oskar Petersons 2013
 
+"""Widgets for selecting a state using radio buttons for each option.
+
+Loaded by the frame_04_preferencePrioritization module.
+Nearly a clone of widgets_f02_01_radioButtonEntry.
+"""
 
 from tkinter import *
 from tkinter import ttk

@@ -1,4 +1,10 @@
-"""Host for the widgets used in manually modifying preference vectors."""
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Frame used to manually set decision maker's preferences.
+
+Loaded by the a_Main_Window module, and implements all of its required
+interfaces.
+"""
 
 from tkinter import *
 from tkinter import ttk

@@ -1,3 +1,13 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Frame for display of equilibria in the conflict.
+
+Loaded by the a_Main_Window module, and implements all of its required
+interfaces.
+
+Also includes functionality for exporting reachability data.
+"""
+
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
@@ -92,8 +102,8 @@ class ResultFrame(ttk.Frame):
         self.built = False
         for child in self.winfo_children():
             child.destroy()
-        self.infoFrame.destroy()
-        self.helpFrame.destroy()
+        self.infoFrame.grid_forget()
+        self.helpFrame.grid_forget()
 
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,

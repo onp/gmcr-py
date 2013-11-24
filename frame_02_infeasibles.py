@@ -1,4 +1,10 @@
+# Copyright:   (c) Oskar Petersons 2013
 
+"""Frame for editing infeasible states in the conflict.
+
+Loaded by the a_Main_Window module, and implements all of its required
+interfaces.
+"""
 
 from tkinter import *
 from tkinter import ttk

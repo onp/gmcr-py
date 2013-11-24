@@ -1,5 +1,6 @@
-# class to hold all information about the current state of the conflict,
-# and serve it up to the UI elements and calculators.
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Core data model and class definitions for GMCR-py."""
 
 import json
 import data_03_gmcrUtilities as gmcrUtil

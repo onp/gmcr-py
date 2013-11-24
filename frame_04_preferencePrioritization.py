@@ -1,5 +1,10 @@
-# Template for input frames.  Shows the methods and attributes necessary for
-#  interfacing with the main program
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Frame used to set decision maker's preferences for use in prioritization.
+
+Loaded by the a_Main_Window module, and implements all of its required
+interfaces.
+"""
 
 from tkinter import *
 from tkinter import ttk

@@ -4,3 +4,4 @@ builds
 dist
 __pycache__
 "*.pyc"
+license.txt

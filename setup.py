@@ -1,7 +1,14 @@
+"""Script for generation of an .msi install package for GMCR-py.
+
+Call from console with 'python setup.py bdist_msi'.
+"""
+
+# Copyright:   (c) Oskar Petersons 2013
+
 from cx_Freeze import setup, Executable
 
 # Set other directories to be included.
-buildOptions = {'include_files': ['save_files/','icons/']}
+buildOptions = {'include_files': ['save_files/','icons/','license.txt']}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
 shortcut_table = [
@@ -13,7 +20,7 @@ shortcut_table = [
      None,                     # Arguments
      None,                     # Description
      None,                     # Hotkey
-     None,    # Icon
+     None,                     # Icon
      None,                     # IconIndex
      None,                     # ShowCmd
      'TARGETDIR'               # WkDir
@@ -26,14 +33,14 @@ shortcut_table = [
      None,                     # Arguments
      None,                     # Description
      None,                     # Hotkey
-     None,    # Icon
+     None,                     # Icon
      None,                     # IconIndex
      None,                     # ShowCmd
      'TARGETDIR'               # WkDir
      )
     ]
 
-# Now create the table dictionary
+# Create the table dictionary
 msi_data = {"Shortcut": shortcut_table}
 
 # Change some default MSI options and specify the use of the above defined tables
@@ -54,7 +61,7 @@ executables = [
 
 # Run setup
 setup(name='gmcr-py',
-      version = '0.1',
+      version = '0.2',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
                  'bdist_msi': bdist_msi_options},

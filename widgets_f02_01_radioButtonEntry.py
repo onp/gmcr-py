@@ -1,4 +1,9 @@
+# Copyright:   (c) Oskar Petersons 2013
 
+"""Widgets for selecting a state using radio buttons for each option
+
+Loaded by the frame_02_infeasibles module.
+"""
 
 from tkinter import *
 from tkinter import ttk

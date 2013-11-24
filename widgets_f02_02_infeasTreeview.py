@@ -1,8 +1,13 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Treeview widget for displaying infeasible states removed.
+
+Loaded by the frame_02_infeasibles module.
+"""
+
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
-
-
 
 class TreeInfeas(ttk.Frame):
     def __init__(self,master,game=None,*args):

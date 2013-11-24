@@ -1,3 +1,10 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Various widgets used in editing and displaying prioritization-based preferences.
+
+Loaded by the frame_04_preferencePrioritization module.
+"""
+
 from tkinter import *
 from tkinter import ttk
 import data_03_gmcrUtilities as gmcrUtil

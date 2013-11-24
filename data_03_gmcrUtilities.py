@@ -1,3 +1,7 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Assorted utility functions required by GMCR-py modules."""
+
 import itertools
 import traceback
 

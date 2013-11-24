@@ -1,3 +1,10 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Frame used to create and display results of Inverse Approach solutions.
+
+Loaded by the a_Main_Window module, and implements all of its required
+interfaces.
+"""
 
 from tkinter import *
 from tkinter import ttk

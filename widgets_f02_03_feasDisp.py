@@ -1,4 +1,9 @@
+# Copyright:   (c) Oskar Petersons 2013
 
+"""Widget for displaying all of the feasible states left in the game.
+
+Loaded by the frame_02_infeasibles module.
+"""
 
 from tkinter import *
 from tkinter import ttk

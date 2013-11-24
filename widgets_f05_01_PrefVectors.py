@@ -1,3 +1,10 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Widgets used for validating and manually entering preference vectors.
+
+Loaded by the frame_05_preferenceVectors module.
+"""
+
 from tkinter import *
 from tkinter import ttk
 import data_03_gmcrUtilities as gmcrUtil

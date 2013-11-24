@@ -1,3 +1,10 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Widgets displaying the results of Inverse Approach analysis.
+
+Loaded by the frame_07_inverseApproach module.
+"""
+
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel

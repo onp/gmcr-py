@@ -1,10 +1,12 @@
-# trying to generate a framework for the editable boxes
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Editable listbox widgets used in editing DMs and options.
+
+Loaded by the frame_01_decisionMakers module.
+"""
 
 from tkinter import *
 from tkinter import ttk
-
-
-
 
 class ListInput(ttk.Frame):
     """Listbox, with a linked entry box."""

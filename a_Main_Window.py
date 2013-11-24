@@ -1,3 +1,7 @@
+# Copyright:   (c) Oskar Petersons 2013
+
+"""Launches the GMCR-py Decision Support System."""
+
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
@@ -105,6 +109,13 @@ class MainAppWindow:
             else:
                 frame.clearFrame()
                 self.frameBtnList[idx].config(state = "disabled")
+                
+    def unloadAllFrames(self,event=None):
+        for idx,frame in enumerate(self.frameList):
+            frame.clearFrame()
+            self.frameBtnList[idx].config(state = "disabled")
+        
+        
         
     def frameLeave(self):
         """ Ungrids the current frame and performs other exit tasks"""
@@ -129,30 +140,37 @@ class MainAppWindow:
     def saveAs(self):
         """Opens a file dialog that prompts for name and location for saving the game."""
         print('running saveAs')
-        self.file = filedialog.asksaveasfilename(defaultextension= '.gmcr',
+        fileName = filedialog.asksaveasfilename(defaultextension= '.gmcr',
                                                 filetypes = (("GMCRo Save Files", "*.gmcr")
                                                              ,("All files", "*.*") ),
                                                 parent=self.root)
-        self.root.wm_title(self.file)
-        self.saveGame()
+        if fileName:
+            self.file = fileName
+            self.root.wm_title(self.file)
+            self.saveGame()
 
 
     def loadGame(self):
         """Opens a file dialog that prompts for a save file to open."""
-        self.file = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr")
+        fileName = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr")
                                                              ,("All files", "*.*") ),
                                                 parent=self.root)
-        self.frameLeave()
-        print('loading: %s'%(self.file))
-        self.root.wm_title(self.file)
-        self.activeGame.load_from_file(self.file)
-        self.refreshActiveFrames()
-        self.frameBtnCmds[0](self)
+        if fileName:
+            self.file=fileName
+            self.frameBtnCmds[0](self)
+            self.frameLeave()
+            self.unloadAllFrames()
+            print('loading: %s'%(fileName))
+            self.root.wm_title(fileName)
+            self.activeGame.load_from_file(fileName)
+            self.refreshActiveFrames()
+            self.frameBtnCmds[0](self)
         
 
     def newGame(self):
         """Clears all data in the game, allowing a new game to be entered."""
         print("Initializing new conflict...")
+        self.frameBtnCmds[0](self)
         self.frameLeave()
         self.activeGame.__init__()
         self.refreshActiveFrames()
