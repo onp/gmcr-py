@@ -61,7 +61,7 @@ executables = [
 
 # Run setup
 setup(name='gmcr-py',
-      version = '0.2',
+      version = '0.2.1',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
                  'bdist_msi': bdist_msi_options},
