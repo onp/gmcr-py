@@ -41,9 +41,7 @@ def expandPatterns(patterns):
             newPatterns += expandPatterns(adding)
         else:
             newPatterns += [pat]
-    newPatterns = sorted(newPatterns)
-    newPatterns.reverse()
-    return sorted(newPatterns)
+    return newPatterns
 
 def yn2dec(ynState):
     """Converts a binary YN string into a decimal number."""
@@ -114,12 +112,12 @@ def orderedNumbers(decimalList):
     Generates the decimal->ordered and ordered->decimal translation
     dictionaries for a list of decimal values.
     """
-    ordered  = {}        #decimal -> ordered dictionary
-    expanded = {}        #ordered -> decimal dictionary
+    toOrdered  = {}        #decimal -> ordered dictionary
+    toDecimal = {}        #ordered -> decimal dictionary
     for i,x in enumerate(decimalList,1):
-        ordered[x]=i
-        expanded[i]=x
-    return ordered,expanded
+        toOrdered[x]=i
+        toDecimal[i]=x
+    return toOrdered,toDecimal
     
 def validatePreferenceVector(prefVec,feasibles):
     """Check that the preference vector given is valid."""

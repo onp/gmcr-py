@@ -25,7 +25,6 @@ class RMGenerator:
         self.game = game
 
         for dm in self.game.decisionMakers:
-        
             dm.reachability = numpy.empty((len(game.feasibles),len(game.feasibles)))
             dm.reachability.fill(numpy.nan)
 
@@ -57,7 +56,7 @@ class RMGenerator:
                         if s0 != s1:
                             dm.reachability[s0,s1] =  dm.payoffs[s1]
 
-        # Remove irreversible states ######################################################
+            # Remove irreversible states ######################################################
             UseIrreversibles = True
             if UseIrreversibles:
                 for option in game.options:
@@ -72,6 +71,7 @@ class RMGenerator:
                                     if val0 != val1:
                                     #remove irreversible moves from reachability matrix
                                         dm.reachability[idx0,idx1]= numpy.nan
+                                        
 
     def reachable(self,dm,stateIdx):
         """Returns a list of all states reachable by dm from state.
@@ -324,7 +324,6 @@ class LogicalSolver(RMGenerator):
 
     def findEquilibria(self):
         """Calculates the equalibrium states that exist within the game for each stability concept."""
-        print("calculating equilibria...")
             #Nash calculation
         nashStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
         for idx,dm in enumerate(self.game.decisionMakers):
@@ -383,7 +382,6 @@ class LogicalSolver(RMGenerator):
                                         self.simEquilibria,
                                         self.seqSimEquilibria,
                                         self.smrEquilibria))
-        print("calculations complete.")
 
 
 class InverseSolver(RMGenerator):
@@ -391,9 +389,6 @@ class InverseSolver(RMGenerator):
         RMGenerator.__init__(self,game)
 
         self.desEq = desiredEquilibria
-        print("desired Equilibria: ", desiredEquilibria)
-        for dm in self.game.decisionMakers:
-            print(dm.preferenceVector)
         self.vary  = vary
 
     def _decPerm(self,full,vary):
@@ -408,8 +403,6 @@ class InverseSolver(RMGenerator):
     def prefPermGen(self,prefVecs,vary):
         """Returns all possible permutations of the group of preference vectors
         'pref' when the spans defined in 'vary' are allowed to move for each DM."""
-        print(prefVecs)
-        print(vary)
         b=[self._decPerm(y,vary[x]) for x,y in enumerate(prefVecs)]
         c=itertools.product(*b)
         for y in c:

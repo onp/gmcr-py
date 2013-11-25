@@ -8,7 +8,7 @@ Call from console with 'python setup.py bdist_msi'.
 from cx_Freeze import setup, Executable
 
 # Set other directories to be included.
-buildOptions = {'include_files': ['save_files/','icons/','license.txt']}
+buildOptions = {'include_files': ['save_files/','icons/']}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
 shortcut_table = [

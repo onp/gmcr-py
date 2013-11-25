@@ -108,9 +108,6 @@ class LogResultDisp(ttk.Frame):
             values = tuple([self.game.feasibles.ordered[state],self.game.feasibles.decimal[state], self.game.feasibles.yn[state]]+
                            [x for x in self.sol.allEquilibria[:,state]])
             self.resDisp.insert('','end',iid=str(state),text=str(state),values=values)
-            
-        for dm in self.game.decisionMakers:
-            print(dm.reachability)
 
         self.refreshNarration()
 

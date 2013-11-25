@@ -137,7 +137,7 @@ class ObjectList:
     def set_indexes(self):
         for idx,item in enumerate(self.itemList):
             item.master_index = idx
-            item.dec_val = 2**(len(self)-idx-1)
+            item.dec_val = 2**(idx)
 
             
 class DecisionMakerList(ObjectList):
@@ -248,11 +248,14 @@ class FeasibleList:
             self.dash = []
             return
         self.dash = gmcrUtil.reducePatterns(dash)                               #as 'Y,N,-' compact patterns
-        self.yn = gmcrUtil.expandPatterns(self.dash)                            #as 'Y,N' patterns
-        self.decimal   = sorted([gmcrUtil.yn2dec(state) for state in self.yn])  #as decimal values
+        temp = sorted([(gmcrUtil.yn2dec(yn),yn) for yn in gmcrUtil.expandPatterns(self.dash)])
+        self.yn = [yn for dec,yn in temp]                                       #as 'Y,N' patterns
+        self.decimal   = [dec for dec,yn in temp]                               #as decimal values
         self.toOrdered,self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)   #conversion dictionaries
         self.ordered = sorted(self.toDecimal.keys())                            #as ordered numbers
         self.ordDec = ['%3d  [%s]'%(ord,dec) for ord,dec in zip(self.ordered,self.decimal)]     #special display notation
+        for x in zip(self.ordered,self.decimal,self.yn):
+            print (x)
     
     def __len__(self):
         return len(self.decimal)
