@@ -58,29 +58,29 @@ def dec2yn(decState,numOpts):
     output = bin(decState).lstrip("0b").zfill(numOpts)[::-1].replace('1','Y').replace('0','N')
     return output
 
-def _toIndex(stateList):
-    """Translates a binary pattern from dash notation to index notation"""
-    out = []
-    for x in range(len(stateList)):
-        if stateList[x] != '-':
-            out.append((x,stateList[x]))
-    return out
-
-def _fromIndex(idxList,numOpts):
-    """Translates a binary pattern form index notation to dash notation"""
-    out = ['-']*numOpts
-    for x in idxList:
-        out[x[0]]=x[1]
-    return ''.join(out)
+#def _toIndex(stateList):
+#    """Translates a binary pattern from dash notation to index notation"""
+#   out = []
+#    for x in range(len(stateList)):
+#        if stateList[x] != '-':
+#            out.append((x,stateList[x]))
+#    return out
+#
+#def _fromIndex(idxList,numOpts):
+#    """Translates a binary pattern form index notation to dash notation"""
+#    out = ['-']*numOpts
+#    for x in idxList:
+#        out[x[0]]=x[1]
+#    return ''.join(out)
 
 def _subtractPattern(feas,sub):
-    """Remove infeasible state pattern 'sub' from feasible list 'feas' """
+    """Remove infeasible condition 'sub' from feasible condition 'feas' """
     sub = [x for x in enumerate(sub) if x[1] != '-']
     #check if targ overlaps with state:
     for x in sub:
         idx,val = x
-        if feas[idx] == bitFlip[val]:
-            return [feas]
+        if feas[idx] == bitFlip[val]:   #if no overlap...
+            return [feas]               # then no change, and return the same feasible condition
     #subtract overlap if it exists
     remainingStates = []
     curr = feas
@@ -98,8 +98,6 @@ def rmvSt(feas,infeas):
     for pattern in feas:
         newfeas += _subtractPattern(pattern,infeas)
     numRmvd = orig - sum([2**x.count('-') for x in newfeas])
-    print(feas)
-    print(newfeas)
     return newfeas,numRmvd
 
 def mutuallyExclusive(mutEx):
