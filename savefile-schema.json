@@ -1,0 +1,63 @@
+{ 
+    "$schema" : "http://json-schema.org/schema#",
+    "type" : "object",
+    "properties" : {
+        "decisionMakers":{
+            "type" : "array",
+            "items" : {
+                "type":"object",
+                "properties" : {
+                    "name": {"type" : "string"}
+                    "options" : {"type" : "array", "items" : {"type" : "number"}}
+                    "preferences" : {
+                        "type" : "array",
+                        "items" : {
+                            "type" : "array",
+                            "items" : {
+                                "type" : "array",
+                                "items": [
+                                    {"type":"number"},
+                                    {"type":"string"}
+                                ],
+                                "minItems": 2,
+                                "additionalItems":false
+                            }
+                        }
+                    }
+                },
+                "required": [ "name", "options", "preferences"]
+            },
+        },
+        "options":{
+            "type" : "array",
+            "items" : {
+                "type" : "object",
+                "properties" : {
+                    "name" : {"type" : "string"},
+                    "permittedDirection" : {
+                        "type" : "string"
+                    }
+                },
+                "required" : ["name", "permittedDirection"]
+        },
+        "infeasibles":{
+            "type" : "array",
+            "items" : {
+                "type" : "array",
+                "items" : {
+                    "type" : "array",
+                    "items": [
+                        {"type":"number"},
+                        {"type":"string"}
+                    ],
+                    "minItems": 2,
+                    "additionalItems":false
+                }
+            }
+        },
+        "program"
+        "version"
+        "useManualPreferenceVectors" : { "type":"boolean" }
+    },
+    "required" : ["decisionMakers", "options", "infeasibles"]
+}
