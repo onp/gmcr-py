@@ -106,7 +106,7 @@ class LogResultDisp(ttk.Frame):
             self.resDisp.delete(chld)
         for state in range(len(self.game.feasibles.decimal)):
             values = tuple([self.game.feasibles.ordered[state],self.game.feasibles.decimal[state], self.game.feasibles.yn[state]]+
-                           [x for x in self.sol.allEquilibria[:,state]])
+                           [x if x == True else '' for x in self.sol.allEquilibria[:,state]])
             self.resDisp.insert('','end',iid=str(state),text=str(state),values=values)
 
         self.refreshNarration()
