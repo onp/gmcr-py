@@ -28,8 +28,9 @@ class VaryRangeSelector(ttk.Frame):
 
             startVar = StringVar()
             endVar   = StringVar()
-            dispVar  = StringVar(value='No range selected.')
-            ttk.Label(dmFrame,textvariable=dispVar).grid(column=0,row=1,columnspan=4,sticky=(N,S,E,W))
+            dispVar  = StringVar(value='No range selected. Using original ranking.')
+            ttk.Label(dmFrame,text='Original ranking: '+ str(dm.preferenceVector)).grid(column=0,row=1,columnspan=4,sticky=(N,S,E,W))
+            ttk.Label(dmFrame,textvariable=dispVar).grid(column=0,row=2,columnspan=4,sticky=(N,S,E,W))
 
             ttk.Label(dmFrame,text='Vary from:').grid(column=0,row=0)
             startSel = ttk.Combobox(dmFrame,textvariable=startVar,state='readonly')
@@ -57,12 +58,12 @@ class VaryRangeSelector(ttk.Frame):
             if (v2-v1)>1:
                 self.vary[dmIdx] = [v1,v2]
                 varyRange = dm.preferenceVector[v1:v2]
-                self.varyDispVar[dmIdx].set('Varying on this selection: '+str(varyRange))
+                self.varyDispVar[dmIdx].set('Varying on this range: '+str(varyRange))
             else:
                 if(v1>v2):
                     self.varyDispVar[dmIdx].set('Start must be earlier than end.')
                 else:
-                    self.varyDispVar[dmIdx].set('No range selected.')
+                    self.varyDispVar[dmIdx].set('No range selected. Using original ranking.')
         self.event_generate('<<VaryRangeChanged>>')
 
 
@@ -106,22 +107,23 @@ class InverseContent(ttk.Frame):
 
         self.eqTypeFrame = ttk.Frame(self)
         self.eqTypeFrame.grid(column=0,row=6,columnspan=2,sticky=(N,S,E,W))
+        ttk.Label(self.eqTypeFrame,text='Show only rankings that satisfy all the following equilibrium concepts:').grid(column=0,row=0,columnspan=4,sticky=(N,S,E,W))
         self.nashChk = ttk.Checkbutton(self.eqTypeFrame,text='Nash',command=self.filter,variable=self.eqmChkVals[0])
         self.seqChk  = ttk.Checkbutton(self.eqTypeFrame,text='SEQ', command=self.filter,variable=self.eqmChkVals[1])
         self.gmrChk  = ttk.Checkbutton(self.eqTypeFrame,text='GMR', command=self.filter,variable=self.eqmChkVals[2])
         self.smrChk  = ttk.Checkbutton(self.eqTypeFrame,text='SMR', command=self.filter,variable=self.eqmChkVals[3])
-        self.nashChk.grid(column=0,row=0,sticky=(N,S,E,W),padx=(5,10))
-        self.seqChk.grid( column=1,row=0,sticky=(N,S,E,W),padx=(5,10))
-        self.gmrChk.grid( column=2,row=0,sticky=(N,S,E,W),padx=(5,10))
-        self.smrChk.grid( column=3,row=0,sticky=(N,S,E,W),padx=(5,10))
+        self.nashChk.grid(column=0,row=1,sticky=(N,S,E,W),padx=(5,10))
+        self.seqChk.grid( column=1,row=1,sticky=(N,S,E,W),padx=(5,10))
+        self.gmrChk.grid( column=2,row=1,sticky=(N,S,E,W),padx=(5,10))
+        self.smrChk.grid( column=3,row=1,sticky=(N,S,E,W),padx=(5,10))
         self.nashCountVar = StringVar(value='IV')
         self.seqCountVar  = StringVar(value='IV')
         self.gmrCountVar  = StringVar(value='IV')
         self.smrCountVar  = StringVar(value='IV')
-        self.nashCount = ttk.Label(self.eqTypeFrame,textvariable=self.nashCountVar).grid(column=0,row=1,sticky=(N,S,E,W))
-        self.seqCount  = ttk.Label(self.eqTypeFrame,textvariable=self.seqCountVar).grid(column=1,row=1,sticky=(N,S,E,W))
-        self.gmrCount  = ttk.Label(self.eqTypeFrame,textvariable=self.gmrCountVar).grid(column=2,row=1,sticky=(N,S,E,W))
-        self.smrCount  = ttk.Label(self.eqTypeFrame,textvariable=self.smrCountVar).grid(column=3,row=1,sticky=(N,S,E,W))
+        self.nashCount = ttk.Label(self.eqTypeFrame,textvariable=self.nashCountVar).grid(column=0,row=2,sticky=(N,S,E,W))
+        self.seqCount  = ttk.Label(self.eqTypeFrame,textvariable=self.seqCountVar).grid(column=1,row=2,sticky=(N,S,E,W))
+        self.gmrCount  = ttk.Label(self.eqTypeFrame,textvariable=self.gmrCountVar).grid(column=2,row=2,sticky=(N,S,E,W))
+        self.smrCount  = ttk.Label(self.eqTypeFrame,textvariable=self.smrCountVar).grid(column=3,row=2,sticky=(N,S,E,W))
 
         ttk.Separator(self,orient=VERTICAL).grid(column=2,row=0,rowspan=10,sticky=(N,S,E,W),padx=3)
 
