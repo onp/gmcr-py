@@ -10,8 +10,8 @@ from tkinter import filedialog
 class RMGenerator:
     """Reachability matrix class.
     
-    When initialized with a game for data, it produces a reachability matrix
-    for it.  
+    When initialized with a game for data, it produces reachability matrices
+    for each of the decision makers.
     
     Key methods for extracting data from the matrix are:
     reachable(dm,state)
@@ -143,74 +143,74 @@ class LogicalSolver(RMGenerator):
         return snippet
 
 
-    def nash(self,dm,state):
-        """Used to calculate Nash stability. Returns true if state Nash is stable for dm."""
-        ui=self.UIs(dm,state)
+    def nash(self,dm,state0):
+        """Used to calculate Nash stability. Returns true if state0 Nash is stable for dm."""
+        ui=self.UIs(dm,state0)
         if not ui:
-            narr = self.chattyHelper(dm,state)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.'
+            narr = self.chattyHelper(dm,state0)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.'
             return True,narr
         else:
-            narr = self.chattyHelper(dm,state)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in ui])
+            narr = self.chattyHelper(dm,state0)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in ui])
             return False,narr
 
 
-    def seq(self,dm,state):
-        """Used to calculate SEQ stability. Returns true if state is SEQ stable for dm."""
-        ui=self.UIs(dm,state)
+    def seq(self,dm,state0):
+        """Used to calculate SEQ stability. Returns true if state0 is SEQ stable for dm."""
+        ui=self.UIs(dm,state0)
         narr = ''
 
         if not ui:
             seqStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is SEQ stable since focal DM '+ dm.name +' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is SEQ stable since focal DM '+ dm.name +' has no UIs available.\n\n'
         else:
-            narr += 'From ' + self.chattyHelper(dm,state) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
+            narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
                 otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state1)]     #find all possible UIs available to other players
                 if not otherDMuis:
                     seqStab=0
-                    narr += self.chattyHelper(dm,state)+' is unstable by SEQ for focal DM '+dm.name+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n\n'
+                    narr += self.chattyHelper(dm,state0)+' is unstable by SEQ for focal DM '+dm.name+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n\n'
                     return seqStab,narr
                 else:
                     stable=0
                     for state2 in otherDMuis:
-                        if dm.payoffs[state2] <= dm.payoffs[state]:
+                        if dm.payoffs[state2] <= dm.payoffs[state0]:
                             stable = 1
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is SEQ sanctioned for focal DM '+ dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check other focal DN UIs for sanctioning... \n\n'
                             break
 
                     if not stable:
                         seqStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by SEQ for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '\n\n'
+                        narr += self.chattyHelper(dm,state0)+') is unstable by SEQ for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '\n\n'
                         return seqStab,narr
 
             seqStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by SEQ for focal dm ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players. \n\n'
+            narr += self.chattyHelper(dm,state0) + ' is stable by SEQ for focal dm ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players. \n\n'
         return seqStab,narr
 
 
-    def sim(self,dm,state):
-        """Used to calculate SIM stability. Returns true if state is SIM stable for dm."""
-        ui=self.UIs(dm,state)
+    def sim(self,dm,state0):
+        """Used to calculate SIM stability. Returns true if state0 is SIM stable for dm."""
+        ui=self.UIs(dm,state0)
         narr=''
 
         if not ui:
             simStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n\n'
         else:
-            narr += 'From ' + self.chattyHelper(dm,state) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
-            otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state)]     #find all possible UIs available to other players
+            narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
+            otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
             if not otherDMuis:
                 simStab=0
-                narr += self.chattyHelper(dm,state)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state) + '.\n\n'
+                narr += self.chattyHelper(dm,state0)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state0) + '.\n\n'
                 return simStab,narr
             else:
                 for state1 in ui:
                     stable=0
                     for state2 in otherDMuis:
-                        state2combinedDec = self.game.feasibles.decimal[state1]+self.game.feasibles.decimal[state2]-self.game.feasibles.decimal[state]
+                        state2combinedDec = self.game.feasibles.decimal[state1]+self.game.feasibles.decimal[state2]-self.game.feasibles.decimal[state0]
                         if state2combinedDec in self.game.feasibles.decimal:
                             state2combined = self.game.feasibles.decimal.index(state2combinedDec)
-                            if dm.payoffs[state2combined] <= dm.payoffs[state]:
+                            if dm.payoffs[state2combined] <= dm.payoffs[state0]:
                                 stable = 1
                                 narr += 'A move to '+self.chattyHelper(dm,state1)+' is SIM sanctioned for focal DM ' + dm.name + ' by a move to '+self.chattyHelper(dm,state2)+' by other DMs, which would give a final state of ' + self.chattyHelper(dm,state2combined) + '.  Check other focal DM UIs for sanctioning...\n\n'
                                 break
@@ -218,88 +218,88 @@ class LogicalSolver(RMGenerator):
 
                     if not stable:
                         simStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by SIM for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm,state1) + '.\n\n'
+                        narr += self.chattyHelper(dm,state0)+') is unstable by SIM for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm,state1) + '.\n\n'
                         return simStab,narr
 
             simStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by SIM for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players.\n\n'
+            narr += self.chattyHelper(dm,state0) + ' is stable by SIM for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players.\n\n'
         return simStab,narr
 
 
-    def gmr(self,dm,state):
-        """Used to calculate GMR stability. Returns true if state is GMR stable for dm."""
-        ui=self.UIs(dm,state)
+    def gmr(self,dm,state0):
+        """Used to calculate GMR stability. Returns true if state0 is GMR stable for dm."""
+        ui=self.UIs(dm,state0)
         narr=''
 
         if not ui:
             gmrStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is GMR stable since focal DM '+dm.name+' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is GMR stable since focal DM '+dm.name+' has no UIs available.\n\n'
         else:
-            narr += 'From ' + self.chattyHelper(dm,state) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
+            narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
                 otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
                 if not otherDMums:
                     gmrStab=0
-                    narr += self.chattyHelper(dm,state)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
+                    narr += self.chattyHelper(dm,state0)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
                     return gmrStab,narr
                 else:
                     stable=0
                     for state2 in otherDMums:
-                        if dm.payoffs[state2] <= dm.payoffs[state]:
+                        if dm.payoffs[state2] <= dm.payoffs[state0]:
                             stable = 1
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is GMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other DMs.\n\n'
                             break
 
                     if not stable:
                         gmrStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by GMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n\n'
+                        narr += self.chattyHelper(dm,state0)+') is unstable by GMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n\n'
                         return gmrStab,narr
 
             gmrStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by GMR for focal DM '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+'are sanctioned by other players.\n\n'
+            narr += self.chattyHelper(dm,state0) + ' is stable by GMR for focal DM '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+'are sanctioned by other players.\n\n'
         return gmrStab,narr
 
 
-    def smr(self,dm,state):
-        """Used to calculate SMR stability. Returns true if state is SMR stable for dm."""
-        ui=self.UIs(dm,state)
+    def smr(self,dm,state0):
+        """Used to calculate SMR stability. Returns true if state0 is SMR stable for dm."""
+        ui=self.UIs(dm,state0)
         narr= ''
 
         if not ui:
             smrStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state)+' is SMR stable since focal DM '+dm.name+' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is SMR stable since focal DM '+dm.name+' has no UIs available.\n\n'
         else:
-            narr += 'From ' + self.chattyHelper(dm,state) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
+            narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
                 otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
 
                 if not otherDMums:
                     smrStab=0
-                    narr += self.chattyHelper(dm,state)+' is unstable by SMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) + '.\n\n'
+                    narr += self.chattyHelper(dm,state0)+' is unstable by SMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) + '.\n\n'
                     return smrStab,narr
                 else:
                     stable=0
                     for state2 in otherDMums:
-                        if dm.payoffs[state2] <= dm.payoffs[state]:     # if a sanctioning state exists...
+                        if dm.payoffs[state2] <= dm.payoffs[state0]:     # if a sanctioning state exists...
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is SMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check for possible countermoves...\n\n'
                             stable = 1
-                            ui2 = self.UIs(dm,state2,state)         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state'
+                            ui2 = self.UIs(dm,state2,state0)         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state0'
 
                             if ui2:     #still unstable since countermove is possible.  Check other sanctionings...
                                 narr += '    The sanctioned state '+self.chattyHelper(dm,state2)+' can be countermoved to ' + str([self.chattyHelper(dm,state3) for state3 in ui2])+'. Check other sanctionings...\n\n'
                                 stable =0
 
-                            else:        #'state' is stable since there is a sanctioning 'state2' that does not have a countermove
+                            else:        #'state0' is stable since there is a sanctioning 'state2' that does not have a countermove
                                 narr += '    '+self.chattyHelper(dm,state1)+' remains sanctioned under SMR for focal DM '+dm.name+', since they cannot countermove their opponent\'s sanction to '+self.chattyHelper(dm,state2) + '.\n\n'
                                 break
 
                     if not stable:
                         smrStab=0
-                        narr += self.chattyHelper(dm,state)+') is unstable by SMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1)+' that cannot be effectively countermoved by the focal dm.\n\n'
+                        narr += self.chattyHelper(dm,state0)+') is unstable by SMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1)+' that cannot be effectively countermoved by the focal dm.\n\n'
                         return smrStab,narr
 
             smrStab = 1
-            narr += self.chattyHelper(dm,state) + ' is stable by SMR for focal dm '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+' are sanctioned by other players and cannot be countermoved.\n\n'
+            narr += self.chattyHelper(dm,state0) + ' is stable by SMR for focal dm '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+' are sanctioned by other players and cannot be countermoved.\n\n'
         return smrStab,narr
 
     def findEquilibria(self):
