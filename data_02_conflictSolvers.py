@@ -25,8 +25,9 @@ class RMGenerator:
         self.game = game
 
         for dm in self.game.decisionMakers:
-            dm.reachability = numpy.empty((len(game.feasibles),len(game.feasibles)))
-            dm.reachability.fill(numpy.nan)
+            dm.reachability = numpy.zeros((len(game.feasibles),len(game.feasibles)),numpy.int_)
+            pmTemp = numpy.array(dm.payoffs)
+            dm.payoffMatrix = pmTemp - pmTemp[:,numpy.newaxis]
 
             # generate a flat list of move values controlled by other DMs
 
@@ -54,23 +55,21 @@ class RMGenerator:
                     for state1 in reachable:
                         s1 = self.game.feasibles.toOrdered[state1]-1
                         if s0 != s1:
-                            dm.reachability[s0,s1] =  dm.payoffs[s1]
+                            dm.reachability[s0,s1] =  1
 
             # Remove irreversible states ######################################################
-            UseIrreversibles = True
-            if UseIrreversibles:
-                for option in game.options:
-                    if option.permittedDirection != "both":
-                        for idx0,state0yn in enumerate(game.feasibles.yn):
-                            # does state have potential for irreversible move?
-                            val0 = state0yn[option.master_index]           # value of the irreversible move option in DMs current state (Y/N)
-                            if (val0 == "Y") and (option.permittedDirection == "fwd") or (val0 == "N") and (option.permittedDirection == "back"):
-                                for idx1,state1yn in enumerate(game.feasibles.yn):
-                                    #does target move have irreversible move?
-                                    val1 = state1yn[option.master_index]
-                                    if val0 != val1:
-                                    #remove irreversible moves from reachability matrix
-                                        dm.reachability[idx0,idx1]= numpy.nan
+            for option in game.options:
+                if option.permittedDirection != "both":
+                    for idx0,state0yn in enumerate(game.feasibles.yn):
+                        # does state have potential for irreversible move?
+                        val0 = state0yn[option.master_index]           # value of the irreversible move option in DMs current state (Y/N)
+                        if (val0 == "Y") and (option.permittedDirection == "fwd") or (val0 == "N") and (option.permittedDirection == "back"):
+                            for idx1,state1yn in enumerate(game.feasibles.yn):
+                                #does target move have irreversible move?
+                                val1 = state1yn[option.master_index]
+                                if val0 != val1:
+                                #remove irreversible moves from reachability matrix
+                                    dm.reachability[idx0,idx1] = 0
                                         
 
     def reachable(self,dm,stateIdx):
@@ -79,44 +78,25 @@ class RMGenerator:
         dm a DecisionMaker object.
         stateIdx is the index of the state in the game.
         """
-        reachVec = numpy.isfinite(dm.reachability[stateIdx,:]).nonzero()[0].tolist()
+        reachVec = numpy.nonzero(dm.reachability[stateIdx,:])[0].tolist()
         return reachVec
 
-    def UIs(self,dm,stateIdx,minPref=None):
-        """Returns a list of a unilateral improvements available to dm from state
+    def UIs(self,dm,stateIdx,refState=None):
+        """Returns a list of a unilateral improvements available to dm from state.
         
         dm is the integer index of the decision maker.
         stateIdx is the index of the state in the game.
-        minPref (optional) is a minimum preference for UIs to be returned. This
-            is used to find moves that are preferred relative to some other
-            initial state rather than the current one.  Used in SMR calculation.
+        refState (optional) is another state to be used as a baseline for 
+            determining whether or not a state is an improvement -- states will
+            be returned as UIs only if they are reachable from stateIdx and more
+            preferred from refState.
         """
-        UIvec = dm.reachability[stateIdx,:].flatten().tolist()
-
-        if minPref is not None:
-            UIvec = [i for i,x in enumerate(UIvec) if x>minPref]
-        else:
-            UIvec = [i for i,x in enumerate(UIvec) if x>dm.payoffs[stateIdx]]
+        if refState is None:
+            refState = stateIdx
+        
+        UIvec = numpy.nonzero(dm.reachability[stateIdx,:] * dm.payoffMatrix[refState,:] > 0)[0].tolist()
 
         return UIvec
-
-    def gameName(self):
-        """Extracts a guess at the game's name from the file name.
-        
-        Used in generating file names for data dumps (json or npz).
-        """
-        gameName = self.game.file[::-1]
-        try:
-            slashInd = gameName.index('/')
-            gameName = gameName[:slashInd]
-        except ValueError:
-            pass
-
-        return(gameName[::-1].strip('.gmcr'))
-
-    def saveMatrices(self):
-        """Export reachability matrix to numpy format."""
-        numpy.savez("RMs_for_"+self.gameName(),*self.reachabilityMatrices)
 
     def saveJSON(self,file):
         """Export conflict data to JSON format for presentation.
@@ -136,7 +116,7 @@ class RMGenerator:
                 for rchSt in self.reachable(dm,stateIdx):
                     reachable.append({'target':rchSt,
                                       'dm': 'dm%s'%dmInd,
-                                      'PayoffChange':dm.payoffs[rchSt]-dm.payoffs[stateIdx]})
+                                      'PayoffChange':dm.payoffMatrix[stateIdx,rchSt]})
                          
             nodes.append({'id':stateIdx,
                           'decimal':str(stateDec),
@@ -303,7 +283,7 @@ class LogicalSolver(RMGenerator):
                         if dm.payoffs[state2] <= dm.payoffs[state]:     # if a sanctioning state exists...
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is SMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check for possible countermoves...\n\n'
                             stable = 1
-                            ui2 = self.UIs(dm,state2,dm.payoffs[state])         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state'
+                            ui2 = self.UIs(dm,state2,state)         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state'
 
                             if ui2:     #still unstable since countermove is possible.  Check other sanctionings...
                                 narr += '    The sanctioned state '+self.chattyHelper(dm,state2)+' can be countermoved to ' + str([self.chattyHelper(dm,state3) for state3 in ui2])+'. Check other sanctionings...\n\n'
