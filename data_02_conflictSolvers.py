@@ -446,18 +446,47 @@ class InverseSolver(RMGenerator):
             mbl2GMR = list(set(mbl2GMR))
             mbl2GMR = [self.game.feasibles.ordered[state] for state in mbl2GMR] 
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblGMR)
-            message += "\n\n    or at least one of %s must be less preferred than %s"%(mbl2GMR,desEq)
+            message += "\n\n  or at least one of %s must be less preferred than %s"%(mbl2GMR,desEq)
             output.append(message)
             output.append("    With the given preference rankings and vary range:")
             message1 = ''
-            for state1 in self.mustBeLowerNash[dmIdx]:
+            for idx1,state1 in enumerate(self.mustBeLowerNash[dmIdx]):
                 if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
-                    message1 += "    %s must be more preferred than %s.\n"%(desEq,self.game.feasibles.ordered[state1])
+                    isLower = []
+                    isHigher = []
+                    isOpen = []
+                    for state2 in self.mustBeLowerGMR[dmIdx][idx1]:
+                        if numpy.isnan(dm.improvementsInv[self.desEq,state2]):
+                            isOpen.append(state2)
+                        elif dm.improvementsInv[self.desEq,state2] <= 0:
+                            isLower.append(state2)
+                    if isLower != []:
+                        continue
+                    elif isOpen != []:
+                        message1 += "    at least one of [%s, %s] must be less preferred than %s\n"%(
+                            self.game.feasibles.ordered[state1],
+                            str([self.game.feasibles.ordered[st] for st in isOpen])[1:-1],
+                            desEq)
                 elif dm.improvementsInv[self.desEq,state1] ==1:
-                    message1 += "    a move to %s must be effectively sanctioned"%(self.game.feasibles.ordered[state1])
+                    isLower = []
+                    isHigher = []
+                    isOpen = []
+                    for state2 in self.mustBeLowerGMR[dmIdx][idx1]:
+                        if numpy.isnan(dm.improvementsInv[self.desEq,state2]):
+                            isOpen.append(state2)
+                        elif dm.improvementsInv[self.desEq,state2] <= 0:
+                            isLower.append(state2)
+                    if isLower != []:
+                        continue
+                    elif isOpen != []:
+                        message1 += "    at least one of %s must be less preferred than %s\n"%(
+                            [self.game.feasibles.ordered[st] for st in isOpen],
+                            desEq)
+            if message1 == '':
+                message1 = "    equilibrium exists under all selected rankings"
             output.append(message1)
         return "\n\n".join(output)
-        
+
     def seqCond(self):
         """Generates a list of the conditions that preferences must satisfy for SEQ stability to exist."""
         output=[""]
@@ -472,7 +501,7 @@ class InverseSolver(RMGenerator):
                     for state2 in self.reachable(self.game.decisionMakers[dmIdx2],state1):
                         s1 = self.game.feasibles.ordered[state1]
                         s2 = self.game.feasibles.ordered[state2]
-                        message += "\n\n    or if %s is preferred to %s for DM %s, %s must be less preferred than %s for DM %s"%(s2,s1,self.game.decisionMakers[dmIdx2].name,s2,desEq,dm.name)
+                        message += "\n\n  or if %s is preferred to %s for DM %s, %s must be less preferred than %s for DM %s"%(s2,s1,self.game.decisionMakers[dmIdx2].name,s2,desEq,dm.name)
             output.append(message)
             output.append("    With the given preference rankings and vary range:")
             message1 = ''
