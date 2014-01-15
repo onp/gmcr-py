@@ -370,6 +370,29 @@ class InverseSolver(RMGenerator):
 
         self.desEq = desiredEquilibria
         self.vary  = vary
+        self.game = game
+        
+        for idx,dm in enumerate(game.decisionMakers):
+            dm.improvementsInv = numpy.sign(numpy.array(dm.payoffMatrix,numpy.float64))
+            varyRange = self.vary[idx]
+            variedStates = []
+            if varyRange != [0,0]:
+                varyRange = dm.preferenceVector[varyRange[0]:varyRange[1]]
+                for sl in varyRange:
+                    if sl is list:
+                        variedStates.extend([state-1 for state in sl])
+                    else:
+                        variedStates.append(sl-1)
+            print(variedStates)
+            
+            for s0 in variedStates:
+                for s1 in variedStates:
+                    if s0 != s1:
+                        dm.improvementsInv[s0,s1] = numpy.nan
+
+            #dm.improvementsInv[s0,s1] indicates whether a state s0 is more preferred (+1), less preferred(-1),
+            # equally preferred(0), or has an unknown relation (nan) to another state s1. Generated based on
+            # the vary ranges selected.
 
     def _decPerm(self,full,vary):
         """Returns all possible permutations of a list 'full' when only the span
@@ -396,7 +419,20 @@ class InverseSolver(RMGenerator):
             mblNash = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblNash)
             output.append(message)
-        return "\n\n".join(output)
+            output.append("    With the given preference rankings and vary range:")
+            message1 = ''
+            print(dm.improvementsInv)
+            for state1 in self.mustBeLowerNash[dmIdx]:
+                print(dm.improvementsInv[self.desEq,state1])
+                if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
+                    message1 += "    %s must be more preferred than %s.\n"%(desEq,self.game.feasibles.ordered[state1])
+                elif dm.improvementsInv[self.desEq,state1] == 1:
+                    message1 = "    Equilibrium not possible as %s is always more preferred than %s"%(self.game.feasibles.ordered[state1],desEq)
+                    break
+            if message1 == '':
+                message1 = "    equilibrium exists under all selected rankings"
+            output.append(message1)
+        return "\n\n".join(output)+"\n\n\n\n"
         
     def gmrCond(self):
         """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
@@ -412,6 +448,14 @@ class InverseSolver(RMGenerator):
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblGMR)
             message += "\n\n    or at least one of %s must be less preferred than %s"%(mbl2GMR,desEq)
             output.append(message)
+            output.append("    With the given preference rankings and vary range:")
+            message1 = ''
+            for state1 in self.mustBeLowerNash[dmIdx]:
+                if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
+                    message1 += "    %s must be more preferred than %s.\n"%(desEq,self.game.feasibles.ordered[state1])
+                elif dm.improvementsInv[self.desEq,state1] ==1:
+                    message1 += "    a move to %s must be effectively sanctioned"%(self.game.feasibles.ordered[state1])
+            output.append(message1)
         return "\n\n".join(output)
         
     def seqCond(self):
@@ -430,6 +474,14 @@ class InverseSolver(RMGenerator):
                         s2 = self.game.feasibles.ordered[state2]
                         message += "\n\n    or if %s is preferred to %s for DM %s, %s must be less preferred than %s for DM %s"%(s2,s1,self.game.decisionMakers[dmIdx2].name,s2,desEq,dm.name)
             output.append(message)
+            output.append("    With the given preference rankings and vary range:")
+            message1 = ''
+            for state1 in self.mustBeLowerNash[dmIdx]:
+                if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
+                    message1 += "    %s must be more preferred than %s.\n"%(desEq,self.game.feasibles.ordered[state1])
+                elif dm.improvementsInv[self.desEq,state1] ==1:
+                    message1 += "    a move to %s must be effectively sanctioned"%(self.game.feasibles.ordered[state1])
+            output.append(message1)
         return "\n\n".join(output)
         
 
@@ -437,7 +489,7 @@ class InverseSolver(RMGenerator):
         """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
         self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.game.decisionMakers]
         #mustBeLowerNash[dm] contains the states that must be less preferred than the 
-        # desired equilibrium'state0' for 'dm' to have a Nash equilibrium at 'state0'.
+        # desired equilibrium 'state0' for 'dm' to have a Nash equilibrium at 'state0'.
 
         self.mustBeLowerGMR = [[[] for state1 in dm] for dm in self.mustBeLowerNash]
         #mustBeLowerGMR[dm][idx] contains the states that 'dm' could be sanctioned to after taking
