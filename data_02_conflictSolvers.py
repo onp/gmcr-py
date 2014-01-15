@@ -453,7 +453,6 @@ class InverseSolver(RMGenerator):
             for idx1,state1 in enumerate(self.mustBeLowerNash[dmIdx]):
                 if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
                     isLower = []
-                    isHigher = []
                     isOpen = []
                     for state2 in self.mustBeLowerGMR[dmIdx][idx1]:
                         if numpy.isnan(dm.improvementsInv[self.desEq,state2]):
@@ -469,7 +468,6 @@ class InverseSolver(RMGenerator):
                             desEq)
                 elif dm.improvementsInv[self.desEq,state1] ==1:
                     isLower = []
-                    isHigher = []
                     isOpen = []
                     for state2 in self.mustBeLowerGMR[dmIdx][idx1]:
                         if numpy.isnan(dm.improvementsInv[self.desEq,state2]):
@@ -505,11 +503,66 @@ class InverseSolver(RMGenerator):
             output.append(message)
             output.append("    With the given preference rankings and vary range:")
             message1 = ''
-            for state1 in self.mustBeLowerNash[dmIdx]:
+            for idx1,state1 in enumerate(self.mustBeLowerNash[dmIdx]):
                 if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
-                    message1 += "    %s must be more preferred than %s.\n"%(desEq,self.game.feasibles.ordered[state1])
+                    isLower1 = []
+                    isOpen1 = []
+                    for state2 in self.mustBeLowerGMR[dmIdx][idx1]:
+                        if numpy.isnan(dm.improvementsInv[self.desEq,state2]):
+                            isOpen1.append(state2)
+                        elif dm.improvementsInv[self.desEq,state2] <= 0:
+                            isLower1.append(state2)
+                    if isLower1 != []:
+                        continue
+                    elif isOpen1 != []:
+                        message2 = "    %s must be less preferred than %s\n"%(
+                            self.game.feasibles.ordered[state1], desEq)
+                        for dmIdx2 in range(len(self.game.decisionMakers)):
+                            if dmIdx2 == dmIdx:
+                                continue
+                            for state2 in self.reachable(self.game.decisionMakers[dmIdx2],state1):
+                                if numpy.isnan(self.game.decisionMakers[dmIdx2].improvementsInv[state1,state2]):
+                                    message2 += "    OR %s must be preferred to %s by %s AND %s must be less preferred than %s by %s\n"%(
+                                        self.game.feasibles.ordered[state2],
+                                        self.game.feasibles.ordered[state1],
+                                        self.game.decisionMakers[dmIdx2].name,
+                                        self.game.feasibles.ordered[state2],
+                                        desEq,
+                                        self.game.decisionMakers[dmIdx].name)
+                                elif self.game.decisionMakers[dmIdx2].improvementsInv[state1,state2] == 1:
+                                    message2 = ""
+                        message1 += message2
+
                 elif dm.improvementsInv[self.desEq,state1] ==1:
-                    message1 += "    a move to %s must be effectively sanctioned"%(self.game.feasibles.ordered[state1])
+                    isLower1 = []
+                    isOpen1 = []
+                    for state2 in self.mustBeLowerGMR[dmIdx][idx1]:
+                        if numpy.isnan(dm.improvementsInv[self.desEq,state2]):
+                            isOpen1.append(state2)
+                        elif dm.improvementsInv[self.desEq,state2] <= 0:
+                            isLower1.append(state2)
+                    if isLower1 != []:
+                        continue
+                    elif isOpen1 != []:
+                        message2 = "    %s must be less preferred than %s\n"%(
+                            self.game.feasibles.ordered[state1], desEq)
+                        for dmIdx2 in range(len(self.game.decisionMakers)):
+                            if dmIdx2 == dmIdx:
+                                continue
+                            for state2 in self.reachable(self.game.decisionMakers[dmIdx2],state1):
+                                if numpy.isnan(self.game.decisionMakers[dmIdx2].improvementsInv[state1,state2]):
+                                    message2 += "    OR %s must be preferred to %s by %s AND %s must be less preferred than %s by %s\n"%(
+                                        self.game.feasibles.ordered[state2],
+                                        self.game.feasibles.ordered[state1],
+                                        self.game.decisionMakers[dmIdx2].name,
+                                        self.game.feasibles.ordered[state2],
+                                        desEq,
+                                        self.game.decisionMakers[dmIdx].name)
+                                elif self.game.decisionMakers[dmIdx2].improvementsInv[state1,state2] == 1:
+                                    message2 = ""
+                        message1 += message2
+            if message1 == '':
+                message1 = "    equilibrium exists under all selected rankings"
             output.append(message1)
         return "\n\n".join(output)
         
