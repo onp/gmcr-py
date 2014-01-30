@@ -9,6 +9,7 @@ from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 from data_02_conflictSolvers import LogicalSolver
+from visualizerLauncher import launchVis
 
 
 class LogResultDisp(ttk.Frame):
@@ -57,6 +58,8 @@ class LogResultDisp(ttk.Frame):
 
         self.RMdumpBtnJSON = ttk.Button(self.dumpframe,text='Save Reachability as JSON',command=self.saveToJSON)
         self.RMdumpBtnJSON.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
+        self.visLaunchBtn = ttk.Button(self.dumpframe,text='Launch Visualizer',command=self.loadVis)
+        self.visLaunchBtn.grid(column=1,row=0,sticky=(N,S,E,W),padx=3,pady=3)
 
         self.equilibriumNarrator = Text(self, wrap='word')
         self.equilibriumNarrator.grid(column=0,row=3,columnspan=4,sticky=(N,S,E,W))
@@ -132,8 +135,9 @@ class LogResultDisp(ttk.Frame):
         if fileName:
             self.sol.saveJSON(fileName)
                                         
-                                        
-
+    def loadVis(self,event=None):
+        self.sol.saveJSON("webVis/json/visData.json")
+        launchVis()
 
 def main():
     root = Tk()
