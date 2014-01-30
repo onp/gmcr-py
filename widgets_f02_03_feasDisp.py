@@ -22,8 +22,8 @@ class FeasDisp(ttk.Frame):
         self.dispList = StringVar()
         self.feasList = []
 
-        self.fmts = {'Pattern':'YN-','List (binary)':'YN','List (ordered and [decimal])':'ord_dec'}
-        cBoxOpts =('Pattern','List (binary)','List (ordered and [decimal])')
+        self.fmts = {'Pattern':'YN-','List (YN)':'YN','List (ordered and [decimal])':'ord_dec'}
+        cBoxOpts =('Pattern','List (YN)','List (ordered and [decimal])')
         self.feasText = ttk.Label(self,text = 'Feasible States').grid(row=0,column=0,columnspan=3)
         self.cBox    = ttk.Combobox(self,textvariable=self.dispFormat,values=cBoxOpts,state='readonly')
         self.cBoxLb  = ttk.Label(self,text='Format:')

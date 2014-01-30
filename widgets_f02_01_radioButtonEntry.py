@@ -83,7 +83,7 @@ class RadiobuttonEntry(Frame):
 
         self.warnText = StringVar(value='')
 
-        self.addBtn  = ttk.Button(self,text='Remove as Infeasible State',command = self.generateAdd)
+        self.addBtn  = ttk.Button(self,text='Remove as Infeasible Condition',command = self.generateAdd)
         self.mutExBtn  = ttk.Button(self,text='Remove as Mutually Exclusive Options',command = self.generateMutEx)
         self.warnLab = ttk.Label(self,textvariable=self.warnText)
         self.warnLab.grid(column=0,row=2,sticky=(N,S,E,W))
