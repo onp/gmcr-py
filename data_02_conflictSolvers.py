@@ -116,7 +116,7 @@ class RMGenerator:
                 for rchSt in self.reachable(dm,stateIdx):
                     reachable.append({'target':rchSt,
                                       'dm': 'dm%s'%dmInd,
-                                      'payoffChange':dm.payoffMatrix[stateIdx,rchSt]})
+                                      'payoffChange':int(dm.payoffMatrix[stateIdx,rchSt])})
                          
             nodes.append({'id':stateIdx,
                           'decimal':str(stateDec),
