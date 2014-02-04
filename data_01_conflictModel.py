@@ -254,8 +254,6 @@ class FeasibleList:
         self.toOrdered,self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)   #conversion dictionaries
         self.ordered = sorted(self.toDecimal.keys())                            #as ordered numbers
         self.ordDec = ['%3d  [%s]'%(ord,dec) for ord,dec in zip(self.ordered,self.decimal)]     #special display notation
-        for x in zip(self.ordered,self.decimal,self.yn):
-            print (x)
     
     def __len__(self):
         return len(self.decimal)

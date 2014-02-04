@@ -20,7 +20,7 @@ class PreferenceRanking(ttk.Frame):
         self.dmText = StringVar(value = dm.name + ': ')
         self.dmLabel = ttk.Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
-        self.prefRankText = StringVar(value=str(dm.preferenceVector)) #str(self.game.rankPreferences(self.dmIdx)))
+        self.prefRankText = StringVar(value=str(dm.preferenceVector))
         self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
         self.prefRank.grid(row=0,column=1,sticky=(N,S,E,W))
         self.selectBtn = ttk.Button(self,text="Edit",command=self.selectCmd)

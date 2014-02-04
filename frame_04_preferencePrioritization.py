@@ -11,6 +11,7 @@ from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 from widgets_f04_01_prefRadioButton import RadiobuttonEntry
 from widgets_f04_02_prefElements import *
+from widgets_f04_03_optionForm import OptionFormTable
 import data_03_gmcrUtilities as gmcrUtil
 
 class PreferencesFrame(ttk.Frame):
@@ -70,10 +71,16 @@ class PreferencesFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.editor = RadiobuttonEntry(self,self.game)
-        self.vectors = PreferenceRankingMaster(self,self.game)
-        self.conditionDisp = PreferenceEditDisplay(self,self.game)
-        self.prefDisp = PreferenceLongDisp(self,self.game)
+        self.paneMaster = PanedWindow(self,orient=VERTICAL,sashwidth=5,sashrelief="raised",sashpad=2)
+        
+        self.paneTop = ttk.Frame(self.paneMaster)
+        self.editor = RadiobuttonEntry(self.paneTop,self.game)
+        self.vectors = PreferenceRankingMaster(self.paneTop,self.game)
+        self.conditionDisp = PreferenceEditDisplay(self.paneTop,self.game)
+        
+        self.paneBottom = ttk.Frame(self.paneMaster)
+        self.optionTable = OptionFormTable(self.paneBottom,self.game)
+        
         self.usePrioritizationButton = ttk.Button(self,
                 text = "Use preference prioritization. Any manually set preference vectors will be lost.",
                 command = self.usePrioritization)
@@ -95,16 +102,22 @@ class PreferencesFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
+        self.paneMaster.grid(column=1,row=0,sticky=(N,S,E,W))
+        self.paneMaster.add(self.paneTop)
         self.vectors.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.conditionDisp.grid(column=0,row=2,sticky=(N,S,E,W))
-        ttk.Separator(self,orient=VERTICAL).grid(column=1,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
+        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=1,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
         self.editor.grid(column=2,row=1,rowspan=2,sticky=(N,S,E,W))
-        ttk.Separator(self,orient=VERTICAL).grid(column=3,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
-        self.prefDisp.grid(column=4,row=1,rowspan=2,sticky=(N,S,E,W))
-        self.columnconfigure(0,weight=1)
-        self.columnconfigure(2,weight=0)
-        self.columnconfigure(4,weight=2)
-        self.rowconfigure(2,weight=1)
+        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
+        self.conditionDisp.grid(column=4,row=1,rowspan=2,sticky=(N,S,E,W))
+        self.paneTop.columnconfigure(0,weight=1)
+        self.paneTop.columnconfigure(2,weight=0)
+        self.paneTop.columnconfigure(4,weight=2)
+        self.paneTop.rowconfigure(2,weight=1)
+        
+        self.paneMaster.add(self.paneBottom)
+        self.optionTable.grid(column=0,row=0,sticky=(N,S,E,W))
+        self.paneBottom.columnconfigure(0,weight=1)
+        self.paneBottom.rowconfigure(0,weight=1)
 
         # bindings
         self.vectors.bind('<<DMchg>>',self.dmChgHandler)
@@ -144,7 +157,6 @@ class PreferencesFrame(ttk.Frame):
         self.editor.reloadOpts()
         self.vectors.refresh()
         self.conditionDisp.refresh()
-        self.prefDisp.refresh()
         
         if self.game.useManualPreferenceVectors:
             self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
@@ -161,7 +173,7 @@ class PreferencesFrame(ttk.Frame):
         """Bound to <<DMchg>>."""
         self.dm = self.vectors.dm
         self.conditionDisp.changeDM(self.dm)
-        self.prefDisp.changeDM(self.dm)
+        self.optionTable.buildTable(self.dm)
 
     def addPref(self,*args):
         """Add a preference for the active decision maker."""
