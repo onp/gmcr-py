@@ -136,7 +136,7 @@ class LogResultDisp(ttk.Frame):
             self.sol.saveJSON(fileName)
                                         
     def loadVis(self,event=None):
-        self.sol.saveJSON("webVis/json/visData.json")
+        self.sol.saveJSON("gmcr-vis/json/conflictData.json")
         launchVis()
 
 def main():

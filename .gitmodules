@@ -1,0 +1,4 @@
+[submodule "gmcr-vis"]
+	path = gmcr-vis
+	url = https://github.com/onp/gmcr-vis.git
+	branch = embedded

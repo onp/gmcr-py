@@ -133,7 +133,7 @@ class ResultFrame(ttk.Frame):
 # #################################################################################
 
 # Code in this section is only run when this module is run by itself. It serves
-# as a test of module funcitonality.
+# as a test of module functionality.
 
 
 def main():
