@@ -126,7 +126,7 @@ class LogResultDisp(ttk.Frame):
         eqType = self.eqTypeVar.get()
         newText = eqCalcDict[eqType](dm,state)[1]
         self.equilibriumNarrator.insert('1.0',newText)
-        
+
     def saveToJSON(self,event=None):
         fileName = filedialog.asksaveasfilename(defaultextension= '.json',
                                         filetypes = (("JSON files", "*.json")
