@@ -18,7 +18,7 @@ class PreferenceRanking(ttk.Frame):
         self.dm = dm
         self.dmIdx = idx
         self.dmText = StringVar(value = dm.name + ': ')
-        self.dmLabel = ttk.Label(self,textvariable=self.dmText)
+        self.dmLabel = Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
         self.prefRankText = StringVar(value=str(dm.preferenceVector))
         self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
@@ -36,7 +36,13 @@ class PreferenceRanking(ttk.Frame):
 
     def deselect(self,*args):
         self.configure(relief='flat')
-
+        self.dmLabel.configure(bg="SystemButtonFace")
+        
+    def select(self,*args):
+        self.configure(relief='raised')
+        print(self.dmLabel['background'])
+        self.dmLabel.configure(bg="green")
+        print(self.winfo_class())
 
 class PreferenceRankingMaster(ttk.Frame):
     """Displays a PreferenceRanking widget for each DM."""
@@ -46,19 +52,23 @@ class PreferenceRankingMaster(ttk.Frame):
         self.cframe = ttk.Frame(self)
         self.columnconfigure(0,weight=1)
         self.cframe.columnconfigure(0,weight=1)
-        self.dmSelIdx=0
-        if len(self.game.decisionMakers) > 0:
-            self.refresh()
+        self.dmSelIdx = None
+        
+        self.clearBtn = ttk.Button(self,text="Clear Selection",command=self.clearSel)
+        self.clearBtn.grid(row=1,column=0,sticky=(N,S,E,W))
+        
+        self.refresh()
 
     def update(self):
         for ranking in self.rankings:
             ranking.update()
 
     def chgDM(self,event):
-        self.rankings[self.dmSelIdx].deselect()
+        if self.dmSelIdx is not None:
+            self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = event.x
+        self.rankings[self.dmSelIdx].select()
         self.dm = self.game.decisionMakers[event.x]
-        self.rankings[self.dmSelIdx].configure(relief='raised')
         self.event_generate('<<DMchg>>')
 
     def refresh(self):
@@ -71,12 +81,18 @@ class PreferenceRankingMaster(ttk.Frame):
             self.rankings.append(PreferenceRanking(self.cframe,self.game,dm,idx))
             self.rankings[-1].grid(row=idx,column=0,padx=3,pady=3,sticky=(N,S,E,W))
             self.rankings[-1].bind('<<DMselect>>',self.chgDM)
-        self.rankings[self.dmSelIdx].configure(relief='raised')
+        if self.dmSelIdx is not None:
+            self.rankings[self.dmSelIdx].select()
         
         if self.game.useManualPreferenceVectors:
             for ranking in self.rankings:
                 ranking.selectBtn['state'] = 'disabled'
 
+    def clearSel(self,event=None):
+        self.rankings[self.dmSelIdx].deselect()
+        self.dmSelIdx = None
+        self.dm = None
+        self.event_generate('<<DMchg>>')
 
 class PreferenceEditDisplay(ttk.Frame):
     """Displays the preference statements for the selected DM."""

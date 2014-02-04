@@ -62,7 +62,7 @@ class PreferencesFrame(ttk.Frame):
                 "important at the bottom")
 
         #Define frame-specific variables
-        self.dm = self.game.decisionMakers[0]
+        self.dm = None
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
         self.infoLabel  = ttk.Label(self.infoFrame,textvariable = self.infoText)
