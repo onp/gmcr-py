@@ -102,13 +102,85 @@ class PreferenceRankingMaster(ttk.Frame):
         self.dmSelIdx = None
         self.dm = None
         self.event_generate('<<DMchg>>')
+        
+class PreferenceStaging(ttk.Frame):
+    """Displays the conditions that make up a compound condition."""
+    def __init__(self,master,game):
+        ttk.Frame.__init__(self,master)
 
-class PreferenceEditDisplay(ttk.Frame):
+        self.game = game
+        
+        self.label = ttk.Label(self,text="Staging")
+        self.listDisp = ttk.Treeview(self)
+        self.scrollY = ttk.Scrollbar(self,orient=VERTICAL,command = self.listDisp.yview)
+        self.listDisp.configure(yscrollcommand=self.scrollY.set)
+        self.removeConditionBtn = ttk.Button(self,text="Remove Condition from Staging",command=self.removeCondition)
+        self.addToPreferencesBtn = ttk.Button(self,text="Add to Preferences ->",command=self.addToPreferences)
+        
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(1,weight=1)
+        
+        self.label.grid(column=0,row=0,sticky=(N,S,E,W))
+        self.listDisp.grid(column=0,row=1,sticky=(N,S,E,W))
+        self.scrollY.grid(column=1,row=1,sticky=(N,S,E,W))
+        self.removeConditionBtn.grid(column=0,row=2,sticky=(N,S,E,W))
+        self.addToPreferencesBtn.grid(column=0,row=3,sticky=(N,S,E,W))
+        
+        self.listDisp.bind('<<TreeviewSelect>>', self.selChgCmd)
+        self.clear()
+        
+    def clear(self):
+        self.conditionList = self.game.newCompoundCondition([])
+        self.selId  = None
+        self.selIdx = None
+        
+        for child in self.listDisp.get_children():
+            self.listDisp.delete(child)
+            
+    def selChgCmd(self,*args):
+        """Called whenever the selection changes."""
+        self.selId  = self.listDisp.selection()
+        self.selIdx = self.listDisp.index(self.selId)
+        self.event_generate('<<SelCond>>',x=self.selIdx)
+        
+    def setList(self,newConditions):
+        self.clear()
+        if newConditions.isCompound:
+            self.conditionList = newConditions
+        else:
+            self.conditionList.append(newConditions)
+
+        for ynd in self.conditionList.name.split(', '):
+            self.listDisp.insert('','end',text=ynd)
+        
+    def removeCondition(self,event=None):
+        del self.conditionList[self.selIdx]
+        self.listDisp.delete(self.selId)
+        
+    def addToPreferences(self,event=None):
+        self.event_generate('<<PullFromStage>>')
+        
+    def addCondition(self,condition):
+        self.conditionList.append(condition)
+        self.listDisp.insert('','end',text=condition.name)
+        
+    def disable(self,event=None):
+        self.removeConditionBtn['state'] = 'disabled'
+        self.addToPreferencesBtn['state'] = 'disabled'
+        
+    def enable(self,event=None):
+        self.removeConditionBtn['state'] = 'normal'
+        self.addToPreferencesBtn['state'] = 'normal'
+
+
+        
+class PreferenceListDisplay(ttk.Frame):
     """Displays the preference statements for the selected DM."""
     def __init__(self,master,game):
         ttk.Frame.__init__(self,master)
 
         self.game = game
+        self.label = ttk.Label(self,text="Preferences")
         self.disp = ttk.Treeview(self, columns=('state','weight'))
         self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
         self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )
@@ -121,19 +193,21 @@ class PreferenceEditDisplay(ttk.Frame):
         # ##########
 
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(0,weight=1)
+        self.rowconfigure(1,weight=1)
 
         self.disp.heading('state', text='Preferred Condition')
         self.disp.heading('weight', text='Weighting')
         self.disp['show'] = 'headings'
 
-        self.disp.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
-        self.scrl.grid(column=5,row=0,sticky=(N,S,E,W))
+        self.label.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
+        
+        self.disp.grid(column=0,row=1,columnspan=5,sticky=(N,S,E,W))
+        self.scrl.grid(column=5,row=1,sticky=(N,S,E,W))
         self.disp.configure(yscrollcommand=self.scrl.set)
 
-        self.upBtn.grid(column=2,row=2,sticky=(N,S,E,W))
-        self.downBtn.grid(column=3,row=2,sticky=(N,S,E,W))
-        self.delBtn.grid(column=4,row=2,sticky=(N,S,E,W))
+        self.upBtn.grid(column=2,row=3,sticky=(N,S,E,W))
+        self.downBtn.grid(column=3,row=3,sticky=(N,S,E,W))
+        self.delBtn.grid(column=4,row=3,sticky=(N,S,E,W))
 
         self.disp.bind('<<TreeviewSelect>>', self.selChgCmd)
 
@@ -144,9 +218,8 @@ class PreferenceEditDisplay(ttk.Frame):
         if self.dm is not None:
             self.dm.weightPreferences()
             for pref in self.dm.preferences:
-                key  = pref.ynd()
-                self.disp.insert('','end',key,text=key)
-                self.disp.set(key,'state',key)
+                key = self.disp.insert('','end',text=pref.name)
+                self.disp.set(key,'state',pref.name)
                 self.disp.set(key,'weight',pref.weight)
         
         
@@ -171,7 +244,7 @@ class PreferenceEditDisplay(ttk.Frame):
         """Called whenever the selection changes."""
         self.selId  = self.disp.selection()
         self.selIdx = self.disp.index(self.selId)
-        self.event_generate('<<SelItem>>',x=self.selIdx)
+        self.event_generate('<<SelPref>>',x=self.selIdx)
 
     def upCmd(self,*args):
         """Called whenever an item is moved upwards."""
@@ -197,9 +270,9 @@ class PreferenceEditDisplay(ttk.Frame):
         self.dm.preferences.removeCondition(idx)
         self.event_generate('<<ValueChange>>')
         try:
-            self.disp.selection_set(self.dm.preferences[idx].ynd())
+            self.disp.selection_set(self.dm.preferences[idx].name)
         except IndexError:
             try:
-                self.disp.selection_set(self.dm.preferences[idx-1].ynd())
+                self.disp.selection_set(self.dm.preferences[idx-1].name)
             except IndexError:
                 self.selIdx = None

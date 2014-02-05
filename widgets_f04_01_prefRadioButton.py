@@ -92,19 +92,23 @@ class RadiobuttonEntry(Frame):
         self.warnText = StringVar(value='')
 
         self.addBtn  = ttk.Button(self,text='Add as Prefered State',command = self.generateAdd)
+        self.stageBtn = ttk.Button(self,text='Add to Staging',command = self.generateStage)
         self.warnLab = ttk.Label(self,textvariable=self.warnText)
         self.warnLab.grid(column=0,row=2,sticky=(N,S,E,W))
         self.addBtn.grid(column=0,row=3,columnspan=2,sticky=(N,S,E,W))
+        self.stageBtn.grid(column=0,row=4,columnspan=2,sticky=(N,S,E,W))
         
         self.isDisabled = False
 
         self.reloadOpts()
 
-    def generateAdd(self,*args):
+    def generateAdd(self,event=None):
         self.event_generate('<<AddPref>>')
+        
+    def generateStage(self,event=None):
+        self.event_generate('<<StagePref>>')
 
     def reloadOpts(self):
-        print('refreshed')
         self.rdBtnFrame.destroy()
         self.rdBtnFrame = ttk.Frame(self)
         self.rdBtnFrame.grid(column=0,row=0,columnspan=2,sticky=(N,S,E,W))
@@ -129,6 +133,7 @@ class RadiobuttonEntry(Frame):
         self.isDisabled = True
         self.entryBx['state'] = 'disabled'
         self.addBtn['state'] = 'disabled'
+        self.stageBtn['state'] = 'disabled'
         for srs in self.rdBtnSrs:
             srs.disable()
 
@@ -136,10 +141,16 @@ class RadiobuttonEntry(Frame):
         self.isDisabled = False
         self.entryBx['state'] = 'normal'
         self.addBtn['state'] = 'normal'
+        self.stageBtn['state'] = 'normal'
         for srs in self.rdBtnSrs:
             srs.enable()
 
     def setStates(self,dashOne):
+        if dashOne == 'clear':
+            for var in self.stringVarList:
+                var.set('-')
+            self.entryText.set('-'*len(self.stringVarList))
+            return
         if len(dashOne) != len(self.stringVarList):
             raise Exception('string is wrong length for setting button states: %s'%dashOne)
         for x,y in enumerate(dashOne):

@@ -8,7 +8,6 @@ interfaces.
 
 from tkinter import *
 from tkinter import ttk
-from data_01_conflictModel import ConflictModel
 from widgets_f04_01_prefRadioButton import RadiobuttonEntry
 from widgets_f04_02_prefElements import *
 from widgets_f04_03_optionForm import OptionFormTable
@@ -74,9 +73,10 @@ class PreferencesFrame(ttk.Frame):
         self.paneMaster = PanedWindow(self,orient=VERTICAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
         
         self.paneTop = ttk.Frame(self.paneMaster)
-        self.editor = RadiobuttonEntry(self.paneTop,self.game)
         self.vectors = PreferenceRankingMaster(self.paneTop,self.game)
-        self.conditionDisp = PreferenceEditDisplay(self.paneTop,self.game)
+        self.editor = RadiobuttonEntry(self.paneTop,self.game)
+        self.staging = PreferenceStaging(self.paneTop,self.game)
+        self.PreferenceDisp = PreferenceListDisplay(self.paneTop,self.game)
         
         self.paneBottom = ttk.Frame(self.paneMaster)
         self.optionTable = OptionFormTable(self.paneBottom,self.game)
@@ -107,13 +107,16 @@ class PreferencesFrame(ttk.Frame):
         self.paneMaster.grid(column=0,row=1,sticky=(N,S,E,W))
         self.paneMaster.add(self.paneTop)
         self.vectors.grid(column=0,row=1,sticky=(N,S,E,W))
-        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=1,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
-        self.editor.grid(column=2,row=1,rowspan=2,sticky=(N,S,E,W))
-        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
-        self.conditionDisp.grid(column=4,row=1,rowspan=2,sticky=(N,S,E,W))
+        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=1,row=1,sticky=(N,S,E,W),padx=3)
+        self.editor.grid(column=2,row=1,sticky=(N,S,E,W))
+        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,sticky=(N,S,E,W),padx=3)
+        self.staging.grid(column=4,row=1,sticky=(N,S,E,W))
+        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=5,row=1,sticky=(N,S,E,W),padx=3)
+        self.PreferenceDisp.grid(column=6,row=1,sticky=(N,S,E,W))
         self.paneTop.columnconfigure(0,weight=1)
         self.paneTop.columnconfigure(2,weight=0)
-        self.paneTop.columnconfigure(4,weight=2)
+        self.paneTop.columnconfigure(4,weight=1)       
+        self.paneTop.columnconfigure(6,weight=1)
         self.paneTop.rowconfigure(2,weight=1)
         
         self.paneMaster.add(self.paneBottom)
@@ -124,8 +127,11 @@ class PreferencesFrame(ttk.Frame):
         # bindings
         self.vectors.bind('<<DMchg>>',self.dmChgHandler)
         self.editor.bind('<<AddPref>>',self.addPref)
-        self.conditionDisp.bind('<<SelItem>>', self.selChg)
-        self.conditionDisp.bind('<<ValueChange>>',self.refresh)
+        self.editor.bind('<<StagePref>>',self.stagePref)
+        self.staging.bind('<<SelCond>>', self.selCondChg)
+        self.staging.bind('<<PullFromStage>>',self.pullFromStage)
+        self.PreferenceDisp.bind('<<SelPref>>', self.selPrefChg)
+        self.PreferenceDisp.bind('<<ValueChange>>',self.refresh)
         
         self.dmChgHandler()
     
@@ -160,13 +166,13 @@ class PreferencesFrame(ttk.Frame):
             dm.calculatePreferences()
         self.editor.reloadOpts()
         self.vectors.refresh()
-        self.conditionDisp.refresh()
+        self.PreferenceDisp.refresh()
         
         if self.game.useManualPreferenceVectors:
             self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
             self.vectors.disable()
             self.editor.disable()
-            self.conditionDisp.disable()
+            self.PreferenceDisp.disable()
         else:
             self.usePrioritizationButton.grid_remove()
             
@@ -176,31 +182,50 @@ class PreferencesFrame(ttk.Frame):
         self.event_generate("<<breakingChange>>")
         self.vectors.enable()
         self.editor.enable()
-        self.conditionDisp.enable()
+        self.PreferenceDisp.enable()
         self.refresh()
 
     def dmChgHandler(self,event=None):
         """Bound to <<DMchg>>."""
         self.dm = self.vectors.dm
-        self.conditionDisp.changeDM(self.dm)
+        self.PreferenceDisp.changeDM(self.dm)
         self.optionTable.buildTable(self.dm)
         if self.dm is None:
-            self.conditionDisp.disable()
+            self.PreferenceDisp.disable()
             self.editor.disable()
         else:
-            self.conditionDisp.enable()
+            self.PreferenceDisp.enable()
             self.editor.enable()
 
-    def addPref(self,*args):
+    def addPref(self,event=None):
         """Add a preference for the active decision maker."""
         pref = self.editor.getStates()
         self.dm.preferences.append(pref)
         self.refresh()
+        
+    def stagePref(self,event=None):
+        """Stages a condition."""
+        condData = self.editor.getStates()
+        newCond = self.game.newCondition(condData)
+        self.staging.addCondition(newCond)
+        self.editor.setStates('clear')
 
-    def selChg(self,event):
-        """Triggered when the selection changes in the treeview."""
-        condition = self.dm.preferences[event.x]
+    def pullFromStage(self,event=None):
+        """Moves a compound condition from Staging to Preferences."""
+        newPref = self.staging.conditionList
+        self.staging.clear()
+        self.dm.preferences.append(newPref)
+        self.refresh()
+        
+    def selCondChg(self,event=None):
+        """Triggered when a condition is selected in staging."""
+        condition = self.staging.conditionList[event.x]
         self.editor.setStates(condition.ynd())
+        
+    def selPrefChg(self,event=None):
+        """Triggered when a preference is select from preferences."""
+        condition = self.dm.preferences[event.x]
+        self.staging.setList(condition)
 
 
 
@@ -212,6 +237,7 @@ class PreferencesFrame(ttk.Frame):
 # as a test of module functionality.
 
 def main():
+    from data_01_conflictModel import ConflictModel
     root = Tk()
     root.columnconfigure(0,weight=1)
     root.rowconfigure(0,weight=1)

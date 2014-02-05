@@ -69,6 +69,7 @@ class Condition:
             self.options.append(opt)
             self.taken.append(taken)
         self.name = self.ynd()
+        self.isCompound = False
 
     def __str__(self):
         return self.name + " object"
@@ -103,20 +104,30 @@ class CompoundCondition:
     def __init__(self,conflict,conditions):
         self.conflict = conflict
         self.conditions = [Condition(self.conflict,dat) for dat in conditions]
-        self.name = str(self.ynd())[1:-1]
+        self.name = str(self.ynd())[1:-1].replace("'",'')
+        self.isCompound = True
         
     def __str__(self):
         return self.name + " object"
         
-    def addCondition(self,condition):
+    def index(self,i):
+        return self.conditions.index(i)
+    
+    def __len__(self):
+        return len(self.conditions)
+        
+    def __getitem__(self,key):
+        return self.conditions[key]
+        
+    def append(self,condition):
         """Adds the condition given to the compound condition."""
         self.conditions.append(condition)
-        self.name = str(self.ynd())[1:-1]
-    
-    def removeCondition(self,idx):
+        self.name = str(self.ynd())[1:-1].replace("'",'')
+        
+    def __delitem__(self,key):
         """Removes the condition at idx from the compound condition."""
-        del self.conditions[idx]
-        self.name = str(self.ynd())[1:-1]
+        del self.conditions[key]
+        self.name = str(self.ynd())[1:-1].replace("'",'')
     
     def ynd(self):
         """Returns the compound condition as a list with items in 'Yes No Dash' notation."""
@@ -246,14 +257,13 @@ class ConditionList(ObjectList):
         self.append(condData)
 
     def append(self,item):
-        if isinstance(item,Condition):
+        if isinstance(item,Condition) or isinstance(item,CompoundCondition):
             newCondition = item
         elif isinstance(item,list):
             newCondition = Condition(self.conflict,item)
         elif isinstance(item,dict):
             newCondition = CompoundCondition(item['members'])
         else:
-            print(item)
             raise TypeError('Not a valid Condition Object')
         if newCondition.ynd() not in [cond.ynd() for cond in self]:
             self.itemList.append(newCondition)
@@ -317,6 +327,12 @@ class ConflictModel:
         self.useManualPreferenceVectors = False
         self.preferenceErrors = None
 
+        
+    def newCondition(self,condData):
+        return Condition(self,condData)
+        
+    def newCompoundCondition(self,condData):
+        return CompoundCondition(self,condData)
 
     def export_rep(self):
         """Generates a representation of the conflict suitable for JSON encoding."""
@@ -372,7 +388,6 @@ class ConflictModel:
 
     def recalculateFeasibleStates(self):
         """Updates all feasible state calculations."""
-        print("recalculating feasible states")
         feasDash = ['-'*len(self.options)]
         for infeas in self.infeasibles:
             res = gmcrUtil.rmvSt(feasDash,infeas.ynd())
