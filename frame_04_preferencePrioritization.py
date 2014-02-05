@@ -71,7 +71,7 @@ class PreferencesFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.paneMaster = PanedWindow(self,orient=VERTICAL,sashwidth=5,sashrelief="raised",sashpad=2)
+        self.paneMaster = PanedWindow(self,orient=VERTICAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
         
         self.paneTop = ttk.Frame(self.paneMaster)
         self.editor = RadiobuttonEntry(self.paneTop,self.game)
@@ -89,6 +89,8 @@ class PreferencesFrame(ttk.Frame):
 
         # configuring the input frame
         self.grid(column=0,row=0,rowspan=5,sticky=(N,S,E,W))
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(1,weight=1)
         self.grid_remove()
 
         #configuring infoFrame & infoFrame widgets
@@ -102,7 +104,7 @@ class PreferencesFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
-        self.paneMaster.grid(column=1,row=0,sticky=(N,S,E,W))
+        self.paneMaster.grid(column=0,row=1,sticky=(N,S,E,W))
         self.paneMaster.add(self.paneTop)
         self.vectors.grid(column=0,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=1,row=1,rowspan=2,sticky=(N,S,E,W),padx=3)
@@ -124,6 +126,8 @@ class PreferencesFrame(ttk.Frame):
         self.editor.bind('<<AddPref>>',self.addPref)
         self.conditionDisp.bind('<<SelItem>>', self.selChg)
         self.conditionDisp.bind('<<ValueChange>>',self.refresh)
+        
+        self.dmChgHandler()
     
         self.built = True
         
@@ -160,6 +164,9 @@ class PreferencesFrame(ttk.Frame):
         
         if self.game.useManualPreferenceVectors:
             self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
+            self.vectors.disable()
+            self.editor.disable()
+            self.conditionDisp.disable()
         else:
             self.usePrioritizationButton.grid_remove()
             
@@ -167,13 +174,22 @@ class PreferencesFrame(ttk.Frame):
         self.game.useManualPreferenceVectors = False
         self.game.preferenceErrors = None
         self.event_generate("<<breakingChange>>")
+        self.vectors.enable()
+        self.editor.enable()
+        self.conditionDisp.enable()
         self.refresh()
 
-    def dmChgHandler(self,event):
+    def dmChgHandler(self,event=None):
         """Bound to <<DMchg>>."""
         self.dm = self.vectors.dm
         self.conditionDisp.changeDM(self.dm)
         self.optionTable.buildTable(self.dm)
+        if self.dm is None:
+            self.conditionDisp.disable()
+            self.editor.disable()
+        else:
+            self.conditionDisp.enable()
+            self.editor.enable()
 
     def addPref(self,*args):
         """Add a preference for the active decision maker."""

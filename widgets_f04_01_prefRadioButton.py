@@ -64,10 +64,13 @@ class RadiobuttonSeries(ttk.Labelframe):
     def chgEvent(self):
         self.master.event_generate('<<RdBtnChg>>')
         
-    def disableWidget(self):
+    def disable(self):
         for child in self.winfo_children():
             child['state'] = 'disabled'
 
+    def enable(self):
+        for child in self.winfo_children():
+            child['state'] = 'normal'
 
 class RadiobuttonEntry(Frame):
     """State entry for the entire conflict, as a set of RadioButtonSeries elements."""
@@ -92,6 +95,8 @@ class RadiobuttonEntry(Frame):
         self.warnLab = ttk.Label(self,textvariable=self.warnText)
         self.warnLab.grid(column=0,row=2,sticky=(N,S,E,W))
         self.addBtn.grid(column=0,row=3,columnspan=2,sticky=(N,S,E,W))
+        
+        self.isDisabled = False
 
         self.reloadOpts()
 
@@ -99,6 +104,7 @@ class RadiobuttonEntry(Frame):
         self.event_generate('<<AddPref>>')
 
     def reloadOpts(self):
+        print('refreshed')
         self.rdBtnFrame.destroy()
         self.rdBtnFrame = ttk.Frame(self)
         self.rdBtnFrame.grid(column=0,row=0,columnspan=2,sticky=(N,S,E,W))
@@ -116,14 +122,22 @@ class RadiobuttonEntry(Frame):
 
         self.rdBtnChgCmd()
         
-        if self.game.useManualPreferenceVectors:
-            self.entryBx['state'] = 'disabled'
-            self.addBtn['state'] = 'disabled'
-            for srs in self.rdBtnSrs:
-                srs.disableWidget()
-        else:
-            self.entryBx['state'] = 'normal'
-            self.addBtn['state'] = 'normal'
+        if self.isDisabled:
+            self.disable()
+        
+    def disable(self,event=None):
+        self.isDisabled = True
+        self.entryBx['state'] = 'disabled'
+        self.addBtn['state'] = 'disabled'
+        for srs in self.rdBtnSrs:
+            srs.disable()
+
+    def enable(self,event=None):
+        self.isDisabled = False
+        self.entryBx['state'] = 'normal'
+        self.addBtn['state'] = 'normal'
+        for srs in self.rdBtnSrs:
+            srs.enable()
 
     def setStates(self,dashOne):
         if len(dashOne) != len(self.stringVarList):

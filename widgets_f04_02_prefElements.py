@@ -40,9 +40,7 @@ class PreferenceRanking(ttk.Frame):
         
     def select(self,*args):
         self.configure(relief='raised')
-        print(self.dmLabel['background'])
         self.dmLabel.configure(bg="green")
-        print(self.winfo_class())
 
 class PreferenceRankingMaster(ttk.Frame):
     """Displays a PreferenceRanking widget for each DM."""
@@ -53,6 +51,7 @@ class PreferenceRankingMaster(ttk.Frame):
         self.columnconfigure(0,weight=1)
         self.cframe.columnconfigure(0,weight=1)
         self.dmSelIdx = None
+        self.dm = None
         
         self.clearBtn = ttk.Button(self,text="Clear Selection",command=self.clearSel)
         self.clearBtn.grid(row=1,column=0,sticky=(N,S,E,W))
@@ -83,13 +82,20 @@ class PreferenceRankingMaster(ttk.Frame):
             self.rankings[-1].bind('<<DMselect>>',self.chgDM)
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].select()
-        
-        if self.game.useManualPreferenceVectors:
-            for ranking in self.rankings:
-                ranking.selectBtn['state'] = 'disabled'
-
+                
+    def disable(self,event=None):
+        for ranking in self.rankings:
+            ranking.selectBtn['state'] = 'disabled'
+        self.clearBtn['state'] = 'disabled'
+            
+    def enable(self,event=None):
+        for ranking in self.rankings:
+            ranking.selectBtn['state'] = 'normal'    
+        self.clearBtn['state'] = 'enabled'
+            
     def clearSel(self,event=None):
-        self.rankings[self.dmSelIdx].deselect()
+        if self.dmSelIdx is not None:
+            self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = None
         self.dm = None
         self.event_generate('<<DMchg>>')
@@ -140,16 +146,18 @@ class PreferenceEditDisplay(ttk.Frame):
                 self.disp.set(key,'state',key)
                 self.disp.set(key,'weight',pref.weight)
         
-        if self.game.useManualPreferenceVectors:
-            self.disp['selectmode'] = 'none'
-            self.upBtn['state'] = 'disabled'
-            self.downBtn['state'] = 'disabled'
-            self.delBtn['state'] = 'disabled'
-        else:
-            self.disp['selectmode'] = 'browse'
-            self.upBtn['state'] = 'normal'
-            self.downBtn['state'] = 'normal'
-            self.delBtn['state'] = 'normal'
+        
+    def disable(self,event=None):
+        self.disp['selectmode'] = 'none'
+        self.upBtn['state'] = 'disabled'
+        self.downBtn['state'] = 'disabled'
+        self.delBtn['state'] = 'disabled'
+    
+    def enable(self,event=None):
+        self.disp['selectmode'] = 'browse'
+        self.upBtn['state'] = 'normal'
+        self.downBtn['state'] = 'normal'
+        self.delBtn['state'] = 'normal'
 
     def changeDM(self,dm):
         """Changes which Decision Maker is displayed."""
