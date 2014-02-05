@@ -74,7 +74,7 @@ class Condition:
         return self.name + " object"
         
     def cond(self):
-        """The condition represented tuples of options and whether or not they are taken."""
+        """The condition represented as tuples of options and whether or not they are taken."""
         return zip(self.options,self.taken)
         
     def ynd(self):
@@ -86,7 +86,7 @@ class Condition:
         return ''.join(ynd)
         
     def test(self,state):
-        """Test against a decimal state. Returns True if state meets the Condition."""
+        """Test against a decimal state. Returns True if state satisfies the Condition."""
         self.conflict.options.set_indexes()
         state = gmcrUtil.dec2yn(state,len(self.conflict.options))
         for opt,taken in self.cond():
@@ -98,6 +98,42 @@ class Condition:
         self.conflict.options.set_indexes()
         return [(opt.master_index,taken) for opt,taken in self.cond()]
 
+class CompoundCondition:
+    """A condition defined as a union of simple conditions."""
+    def __init__(self,conflict,conditions):
+        self.conflict = conflict
+        self.conditions = [Condition(self.conflict,dat) for dat in conditions]
+        self.name = str(self.ynd())[1:-1]
+        
+    def __str__(self):
+        return self.name + " object"
+        
+    def addCondition(self,condition):
+        """Adds the condition given to the compound condition."""
+        self.conditions.append(condition)
+        self.name = str(self.ynd())[1:-1]
+    
+    def removeCondition(self,idx):
+        """Removes the condition at idx from the compound condition."""
+        del self.conditions[idx]
+        self.name = str(self.ynd())[1:-1]
+    
+    def ynd(self):
+        """Returns the compound condition as a list with items in 'Yes No Dash' notation."""
+        return [cond.ynd() for cond in self.conditions]
+        
+        
+    def test(self,state):
+        """Test against a decimal state. Returns True if state satisfies one or
+        more of the component conditions."""
+        for cond in self.conditions:
+            if cond.test(state):
+                return True
+        return False            
+    
+    def export_rep(self,state):
+        return {"compound":True,"members":[cond.export_rep() for cond in self.conditions]}
+    
 
 class ObjectList:
     def __init__(self,masterList=None):
@@ -199,14 +235,23 @@ class ConditionList(ObjectList):
         return [x.export_rep() for x in self.itemList]
         
     def from_json(self,condData):
-        newCondition = [(self.conflict.options[opt],taken) for opt,taken in condData]
-        self.append(newCondition)
+        """Replaces the option number with the actual option object."""
+        if isinstance(condData,list):
+            for opt in condData:
+                opt[0] = self.conflict.options[opt[0]]
+        elif isinstance(condData,dict):
+            for mem in condData['members']:
+                for opt in mem:
+                    opt[0] = self.conflict.options[opt[0]]
+        self.append(condData)
 
     def append(self,item):
         if isinstance(item,Condition):
             newCondition = item
         elif isinstance(item,list):
             newCondition = Condition(self.conflict,item)
+        elif isinstance(item,dict):
+            newCondition = CompoundCondition(item['members'])
         else:
             print(item)
             raise TypeError('Not a valid Condition Object')
@@ -240,6 +285,7 @@ class ConditionList(ObjectList):
             return [self.yn2dec(state) for state in self.format('YN')]
         else:
             print('invalid format')
+
 
 class FeasibleList:
     def __init__(self,dash=None):
