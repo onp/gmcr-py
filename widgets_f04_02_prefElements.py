@@ -17,16 +17,19 @@ class PreferenceRanking(ttk.Frame):
         self.game = game
         self.dm = dm
         self.dmIdx = idx
+        
         self.dmText = StringVar(value = dm.name + ': ')
         self.dmLabel = Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
+        
         self.prefRankText = StringVar(value=str(dm.preferenceVector))
         self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
-        self.prefRank.grid(row=0,column=1,sticky=(N,S,E,W))
+        self.prefRank.grid(row=1,column=0,sticky=(N,S,E,W))
+        
         self.selectBtn = ttk.Button(self,text="Edit",command=self.selectCmd)
-        self.selectBtn.grid(row=0,column=2,sticky=(N,S,E,W))
+        self.selectBtn.grid(row=0,column=1,rowspan=2,sticky=(N,S,E,W))
 
-        self.columnconfigure(1,weight=1)
+        self.columnconfigure(0,weight=1)
 
     def update(self,*args):
         self.prefRankText.set('still not implemented') #str(self.game.prefRank(self.dmIdx)))
