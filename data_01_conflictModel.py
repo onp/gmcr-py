@@ -104,8 +104,8 @@ class CompoundCondition:
     def __init__(self,conflict,conditions):
         self.conflict = conflict
         self.conditions = [Condition(self.conflict,dat) for dat in conditions]
-        self.name = str(self.ynd())[1:-1].replace("'",'')
         self.isCompound = True
+        self.updateName()
         
     def __str__(self):
         return self.name + " object"
@@ -119,15 +119,18 @@ class CompoundCondition:
     def __getitem__(self,key):
         return self.conditions[key]
         
+    def updateName(self):
+        self.name = str(sorted(self.ynd()))[1:-1].replace("'",'')
+        
     def append(self,condition):
         """Adds the condition given to the compound condition."""
         self.conditions.append(condition)
-        self.name = str(self.ynd())[1:-1].replace("'",'')
+        self.updateName()
         
     def __delitem__(self,key):
         """Removes the condition at idx from the compound condition."""
         del self.conditions[key]
-        self.name = str(self.ynd())[1:-1].replace("'",'')
+        self.updateName()
     
     def ynd(self):
         """Returns the compound condition as a list with items in 'Yes No Dash' notation."""
@@ -265,7 +268,8 @@ class ConditionList(ObjectList):
             newCondition = CompoundCondition(item['members'])
         else:
             raise TypeError('Not a valid Condition Object')
-        if newCondition.ynd() not in [cond.ynd() for cond in self]:
+            
+        if newCondition.name not in [cond.name for cond in self]:
             self.itemList.append(newCondition)
         else:
             print("attempted to add duplicate; ignored")

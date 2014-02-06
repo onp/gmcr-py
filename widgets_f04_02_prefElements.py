@@ -266,13 +266,15 @@ class PreferenceListDisplay(ttk.Frame):
 
     def delCmd(self,*args):
         """Called when an item is deleted."""
-        idx = self.selIdx
-        self.dm.preferences.removeCondition(idx)
+        newSelId = self.disp.next(self.selId)
+        if newSelId == '':
+            newSelId = self.disp.prev(self.selId)
+                
+        self.dm.preferences.removeCondition(self.selIdx)
         self.event_generate('<<ValueChange>>')
-        try:
-            self.disp.selection_set(self.dm.preferences[idx].name)
-        except IndexError:
-            try:
-                self.disp.selection_set(self.dm.preferences[idx-1].name)
-            except IndexError:
-                self.selIdx = None
+        
+        if newSelId != '':
+            self.disp.selection_set(newSelId)
+        else:
+            self.selId = None
+            self.selIdx = None

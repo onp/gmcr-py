@@ -76,7 +76,7 @@ class PreferencesFrame(ttk.Frame):
         self.vectors = PreferenceRankingMaster(self.paneTop,self.game)
         self.editor = RadiobuttonEntry(self.paneTop,self.game)
         self.staging = PreferenceStaging(self.paneTop,self.game)
-        self.PreferenceDisp = PreferenceListDisplay(self.paneTop,self.game)
+        self.preferenceDisp = PreferenceListDisplay(self.paneTop,self.game)
         
         self.paneBottom = ttk.Frame(self.paneMaster)
         self.optionTable = OptionFormTable(self.paneBottom,self.game)
@@ -112,7 +112,7 @@ class PreferencesFrame(ttk.Frame):
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,sticky=(N,S,E,W),padx=3)
         self.staging.grid(column=4,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=5,row=1,sticky=(N,S,E,W),padx=3)
-        self.PreferenceDisp.grid(column=6,row=1,sticky=(N,S,E,W))
+        self.preferenceDisp.grid(column=6,row=1,sticky=(N,S,E,W))
         self.paneTop.columnconfigure(0,weight=1)
         self.paneTop.columnconfigure(2,weight=0)
         self.paneTop.columnconfigure(4,weight=1)       
@@ -130,8 +130,8 @@ class PreferencesFrame(ttk.Frame):
         self.editor.bind('<<StagePref>>',self.stagePref)
         self.staging.bind('<<SelCond>>', self.selCondChg)
         self.staging.bind('<<PullFromStage>>',self.pullFromStage)
-        self.PreferenceDisp.bind('<<SelPref>>', self.selPrefChg)
-        self.PreferenceDisp.bind('<<ValueChange>>',self.refresh)
+        self.preferenceDisp.bind('<<SelPref>>', self.selPrefChg)
+        self.preferenceDisp.bind('<<ValueChange>>',self.refresh)
         
         self.dmChgHandler()
     
@@ -166,13 +166,14 @@ class PreferencesFrame(ttk.Frame):
             dm.calculatePreferences()
         self.editor.reloadOpts()
         self.vectors.refresh()
-        self.PreferenceDisp.refresh()
+        self.preferenceDisp.refresh()
+        self.optionTable.buildTable()
         
         if self.game.useManualPreferenceVectors:
             self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
             self.vectors.disable()
             self.editor.disable()
-            self.PreferenceDisp.disable()
+            self.preferenceDisp.disable()
         else:
             self.usePrioritizationButton.grid_remove()
             
@@ -182,19 +183,19 @@ class PreferencesFrame(ttk.Frame):
         self.event_generate("<<breakingChange>>")
         self.vectors.enable()
         self.editor.enable()
-        self.PreferenceDisp.enable()
+        self.preferenceDisp.enable()
         self.refresh()
 
     def dmChgHandler(self,event=None):
         """Bound to <<DMchg>>."""
         self.dm = self.vectors.dm
-        self.PreferenceDisp.changeDM(self.dm)
+        self.preferenceDisp.changeDM(self.dm)
         self.optionTable.buildTable(self.dm)
         if self.dm is None:
-            self.PreferenceDisp.disable()
+            self.preferenceDisp.disable()
             self.editor.disable()
         else:
-            self.PreferenceDisp.enable()
+            self.preferenceDisp.enable()
             self.editor.enable()
 
     def addPref(self,event=None):
