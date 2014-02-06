@@ -75,7 +75,11 @@ class OptionFormTable(ttk.Frame):
             tableData[:,currCol] = newCol
             currCol += 1
             
-        print(tableData)
+        #sort
+        if focusDM is not None:
+            tableData[:,2:] = tableData[:,2:][:,tableData[-1,2:].argsort()[::-1]]
+        
+        #push to display
         
         for child in self.table.get_children():
             self.table.delete(child)
@@ -94,6 +98,7 @@ class OptionFormTable(ttk.Frame):
         self.table.tag_configure("head",background="green")
         self.table.tag_configure("foot",background="green")
         
+        #column sizing
         for col in range(len(feasibles) + 2):
             self.table.column(col,stretch=False)
         self.table.column(0,width=200)
