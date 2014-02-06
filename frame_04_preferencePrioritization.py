@@ -167,7 +167,7 @@ class PreferencesFrame(ttk.Frame):
         self.editor.reloadOpts()
         self.vectors.refresh()
         self.preferenceDisp.refresh()
-        self.optionTable.buildTable()
+        self.optionTable.buildTable(self.dm)
         
         if self.game.useManualPreferenceVectors:
             self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))

@@ -77,7 +77,8 @@ class OptionFormTable(ttk.Frame):
             
         #sort
         if focusDM is not None:
-            tableData[:,2:] = tableData[:,2:][:,tableData[-1,2:].argsort()[::-1]]
+            sortOrder = tableData[-1,2:].astype('int').argsort()[::-1]
+            tableData[:,2:] = tableData[:,2:][:,sortOrder]
         
         #push to display
         
