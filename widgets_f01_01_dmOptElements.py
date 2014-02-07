@@ -165,7 +165,7 @@ class DMeditor(ttk.Frame):
             self.addOption(opt)
             
     def dmNameMod(self,newName):
-        self.labelVar.set("Editing DM " + self.dm.name)
+        self.labelVar.set("Editing DM " + newName)
         self.dm.name = newName
         self.event_generate('<<dmNameChange>>')
         return True

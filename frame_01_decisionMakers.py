@@ -14,8 +14,8 @@ from data_01_conflictModel import ConflictModel
 
 class DMInpFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,conflict,*args):
-        ttk.Frame.__init__(self,master,*args)
+    def __init__(self,master,conflict):
+        ttk.Frame.__init__(self,master)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
@@ -72,6 +72,7 @@ class DMInpFrame(ttk.Frame):
         self.grid_remove()
         self.columnconfigure(0,weight=1)
         self.columnconfigure(2,weight=1)
+        self.rowconfigure(0,weight=1)
 
         #configuring infoFrame & infoFrame widgets
         self.infoFrame.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
