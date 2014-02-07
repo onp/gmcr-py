@@ -7,12 +7,19 @@ import data_03_gmcrUtilities as gmcrUtil
 
 
 class Option:
-    def __init__(self,name,permittedDirection='both'):
+    def __init__(self,name,masterList,permittedDirection='both'):
         self.name = str(name)
         self.permittedDirection = permittedDirection
+        self.refs = 0
     
     def __str__(self):
         return self.name
+        
+    def addRef(self):
+        self.refs+=1
+        
+    def remRef(self):
+        self.refs -=1
         
     def export_rep(self):
         return {'name':str(self.name),
@@ -53,6 +60,9 @@ class DecisionMaker:
         if self.conflict.useManualPreferenceVectors:
             self.payoffs = gmcrUtil.mapPrefVec2Payoffs(self.preferenceVector,self.conflict.feasibles)
         else:
+            print("\nvalidating preferences for "+self.name)
+            print([pref.name for pref in self.preferences])
+            self.preferences.validate()
             self.weightPreferences()
             result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)
             self.payoffs = result[0]
@@ -74,6 +84,9 @@ class Condition:
     def __str__(self):
         return self.name + " object"
         
+    def updateName(self):
+        self.name = self.ynd()
+        
     def cond(self):
         """The condition represented as tuples of options and whether or not they are taken."""
         return zip(self.options,self.taken)
@@ -93,6 +106,20 @@ class Condition:
         for opt,taken in self.cond():
             if state[opt.master_index] != taken:
                 return False
+        return True
+        
+    def isValid(self):
+        """Returns false if one of the options the condition depends on has been removed form the game."""
+        for opt in self.options:
+            if opt not in self.conflict.options:
+                print("Condition " + self.name + " became invalid and was removed from the conflict.")
+                return False
+        oldName = self.name
+        self.updateName()
+        if oldName != self.name:
+            print(oldName+' was changed to '+self.name)
+        else:
+            print(self.name+' was valid.')
         return True
         
     def export_rep(self):
@@ -143,7 +170,21 @@ class CompoundCondition:
         for cond in self.conditions:
             if cond.test(state):
                 return True
-        return False            
+        return False
+
+    def isValid(self):
+        """Returns False if one of the options the condition depends on has been removed form the game."""
+        for cond in self.conditions:
+            if not cond.isValid():
+                print("Condition " + self.name + " became invalid and was removed from the conflict.")
+                return False
+        oldName = self.name
+        self.updateName()
+        if oldName != self.name:
+            print(oldName+' was changed to '+self.name)
+        else:
+            print(self.name+' was valid.')
+        return True
     
     def export_rep(self,state):
         return {"compound":True,"members":[cond.export_rep() for cond in self.conditions]}
@@ -153,7 +194,7 @@ class ObjectList:
     def __init__(self,masterList=None):
         self.itemList = []
         self.masterList = masterList
-        
+                
     def __len__(self):
         return len(self.itemList)
         
@@ -164,7 +205,15 @@ class ObjectList:
         self.itemList[key] = value
         
     def __delitem__(self,key):
+        item = self.itemList[key]
         del self.itemList[key]
+        if self.masterList is not None:
+            self.masterList.remove(item)
+        
+    def remove(self,item):
+        self.itemList.remove(item)
+        if self.masterList is not None:
+            self.masterList.remove(item)
         
     def __iter__(self):
         return iter(self.itemList)
@@ -188,6 +237,9 @@ class ObjectList:
         for idx,item in enumerate(self.itemList):
             item.master_index = idx
             item.dec_val = 2**(idx)
+            
+    def names(self):
+        return [item.name for item in self.itemList]
 
             
 class DecisionMakerList(ObjectList):
@@ -228,16 +280,23 @@ class OptionList(ObjectList):
     def append(self,item):
         if isinstance(item,Option) and item not in self.itemList:
             self.itemList.append(item)
-            if (self.masterList is not None) and (item not in self.masterList):
-                self.masterList.append(item)
-        elif isinstance(item,str):
-            newOption = Option(item)
-            self.itemList.append(newOption)
             if self.masterList is not None:
+                item.addRef()
+                if item not in self.masterList:
+                    self.masterList.append(item)
+        elif isinstance(item,str):
+            if self.masterList is None:
+                newOption = Option(item,self)
+            else:
+                newOption = Option(item,self.masterList)
                 self.masterList.append(newOption)
+                newOption.addRef()
+            self.itemList.append(newOption)
+
+                
                 
     def from_json(self,optData):
-        newOption = Option(optData['name'],optData['permittedDirection'])
+        newOption = Option(optData['name'],self.masterList,optData['permittedDirection'])
         self.append(newOption)
             
 class ConditionList(ObjectList):
@@ -282,6 +341,14 @@ class ConditionList(ObjectList):
     def removeCondition(self,idx):
         """Remove the Condition at position idx"""
         del self[idx]
+        
+    def validate(self):
+        toRemove = []
+        for idx,pref in enumerate(self):
+            if not pref.isValid():
+                toRemove.append(idx)
+        for idx in toRemove[::-1]:
+            del self[idx]
             
     def format(self,fmt="YN-"):
         """Returns the conditions in the specified format.
@@ -411,6 +478,8 @@ class ConflictModel:
     def breakingChange(self):
         self.useManualPreferenceVectors = False
         self.reorderOptionsByDM()
+        print("\nvalidating infeasible conditions.")
+        self.infeasibles.validate()
         self.recalculateFeasibleStates()
         for dm in self.decisionMakers:
             dm.preferenceVector = None

@@ -8,7 +8,7 @@ interfaces.
 
 from tkinter import *
 from tkinter import ttk
-from widgets_f01_01_editableListBox import ListInput
+from widgets_f01_01_dmOptElements import *
 from data_01_conflictModel import ConflictModel
 
 
@@ -50,7 +50,7 @@ class DMInpFrame(ttk.Frame):
                 "will remove it.")
 
         #Define frame-specific variables
-        self.optLabText = StringVar(value='')
+
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
         self.dmCountLabel  = ttk.Label(self.infoFrame,textvariable = self.dmCount)
@@ -62,26 +62,16 @@ class DMInpFrame(ttk.Frame):
 
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.dmHSep1 = ttk.Separator(self,orient=VERTICAL)
-        self.dmHSep2 = ttk.Separator(self,orient=VERTICAL)
+        self.dmSelector = DMselector(self,self.conflict)
+        self.editor = DMeditor(self,self.conflict)
 
-        self.dmLabel1  = ttk.Label(self,text='Decision Makers')
-        self.optLabel1 = ttk.Label(self,textvariable=self.optLabText)
-
-        self.dmInp   = ListInput(self,lHeight=5)
-        self.optsInp = ListInput(self)
-
-        self.optPlaceholder = ttk.Label(self,text='Please Select a Decision Maker',anchor='center')
-
-
-        # ########  preliminary gridding and option configuration
+        # ########  preliminary griding and option configuration
 
         # configuring the input frame
         self.grid(column=0,row=0,rowspan=5,sticky=(N,S,E,W))
         self.grid_remove()
         self.columnconfigure(0,weight=1)
         self.columnconfigure(2,weight=1)
-        self.rowconfigure(4,weight=1)
 
         #configuring infoFrame & infoFrame widgets
         self.infoFrame.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
@@ -96,20 +86,16 @@ class DMInpFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
-        self.dmHSep1.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
-
-        self.dmLabel1.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.optLabel1.grid(column=2,row=1,sticky=(N,S,E,W))
-
-        self.dmInp.grid(column=0,row=2,rowspan=5,sticky=(N,S,E,W))
-        self.optsInp.grid(column=2,row=2,rowspan=5,sticky=(N,S,E,W))
-        self.optPlaceholder.grid(column=2,row=2,rowspan=5,sticky=(N,S,E,W))
-
+        self.dmSelector.grid(row=0,column=0,sticky=(N,S,E,W))
+        ttk.Separator(self,orient=VERTICAL).grid(row=0,column=1,sticky=(N,S,E,W),padx=3)
+        self.editor.grid(row=0,column=2,sticky=(N,S,E,W))
 
         # bindings
-        self.dmInp.bind('<<Sel2>>', self.dmChange)
-        self.dmInp.bind('<<breakingChange>>',self.breakingChange)
-        self.optsInp.bind('<<breakingChange>>',self.breakingChange)
+        self.dmSelector.bind('<<DMselected>>', self.dmChange)
+        self.dmSelector.bind('<<EditDM>>', self.dmEdit)
+        self.dmSelector.bind('<<breakingChange>>',self.breakingChange)
+        self.editor.bind('<<breakingChange>>',self.breakingChange)
+        self.editor.bind('<<dmNameChange>>',self.updateDMnames)
         
         self.built = True
         
@@ -123,7 +109,8 @@ class DMInpFrame(ttk.Frame):
         self.helpFrame.grid_forget()
     
     def refreshWidgets(self):
-        self.dmInp.linkOwner(self.conflict.decisionMakers,True)
+        self.dmSelector.refresh()
+        self.dmSelector.reselect()
         self.updateTotals()
 
     def enter(self,*args):
@@ -134,34 +121,34 @@ class DMInpFrame(ttk.Frame):
         self.infoFrame.grid()
         self.helpFrame.grid()
 
-    def leave(self,*args):
+    def leave(self,event=None):
         """ Removes the main frame, infoFrame and helpFrame from the master,
         and performs any other update tasks required on exiting the frame."""
-        self.optsInp.grid_remove()
-        self.optPlaceholder.grid()
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
 
-
-    def dmChange(self,*args):
+    def dmChange(self,event=None):
         """Changes the selected decision maker."""
-        idx = int(self.dmInp.listDisp.curselection()[0])
-        if idx != len(self.conflict.decisionMakers):
-            self.optLabText.set('Options for %s'%(self.conflict.decisionMakers[idx]))
-            self.optPlaceholder.grid_remove()
-            self.optsInp.linkOwner(self.conflict.decisionMakers[idx].options)
-            self.optsInp.grid()
-        else:
-            self.optsInp.grid_remove()
-            self.optLabText.set('')
-            self.optPlaceholder.grid()
-
+        self.editor.loadDM(self.dmSelector.selectedDM)
+        
+    def dmEdit(self,event=None):
+        """Pushes focus to the DM's name editing box, creating a new DM if necessary."""
+        if self.dmSelector.selectedDM == None:
+            self.conflict.decisionMakers.append("New Decision Maker")
+            self.dmSelector.refresh()
+            self.dmSelector.reselect()
+        self.editor.dmNameEditor.focus()
+        self.editor.dmNameEditor.select_range(0,END)
+        
     def breakingChange(self,event=None):
         self.conflict.breakingChange()
         self.updateTotals()
+        
+    def updateDMnames(self,event=None):
+        self.dmSelector.updateList()
 
-    def updateTotals(self,*args):
+    def updateTotals(self,event=None):
         self.dmCount.set('Number of Decision Makers: ' + str(len(self.conflict.decisionMakers)))
         self.optCount.set('Number of Options: ' + str(sum([len(dm.options) for dm in self.conflict.decisionMakers])))
         self.stateCount.set('Total States: ' + str(2**sum([len(dm.options) for dm in self.conflict.decisionMakers])))

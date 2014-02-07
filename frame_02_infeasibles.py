@@ -155,7 +155,7 @@ class InfeasInpFrame(Frame):
 
     def selChg(self,event):
         """Triggered when the selection changes in the treeview."""
-        state = self.game.infeasibles[event.x].ynd()
+        state = self.game.infeasibles[event.x].name
         self.optsInp.setStates(state)
 
     def enter(self):

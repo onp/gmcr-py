@@ -53,7 +53,7 @@ class TreeInfeas(ttk.Frame):
         if len(self.game.infeasibles)>0:
             self.game.recalculateFeasibleStates()
         for infeas in self.game.infeasibles:
-            key = infeas.ynd()
+            key = infeas.name
             self.tDisp.insert('','end',key,text=key)
             self.tDisp.set(key,'state',key)
             self.tDisp.set(key,'stDes',str(2**(key.count('-'))))
@@ -94,9 +94,9 @@ class TreeInfeas(ttk.Frame):
         self.event_generate('<<ValueChange>>')
         if len(self.game.infeasibles)>0:
             try:
-                self.tDisp.selection_set(self.game.infeasibles[idx].ynd())
+                self.tDisp.selection_set(self.game.infeasibles[idx].name)
             except IndexError:
-                self.tDisp.selection_set(self.game.infeasibles[idx-1].ynd())
+                self.tDisp.selection_set(self.game.infeasibles[idx-1].name)
 
 
 def main():
