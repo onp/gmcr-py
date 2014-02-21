@@ -139,6 +139,7 @@ class DMInpFrame(ttk.Frame):
             self.conflict.decisionMakers.append("New Decision Maker")
             self.dmSelector.refresh()
             self.dmSelector.reselect()
+        self.dmSelector.dmListDisp.selection_set(self.dmSelector.selIdx)
         self.editor.dmNameEditor.focus()
         self.editor.dmNameEditor.select_range(0,END)
         

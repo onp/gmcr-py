@@ -97,7 +97,7 @@ class DMselector(ttk.Frame):
     def editCmd(self,*args):
         """Called when a list entry is selected for editing."""
         self.event_generate('<<EditDM>>')
-        self.dmListDisp.selection_set(self.selIdx)
+        #self.dmListDisp.selection_set(self.selIdx)
         
     def reselect(self,event=None):
         if self.selIdx is not None:
@@ -113,6 +113,7 @@ class DMeditor(ttk.Frame):
         #variables
         self.labelVar = StringVar()
         self.dmNameVar = StringVar()
+        self.optionEditors = []
         self.dm = None
         
         #widgets
@@ -160,6 +161,7 @@ class DMeditor(ttk.Frame):
         self.newOptionBtn.configure(state='normal')
         
         self.optionVars = []
+        self.optionEditors = []
         
         for idx,opt in enumerate(self.dm.options):
             self.addOption(opt)
@@ -183,6 +185,7 @@ class DMeditor(ttk.Frame):
         newOptionVar = StringVar(value=opt.name)
         self.optionVars.append(newOptionVar)
         newOptionEditor = ttk.Entry(self.optionListFrame,textvariable=newOptionVar,validate='key')
+        self.optionEditors.append(newOptionEditor)
         ovcmd = newOptionEditor.register(optNameMod)
         newOptionEditor.configure(validatecommand=(ovcmd,'%P'))
         newOptionEditor.grid(row=len(self.optionVars),column=0,sticky=(N,S,E,W))
@@ -193,3 +196,5 @@ class DMeditor(ttk.Frame):
         self.dm.options.append('New Option')
         self.loadDM(self.dm)
         self.event_generate('<<breakingChange>>')
+        self.optionEditors[-1].focus()
+        self.optionEditors[-1].select_range(0,END)
