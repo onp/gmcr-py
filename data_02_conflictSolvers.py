@@ -356,6 +356,7 @@ class LogicalSolver(RMGenerator):
         numpy.invert(smrStabilities.astype('bool'),smrStabilities)
         self.smrEquilibria = numpy.invert(sum(smrStabilities,0).astype('bool'))
 
+        #output
         self.allEquilibria = numpy.vstack((self.nashEquilibria,
                                         self.gmrEquilibria,
                                         self.seqEquilibria,

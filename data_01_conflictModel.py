@@ -462,7 +462,10 @@ class ConflictModel:
         for infData in d['infeasibles']:
             self.infeasibles.from_json(infData)
         self.reorderOptionsByDM()
+        self.infeasibles.validate()
         self.recalculateFeasibleStates()
+        for dm in self.decisionMakers:
+            dm.calculatePreferences()
 
 
     def load_from_file(self,file):
