@@ -28,6 +28,7 @@ class Option:
 class DecisionMaker:
     def __init__(self,conflict,name):
         self.name = str(name)
+        self.isCoalition = False
         self.conflict = conflict
         self.options = OptionList(conflict.options)
         self.preferences = ConditionList(conflict)
@@ -385,6 +386,30 @@ class FeasibleList:
     def __len__(self):
         return len(self.decimal)
 
+class Coalition:
+    """Combination of two or more decision makers. Has equivalent interfaces."""
+    def __init__(self,conflict,dms):
+        self.dms = dms
+        self.isCoalition = True
+        self.name = ', '.join([dm.name for dm in dms])
+        self.conflict = conflict
+        self.options = OptionList(conflict.options)
+        self.preferences = ConditionList(conflict)
+        
+        for dm in dms:
+            for opt in dm.options:
+                self.options.append(opt)
+                
+    def __str__(self):
+        return self.name
+        
+    def export_rep(self):
+        return [conflict.decisionMakers.index(dm) for dm in self.dms]
+            
+    def calculatePreferences(self):
+        for dm in self.dms:
+            dm.calculatePreferences()
+        
 
 class ConflictModel:
     def __init__(self):
