@@ -147,10 +147,10 @@ class LogicalSolver(RMGenerator):
         """Used to calculate Nash stability. Returns true if state0 Nash is stable for dm."""
         ui=self.UIs(dm,state0)
         if not ui:
-            narr = self.chattyHelper(dm,state0)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.'
+            narr = self.chattyHelper(dm,state0)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.\n'
             return True,narr
         else:
-            narr = self.chattyHelper(dm,state0)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in ui])
+            narr = self.chattyHelper(dm,state0)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in ui])+"\n"
             return False,narr
 
 
@@ -161,7 +161,7 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             seqStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state0)+' is SEQ stable since focal DM '+ dm.name +' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is SEQ stable for DM '+ dm.name +' since they have no UIs from this state.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
@@ -195,7 +195,7 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             simStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
@@ -233,7 +233,7 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             gmrStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state0)+' is GMR stable since focal DM '+dm.name+' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is GMR stable since focal DM '+dm.name+' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
@@ -267,7 +267,7 @@ class LogicalSolver(RMGenerator):
 
         if not ui:
             smrStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state0)+' is SMR stable since focal DM '+dm.name+' has no UIs available.\n\n'
+            narr += self.chattyHelper(dm,state0)+' is SMR stable since focal DM '+dm.name+' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
@@ -384,7 +384,6 @@ class InverseSolver(RMGenerator):
                         variedStates.extend([state-1 for state in sl])
                     else:
                         variedStates.append(sl-1)
-            print(variedStates)
             
             for s0 in variedStates:
                 for s1 in variedStates:
@@ -422,9 +421,7 @@ class InverseSolver(RMGenerator):
             output.append(message)
             output.append("    With the given preference rankings and vary range:")
             message1 = ''
-            print(dm.improvementsInv)
             for state1 in self.mustBeLowerNash[dmIdx]:
-                print(dm.improvementsInv[self.desEq,state1])
                 if numpy.isnan(dm.improvementsInv[self.desEq,state1]):
                     message1 += "    %s must be more preferred than %s.\n"%(desEq,self.game.feasibles.ordered[state1])
                 elif dm.improvementsInv[self.desEq,state1] == 1:

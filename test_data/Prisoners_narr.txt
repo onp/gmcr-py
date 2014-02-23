@@ -1,0 +1,188 @@
+
+#DM Prisoner One  state 0  NASH
+state 1 (decimal 0, payoff 2) is Nash stable for DM Prisoner One since they have no UIs from this state.
+
+#DM Prisoner One  state 0  SEQ
+state 1 (decimal 0, payoff 2) is SEQ stable for DM Prisoner One since they have no UIs from this state.
+
+#DM Prisoner One  state 0  SIM
+state 1 (decimal 0, payoff 2) is SIM stable since focal dm Prisoner One has no UIs available.
+
+#DM Prisoner One  state 0  GMR
+state 1 (decimal 0, payoff 2) is GMR stable since focal DM Prisoner One has no UIs available.
+
+#DM Prisoner One  state 0  SMR
+state 1 (decimal 0, payoff 2) is SMR stable since focal DM Prisoner One has no UIs available.
+
+#DM Prisoner One  state 1  NASH
+state 2 (decimal 1, payoff 1) is NOT Nash stable for DM Prisoner One since they have UIs available to: state 1 (decimal 0, payoff 2)
+
+#DM Prisoner One  state 1  SEQ
+From state 2 (decimal 1, payoff 1) Prisoner One has UIs available to: state 1 (decimal 0, payoff 2) .  Check for sanctioning...
+
+state 2 (decimal 1, payoff 1) is unstable by SEQ for focal DM Prisoner One, since their opponents have no UIs from state 1 (decimal 0, payoff 2)
+
+
+#DM Prisoner One  state 1  SIM
+From state 2 (decimal 1, payoff 1) Prisoner One has UIs available to: state 1 (decimal 0, payoff 2) .  Check for sanctioning...
+
+state 2 (decimal 1, payoff 1) is unstable by SIM for focal dm Prisoner One, since their opponents have no UIs from state 2 (decimal 1, payoff 1).
+
+
+#DM Prisoner One  state 1  GMR
+From state 2 (decimal 1, payoff 1) Prisoner One has UIs available to: state 1 (decimal 0, payoff 2).   Check for sanctioning...
+
+state 2 (decimal 1, payoff 1)) is unstable by GMR for focal dm Prisoner One, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 0, payoff 2).
+
+
+#DM Prisoner One  state 1  SMR
+From state 2 (decimal 1, payoff 1) Prisoner One has UIs available to: state 1 (decimal 0, payoff 2) .  Check for sanctioning...
+
+state 2 (decimal 1, payoff 1)) is unstable by SMR for focal dm Prisoner One, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 0, payoff 2) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Prisoner One  state 2  NASH
+state 3 (decimal 2, payoff 4) is Nash stable for DM Prisoner One since they have no UIs from this state.
+
+#DM Prisoner One  state 2  SEQ
+state 3 (decimal 2, payoff 4) is SEQ stable for DM Prisoner One since they have no UIs from this state.
+
+#DM Prisoner One  state 2  SIM
+state 3 (decimal 2, payoff 4) is SIM stable since focal dm Prisoner One has no UIs available.
+
+#DM Prisoner One  state 2  GMR
+state 3 (decimal 2, payoff 4) is GMR stable since focal DM Prisoner One has no UIs available.
+
+#DM Prisoner One  state 2  SMR
+state 3 (decimal 2, payoff 4) is SMR stable since focal DM Prisoner One has no UIs available.
+
+#DM Prisoner One  state 3  NASH
+state 4 (decimal 3, payoff 3) is NOT Nash stable for DM Prisoner One since they have UIs available to: state 3 (decimal 2, payoff 4)
+
+#DM Prisoner One  state 3  SEQ
+From state 4 (decimal 3, payoff 3) Prisoner One has UIs available to: state 3 (decimal 2, payoff 4) .  Check for sanctioning...
+
+A move to state 3 (decimal 2, payoff 4) is SEQ sanctioned for focal DM Prisoner One by a move to state 1 (decimal 0, payoff 2) by other dms.  Check other focal DN UIs for sanctioning... 
+
+state 4 (decimal 3, payoff 3) is stable by SEQ for focal dm Prisoner One, since all available UIs ['state 3 (decimal 2, payoff 4)'] are sanctioned by other players. 
+
+
+#DM Prisoner One  state 3  SIM
+From state 4 (decimal 3, payoff 3) Prisoner One has UIs available to: state 3 (decimal 2, payoff 4) .  Check for sanctioning...
+
+A move to state 3 (decimal 2, payoff 4) is SIM sanctioned for focal DM Prisoner One by a move to state 2 (decimal 1, payoff 1) by other DMs, which would give a final state of state 1 (decimal 0, payoff 2).  Check other focal DM UIs for sanctioning...
+
+state 4 (decimal 3, payoff 3) is stable by SIM for focal DM Prisoner One, since all available UIs ['state 3 (decimal 2, payoff 4)'] are sanctioned by other players.
+
+
+#DM Prisoner One  state 3  GMR
+From state 4 (decimal 3, payoff 3) Prisoner One has UIs available to: state 3 (decimal 2, payoff 4).   Check for sanctioning...
+
+A move to state 3 (decimal 2, payoff 4) is GMR sanctioned for focal DM Prisoner One by a move to state 1 (decimal 0, payoff 2) by other DMs.
+
+state 4 (decimal 3, payoff 3) is stable by GMR for focal DM Prisoner One, since all available UIs ['state 3 (decimal 2, payoff 4)']are sanctioned by other players.
+
+
+#DM Prisoner One  state 3  SMR
+From state 4 (decimal 3, payoff 3) Prisoner One has UIs available to: state 3 (decimal 2, payoff 4) .  Check for sanctioning...
+
+A move to state 3 (decimal 2, payoff 4) is SMR sanctioned for focal DM Prisoner One by a move to state 1 (decimal 0, payoff 2) by other dms.  Check for possible countermoves...
+
+    state 3 (decimal 2, payoff 4) remains sanctioned under SMR for focal DM Prisoner One, since they cannot countermove their opponent's sanction to state 1 (decimal 0, payoff 2).
+
+state 4 (decimal 3, payoff 3) is stable by SMR for focal dm Prisoner One, since all available UIs ['state 3 (decimal 2, payoff 4)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM prisoner 2  state 0  NASH
+state 1 (decimal 0, payoff 2) is Nash stable for DM prisoner 2 since they have no UIs from this state.
+
+#DM prisoner 2  state 0  SEQ
+state 1 (decimal 0, payoff 2) is SEQ stable for DM prisoner 2 since they have no UIs from this state.
+
+#DM prisoner 2  state 0  SIM
+state 1 (decimal 0, payoff 2) is SIM stable since focal dm prisoner 2 has no UIs available.
+
+#DM prisoner 2  state 0  GMR
+state 1 (decimal 0, payoff 2) is GMR stable since focal DM prisoner 2 has no UIs available.
+
+#DM prisoner 2  state 0  SMR
+state 1 (decimal 0, payoff 2) is SMR stable since focal DM prisoner 2 has no UIs available.
+
+#DM prisoner 2  state 1  NASH
+state 2 (decimal 1, payoff 4) is Nash stable for DM prisoner 2 since they have no UIs from this state.
+
+#DM prisoner 2  state 1  SEQ
+state 2 (decimal 1, payoff 4) is SEQ stable for DM prisoner 2 since they have no UIs from this state.
+
+#DM prisoner 2  state 1  SIM
+state 2 (decimal 1, payoff 4) is SIM stable since focal dm prisoner 2 has no UIs available.
+
+#DM prisoner 2  state 1  GMR
+state 2 (decimal 1, payoff 4) is GMR stable since focal DM prisoner 2 has no UIs available.
+
+#DM prisoner 2  state 1  SMR
+state 2 (decimal 1, payoff 4) is SMR stable since focal DM prisoner 2 has no UIs available.
+
+#DM prisoner 2  state 2  NASH
+state 3 (decimal 2, payoff 1) is NOT Nash stable for DM prisoner 2 since they have UIs available to: state 1 (decimal 0, payoff 2)
+
+#DM prisoner 2  state 2  SEQ
+From state 3 (decimal 2, payoff 1) prisoner 2 has UIs available to: state 1 (decimal 0, payoff 2) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 1) is unstable by SEQ for focal DM prisoner 2, since their opponents have no UIs from state 1 (decimal 0, payoff 2)
+
+
+#DM prisoner 2  state 2  SIM
+From state 3 (decimal 2, payoff 1) prisoner 2 has UIs available to: state 1 (decimal 0, payoff 2) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 1) is unstable by SIM for focal dm prisoner 2, since their opponents have no UIs from state 3 (decimal 2, payoff 1).
+
+
+#DM prisoner 2  state 2  GMR
+From state 3 (decimal 2, payoff 1) prisoner 2 has UIs available to: state 1 (decimal 0, payoff 2).   Check for sanctioning...
+
+state 3 (decimal 2, payoff 1)) is unstable by GMR for focal dm prisoner 2, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 0, payoff 2).
+
+
+#DM prisoner 2  state 2  SMR
+From state 3 (decimal 2, payoff 1) prisoner 2 has UIs available to: state 1 (decimal 0, payoff 2) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 1)) is unstable by SMR for focal dm prisoner 2, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 0, payoff 2) that cannot be effectively countermoved by the focal dm.
+
+
+#DM prisoner 2  state 3  NASH
+state 4 (decimal 3, payoff 3) is NOT Nash stable for DM prisoner 2 since they have UIs available to: state 2 (decimal 1, payoff 4)
+
+#DM prisoner 2  state 3  SEQ
+From state 4 (decimal 3, payoff 3) prisoner 2 has UIs available to: state 2 (decimal 1, payoff 4) .  Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 4) is SEQ sanctioned for focal DM prisoner 2 by a move to state 1 (decimal 0, payoff 2) by other dms.  Check other focal DN UIs for sanctioning... 
+
+state 4 (decimal 3, payoff 3) is stable by SEQ for focal dm prisoner 2, since all available UIs ['state 2 (decimal 1, payoff 4)'] are sanctioned by other players. 
+
+
+#DM prisoner 2  state 3  SIM
+From state 4 (decimal 3, payoff 3) prisoner 2 has UIs available to: state 2 (decimal 1, payoff 4) .  Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 4) is SIM sanctioned for focal DM prisoner 2 by a move to state 3 (decimal 2, payoff 1) by other DMs, which would give a final state of state 1 (decimal 0, payoff 2).  Check other focal DM UIs for sanctioning...
+
+state 4 (decimal 3, payoff 3) is stable by SIM for focal DM prisoner 2, since all available UIs ['state 2 (decimal 1, payoff 4)'] are sanctioned by other players.
+
+
+#DM prisoner 2  state 3  GMR
+From state 4 (decimal 3, payoff 3) prisoner 2 has UIs available to: state 2 (decimal 1, payoff 4).   Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 4) is GMR sanctioned for focal DM prisoner 2 by a move to state 1 (decimal 0, payoff 2) by other DMs.
+
+state 4 (decimal 3, payoff 3) is stable by GMR for focal DM prisoner 2, since all available UIs ['state 2 (decimal 1, payoff 4)']are sanctioned by other players.
+
+
+#DM prisoner 2  state 3  SMR
+From state 4 (decimal 3, payoff 3) prisoner 2 has UIs available to: state 2 (decimal 1, payoff 4) .  Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 4) is SMR sanctioned for focal DM prisoner 2 by a move to state 1 (decimal 0, payoff 2) by other dms.  Check for possible countermoves...
+
+    state 2 (decimal 1, payoff 4) remains sanctioned under SMR for focal DM prisoner 2, since they cannot countermove their opponent's sanction to state 1 (decimal 0, payoff 2).
+
+state 4 (decimal 3, payoff 3) is stable by SMR for focal dm prisoner 2, since all available UIs ['state 2 (decimal 1, payoff 4)'] are sanctioned by other players and cannot be countermoved.
+

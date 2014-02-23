@@ -1,0 +1,2178 @@
+
+#DM US  state 0  NASH
+state 1 (decimal 0, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 0  SEQ
+state 1 (decimal 0, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 0  SIM
+state 1 (decimal 0, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 0  GMR
+state 1 (decimal 0, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 0  SMR
+state 1 (decimal 0, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 1  NASH
+state 2 (decimal 1, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 1  SEQ
+state 2 (decimal 1, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 1  SIM
+state 2 (decimal 1, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 1  GMR
+state 2 (decimal 1, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 1  SMR
+state 2 (decimal 1, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 2  NASH
+state 3 (decimal 2, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 2  SEQ
+state 3 (decimal 2, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 2  SIM
+state 3 (decimal 2, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 2  GMR
+state 3 (decimal 2, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 2  SMR
+state 3 (decimal 2, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 3  NASH
+state 4 (decimal 3, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 3  SEQ
+state 4 (decimal 3, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 3  SIM
+state 4 (decimal 3, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 3  GMR
+state 4 (decimal 3, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 3  SMR
+state 4 (decimal 3, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 4  NASH
+state 5 (decimal 4, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 4  SEQ
+state 5 (decimal 4, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 4  SIM
+state 5 (decimal 4, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 4  GMR
+state 5 (decimal 4, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 4  SMR
+state 5 (decimal 4, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 5  NASH
+state 6 (decimal 5, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 5  SEQ
+state 6 (decimal 5, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 5  SIM
+state 6 (decimal 5, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 5  GMR
+state 6 (decimal 5, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 5  SMR
+state 6 (decimal 5, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 6  NASH
+state 7 (decimal 6, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 6  SEQ
+state 7 (decimal 6, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 6  SIM
+state 7 (decimal 6, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 6  GMR
+state 7 (decimal 6, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 6  SMR
+state 7 (decimal 6, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 7  NASH
+state 8 (decimal 7, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 7  SEQ
+state 8 (decimal 7, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 7  SIM
+state 8 (decimal 7, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 7  GMR
+state 8 (decimal 7, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 7  SMR
+state 8 (decimal 7, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 8  NASH
+state 9 (decimal 8, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 8  SEQ
+state 9 (decimal 8, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 8  SIM
+state 9 (decimal 8, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 8  GMR
+state 9 (decimal 8, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 8  SMR
+state 9 (decimal 8, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 9  NASH
+state 10 (decimal 9, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 9  SEQ
+state 10 (decimal 9, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 9  SIM
+state 10 (decimal 9, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 9  GMR
+state 10 (decimal 9, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 9  SMR
+state 10 (decimal 9, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 10  NASH
+state 11 (decimal 10, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 10  SEQ
+state 11 (decimal 10, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 10  SIM
+state 11 (decimal 10, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 10  GMR
+state 11 (decimal 10, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 10  SMR
+state 11 (decimal 10, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 11  NASH
+state 12 (decimal 11, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 11  SEQ
+state 12 (decimal 11, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 11  SIM
+state 12 (decimal 11, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 11  GMR
+state 12 (decimal 11, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 11  SMR
+state 12 (decimal 11, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 12  NASH
+state 13 (decimal 16, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 12  SEQ
+state 13 (decimal 16, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 12  SIM
+state 13 (decimal 16, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 12  GMR
+state 13 (decimal 16, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 12  SMR
+state 13 (decimal 16, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 13  NASH
+state 14 (decimal 17, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 13  SEQ
+state 14 (decimal 17, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 13  SIM
+state 14 (decimal 17, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 13  GMR
+state 14 (decimal 17, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 13  SMR
+state 14 (decimal 17, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 14  NASH
+state 15 (decimal 18, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 14  SEQ
+state 15 (decimal 18, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 14  SIM
+state 15 (decimal 18, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 14  GMR
+state 15 (decimal 18, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 14  SMR
+state 15 (decimal 18, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 15  NASH
+state 16 (decimal 19, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 15  SEQ
+state 16 (decimal 19, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 15  SIM
+state 16 (decimal 19, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 15  GMR
+state 16 (decimal 19, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 15  SMR
+state 16 (decimal 19, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 16  NASH
+state 17 (decimal 20, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 16  SEQ
+state 17 (decimal 20, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 16  SIM
+state 17 (decimal 20, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 16  GMR
+state 17 (decimal 20, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 16  SMR
+state 17 (decimal 20, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 17  NASH
+state 18 (decimal 21, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 17  SEQ
+state 18 (decimal 21, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 17  SIM
+state 18 (decimal 21, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 17  GMR
+state 18 (decimal 21, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 17  SMR
+state 18 (decimal 21, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 18  NASH
+state 19 (decimal 22, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 18  SEQ
+state 19 (decimal 22, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 18  SIM
+state 19 (decimal 22, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 18  GMR
+state 19 (decimal 22, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 18  SMR
+state 19 (decimal 22, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 19  NASH
+state 20 (decimal 23, payoff 2) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 19  SEQ
+state 20 (decimal 23, payoff 2) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 19  SIM
+state 20 (decimal 23, payoff 2) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 19  GMR
+state 20 (decimal 23, payoff 2) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 19  SMR
+state 20 (decimal 23, payoff 2) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 20  NASH
+state 21 (decimal 24, payoff 3) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 20  SEQ
+state 21 (decimal 24, payoff 3) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 20  SIM
+state 21 (decimal 24, payoff 3) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 20  GMR
+state 21 (decimal 24, payoff 3) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 20  SMR
+state 21 (decimal 24, payoff 3) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 21  NASH
+state 22 (decimal 25, payoff 3) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 21  SEQ
+state 22 (decimal 25, payoff 3) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 21  SIM
+state 22 (decimal 25, payoff 3) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 21  GMR
+state 22 (decimal 25, payoff 3) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 21  SMR
+state 22 (decimal 25, payoff 3) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 22  NASH
+state 23 (decimal 26, payoff 3) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 22  SEQ
+state 23 (decimal 26, payoff 3) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 22  SIM
+state 23 (decimal 26, payoff 3) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 22  GMR
+state 23 (decimal 26, payoff 3) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 22  SMR
+state 23 (decimal 26, payoff 3) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 23  NASH
+state 24 (decimal 27, payoff 3) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 23  SEQ
+state 24 (decimal 27, payoff 3) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 23  SIM
+state 24 (decimal 27, payoff 3) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 23  GMR
+state 24 (decimal 27, payoff 3) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 23  SMR
+state 24 (decimal 27, payoff 3) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 24  NASH
+state 25 (decimal 32, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 24  SEQ
+state 25 (decimal 32, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 24  SIM
+state 25 (decimal 32, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 24  GMR
+state 25 (decimal 32, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 24  SMR
+state 25 (decimal 32, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 25  NASH
+state 26 (decimal 33, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 25  SEQ
+state 26 (decimal 33, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 25  SIM
+state 26 (decimal 33, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 25  GMR
+state 26 (decimal 33, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 25  SMR
+state 26 (decimal 33, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 26  NASH
+state 27 (decimal 36, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 26  SEQ
+state 27 (decimal 36, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 26  SIM
+state 27 (decimal 36, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 26  GMR
+state 27 (decimal 36, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 26  SMR
+state 27 (decimal 36, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 27  NASH
+state 28 (decimal 37, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 27  SEQ
+state 28 (decimal 37, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 27  SIM
+state 28 (decimal 37, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 27  GMR
+state 28 (decimal 37, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 27  SMR
+state 28 (decimal 37, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 28  NASH
+state 29 (decimal 40, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 28  SEQ
+state 29 (decimal 40, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 28  SIM
+state 29 (decimal 40, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 28  GMR
+state 29 (decimal 40, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 28  SMR
+state 29 (decimal 40, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 29  NASH
+state 30 (decimal 41, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 29  SEQ
+state 30 (decimal 41, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 29  SIM
+state 30 (decimal 41, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 29  GMR
+state 30 (decimal 41, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 29  SMR
+state 30 (decimal 41, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 30  NASH
+state 31 (decimal 64, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 30  SEQ
+state 31 (decimal 64, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 30  SIM
+state 31 (decimal 64, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 30  GMR
+state 31 (decimal 64, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 30  SMR
+state 31 (decimal 64, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 31  NASH
+state 32 (decimal 65, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 31  SEQ
+state 32 (decimal 65, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 31  SIM
+state 32 (decimal 65, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 31  GMR
+state 32 (decimal 65, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 31  SMR
+state 32 (decimal 65, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 32  NASH
+state 33 (decimal 68, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 32  SEQ
+state 33 (decimal 68, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 32  SIM
+state 33 (decimal 68, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 32  GMR
+state 33 (decimal 68, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 32  SMR
+state 33 (decimal 68, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 33  NASH
+state 34 (decimal 69, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 33  SEQ
+state 34 (decimal 69, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 33  SIM
+state 34 (decimal 69, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 33  GMR
+state 34 (decimal 69, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 33  SMR
+state 34 (decimal 69, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 34  NASH
+state 35 (decimal 72, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 34  SEQ
+state 35 (decimal 72, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 34  SIM
+state 35 (decimal 72, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 34  GMR
+state 35 (decimal 72, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 34  SMR
+state 35 (decimal 72, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM US  state 35  NASH
+state 36 (decimal 73, payoff 1) is Nash stable for DM US since they have no UIs from this state.
+
+#DM US  state 35  SEQ
+state 36 (decimal 73, payoff 1) is SEQ stable for DM US since they have no UIs from this state.
+
+#DM US  state 35  SIM
+state 36 (decimal 73, payoff 1) is SIM stable since focal dm US has no UIs available.
+
+#DM US  state 35  GMR
+state 36 (decimal 73, payoff 1) is GMR stable since focal DM US has no UIs available.
+
+#DM US  state 35  SMR
+state 36 (decimal 73, payoff 1) is SMR stable since focal DM US has no UIs available.
+
+#DM CA  state 0  NASH
+state 1 (decimal 0, payoff 7) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 0  SEQ
+state 1 (decimal 0, payoff 7) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 0  SIM
+state 1 (decimal 0, payoff 7) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 0  GMR
+state 1 (decimal 0, payoff 7) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 0  SMR
+state 1 (decimal 0, payoff 7) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 1  NASH
+state 2 (decimal 1, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 1  SEQ
+state 2 (decimal 1, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 1  SIM
+state 2 (decimal 1, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 1  GMR
+state 2 (decimal 1, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 1  SMR
+state 2 (decimal 1, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 2  NASH
+state 3 (decimal 2, payoff 3) is NOT Nash stable for DM CA since they have UIs available to: state 1 (decimal 0, payoff 7)
+
+#DM CA  state 2  SEQ
+From state 3 (decimal 2, payoff 3) CA has UIs available to: state 1 (decimal 0, payoff 7) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 3) is unstable by SEQ for focal DM CA, since their opponents have no UIs from state 1 (decimal 0, payoff 7)
+
+
+#DM CA  state 2  SIM
+From state 3 (decimal 2, payoff 3) CA has UIs available to: state 1 (decimal 0, payoff 7) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 3) is unstable by SIM for focal dm CA, since their opponents have no UIs from state 3 (decimal 2, payoff 3).
+
+
+#DM CA  state 2  GMR
+From state 3 (decimal 2, payoff 3) CA has UIs available to: state 1 (decimal 0, payoff 7).   Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 7) is GMR sanctioned for focal DM CA by a move to state 2 (decimal 1, payoff 3) by other DMs.
+
+state 3 (decimal 2, payoff 3) is stable by GMR for focal DM CA, since all available UIs ['state 1 (decimal 0, payoff 7)']are sanctioned by other players.
+
+
+#DM CA  state 2  SMR
+From state 3 (decimal 2, payoff 3) CA has UIs available to: state 1 (decimal 0, payoff 7) .  Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 7) is SMR sanctioned for focal DM CA by a move to state 2 (decimal 1, payoff 3) by other dms.  Check for possible countermoves...
+
+    state 1 (decimal 0, payoff 7) remains sanctioned under SMR for focal DM CA, since they cannot countermove their opponent's sanction to state 2 (decimal 1, payoff 3).
+
+state 3 (decimal 2, payoff 3) is stable by SMR for focal dm CA, since all available UIs ['state 1 (decimal 0, payoff 7)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM CA  state 3  NASH
+state 4 (decimal 3, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 3  SEQ
+state 4 (decimal 3, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 3  SIM
+state 4 (decimal 3, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 3  GMR
+state 4 (decimal 3, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 3  SMR
+state 4 (decimal 3, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 4  NASH
+state 5 (decimal 4, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 4  SEQ
+state 5 (decimal 4, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 4  SIM
+state 5 (decimal 4, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 4  GMR
+state 5 (decimal 4, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 4  SMR
+state 5 (decimal 4, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 5  NASH
+state 6 (decimal 5, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 5  SEQ
+state 6 (decimal 5, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 5  SIM
+state 6 (decimal 5, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 5  GMR
+state 6 (decimal 5, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 5  SMR
+state 6 (decimal 5, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 6  NASH
+state 7 (decimal 6, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 6  SEQ
+state 7 (decimal 6, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 6  SIM
+state 7 (decimal 6, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 6  GMR
+state 7 (decimal 6, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 6  SMR
+state 7 (decimal 6, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 7  NASH
+state 8 (decimal 7, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 7  SEQ
+state 8 (decimal 7, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 7  SIM
+state 8 (decimal 7, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 7  GMR
+state 8 (decimal 7, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 7  SMR
+state 8 (decimal 7, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 8  NASH
+state 9 (decimal 8, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 8  SEQ
+state 9 (decimal 8, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 8  SIM
+state 9 (decimal 8, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 8  GMR
+state 9 (decimal 8, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 8  SMR
+state 9 (decimal 8, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 9  NASH
+state 10 (decimal 9, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 9  SEQ
+state 10 (decimal 9, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 9  SIM
+state 10 (decimal 9, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 9  GMR
+state 10 (decimal 9, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 9  SMR
+state 10 (decimal 9, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 10  NASH
+state 11 (decimal 10, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 10  SEQ
+state 11 (decimal 10, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 10  SIM
+state 11 (decimal 10, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 10  GMR
+state 11 (decimal 10, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 10  SMR
+state 11 (decimal 10, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 11  NASH
+state 12 (decimal 11, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 11  SEQ
+state 12 (decimal 11, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 11  SIM
+state 12 (decimal 11, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 11  GMR
+state 12 (decimal 11, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 11  SMR
+state 12 (decimal 11, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 12  NASH
+state 13 (decimal 16, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 12  SEQ
+state 13 (decimal 16, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 12  SIM
+state 13 (decimal 16, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 12  GMR
+state 13 (decimal 16, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 12  SMR
+state 13 (decimal 16, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 13  NASH
+state 14 (decimal 17, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 13  SEQ
+state 14 (decimal 17, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 13  SIM
+state 14 (decimal 17, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 13  GMR
+state 14 (decimal 17, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 13  SMR
+state 14 (decimal 17, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 14  NASH
+state 15 (decimal 18, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 14  SEQ
+state 15 (decimal 18, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 14  SIM
+state 15 (decimal 18, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 14  GMR
+state 15 (decimal 18, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 14  SMR
+state 15 (decimal 18, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 15  NASH
+state 16 (decimal 19, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 15  SEQ
+state 16 (decimal 19, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 15  SIM
+state 16 (decimal 19, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 15  GMR
+state 16 (decimal 19, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 15  SMR
+state 16 (decimal 19, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 16  NASH
+state 17 (decimal 20, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 16  SEQ
+state 17 (decimal 20, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 16  SIM
+state 17 (decimal 20, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 16  GMR
+state 17 (decimal 20, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 16  SMR
+state 17 (decimal 20, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 17  NASH
+state 18 (decimal 21, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 17  SEQ
+state 18 (decimal 21, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 17  SIM
+state 18 (decimal 21, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 17  GMR
+state 18 (decimal 21, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 17  SMR
+state 18 (decimal 21, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 18  NASH
+state 19 (decimal 22, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 18  SEQ
+state 19 (decimal 22, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 18  SIM
+state 19 (decimal 22, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 18  GMR
+state 19 (decimal 22, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 18  SMR
+state 19 (decimal 22, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 19  NASH
+state 20 (decimal 23, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 19  SEQ
+state 20 (decimal 23, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 19  SIM
+state 20 (decimal 23, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 19  GMR
+state 20 (decimal 23, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 19  SMR
+state 20 (decimal 23, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 20  NASH
+state 21 (decimal 24, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 20  SEQ
+state 21 (decimal 24, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 20  SIM
+state 21 (decimal 24, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 20  GMR
+state 21 (decimal 24, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 20  SMR
+state 21 (decimal 24, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 21  NASH
+state 22 (decimal 25, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 21  SEQ
+state 22 (decimal 25, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 21  SIM
+state 22 (decimal 25, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 21  GMR
+state 22 (decimal 25, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 21  SMR
+state 22 (decimal 25, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 22  NASH
+state 23 (decimal 26, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 22  SEQ
+state 23 (decimal 26, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 22  SIM
+state 23 (decimal 26, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 22  GMR
+state 23 (decimal 26, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 22  SMR
+state 23 (decimal 26, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 23  NASH
+state 24 (decimal 27, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 23  SEQ
+state 24 (decimal 27, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 23  SIM
+state 24 (decimal 27, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 23  GMR
+state 24 (decimal 27, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 23  SMR
+state 24 (decimal 27, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 24  NASH
+state 25 (decimal 32, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 24  SEQ
+state 25 (decimal 32, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 24  SIM
+state 25 (decimal 32, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 24  GMR
+state 25 (decimal 32, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 24  SMR
+state 25 (decimal 32, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 25  NASH
+state 26 (decimal 33, payoff 5) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 25  SEQ
+state 26 (decimal 33, payoff 5) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 25  SIM
+state 26 (decimal 33, payoff 5) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 25  GMR
+state 26 (decimal 33, payoff 5) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 25  SMR
+state 26 (decimal 33, payoff 5) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 26  NASH
+state 27 (decimal 36, payoff 4) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 26  SEQ
+state 27 (decimal 36, payoff 4) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 26  SIM
+state 27 (decimal 36, payoff 4) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 26  GMR
+state 27 (decimal 36, payoff 4) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 26  SMR
+state 27 (decimal 36, payoff 4) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 27  NASH
+state 28 (decimal 37, payoff 6) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 27  SEQ
+state 28 (decimal 37, payoff 6) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 27  SIM
+state 28 (decimal 37, payoff 6) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 27  GMR
+state 28 (decimal 37, payoff 6) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 27  SMR
+state 28 (decimal 37, payoff 6) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 28  NASH
+state 29 (decimal 40, payoff 3) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 28  SEQ
+state 29 (decimal 40, payoff 3) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 28  SIM
+state 29 (decimal 40, payoff 3) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 28  GMR
+state 29 (decimal 40, payoff 3) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 28  SMR
+state 29 (decimal 40, payoff 3) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 29  NASH
+state 30 (decimal 41, payoff 5) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 29  SEQ
+state 30 (decimal 41, payoff 5) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 29  SIM
+state 30 (decimal 41, payoff 5) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 29  GMR
+state 30 (decimal 41, payoff 5) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 29  SMR
+state 30 (decimal 41, payoff 5) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 30  NASH
+state 31 (decimal 64, payoff 1) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 30  SEQ
+state 31 (decimal 64, payoff 1) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 30  SIM
+state 31 (decimal 64, payoff 1) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 30  GMR
+state 31 (decimal 64, payoff 1) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 30  SMR
+state 31 (decimal 64, payoff 1) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 31  NASH
+state 32 (decimal 65, payoff 1) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 31  SEQ
+state 32 (decimal 65, payoff 1) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 31  SIM
+state 32 (decimal 65, payoff 1) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 31  GMR
+state 32 (decimal 65, payoff 1) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 31  SMR
+state 32 (decimal 65, payoff 1) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 32  NASH
+state 33 (decimal 68, payoff 2) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 32  SEQ
+state 33 (decimal 68, payoff 2) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 32  SIM
+state 33 (decimal 68, payoff 2) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 32  GMR
+state 33 (decimal 68, payoff 2) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 32  SMR
+state 33 (decimal 68, payoff 2) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 33  NASH
+state 34 (decimal 69, payoff 2) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 33  SEQ
+state 34 (decimal 69, payoff 2) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 33  SIM
+state 34 (decimal 69, payoff 2) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 33  GMR
+state 34 (decimal 69, payoff 2) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 33  SMR
+state 34 (decimal 69, payoff 2) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 34  NASH
+state 35 (decimal 72, payoff 1) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 34  SEQ
+state 35 (decimal 72, payoff 1) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 34  SIM
+state 35 (decimal 72, payoff 1) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 34  GMR
+state 35 (decimal 72, payoff 1) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 34  SMR
+state 35 (decimal 72, payoff 1) is SMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 35  NASH
+state 36 (decimal 73, payoff 1) is Nash stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 35  SEQ
+state 36 (decimal 73, payoff 1) is SEQ stable for DM CA since they have no UIs from this state.
+
+#DM CA  state 35  SIM
+state 36 (decimal 73, payoff 1) is SIM stable since focal dm CA has no UIs available.
+
+#DM CA  state 35  GMR
+state 36 (decimal 73, payoff 1) is GMR stable since focal DM CA has no UIs available.
+
+#DM CA  state 35  SMR
+state 36 (decimal 73, payoff 1) is SMR stable since focal DM CA has no UIs available.
+
+#DM IJC  state 0  NASH
+state 1 (decimal 0, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 0  SEQ
+state 1 (decimal 0, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 0  SIM
+state 1 (decimal 0, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 0  GMR
+state 1 (decimal 0, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 0  SMR
+state 1 (decimal 0, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 1  NASH
+state 2 (decimal 1, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 1  SEQ
+state 2 (decimal 1, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 1  SIM
+state 2 (decimal 1, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 1  GMR
+state 2 (decimal 1, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 1  SMR
+state 2 (decimal 1, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 2  NASH
+state 3 (decimal 2, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 2  SEQ
+state 3 (decimal 2, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 2  SIM
+state 3 (decimal 2, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 2  GMR
+state 3 (decimal 2, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 2  SMR
+state 3 (decimal 2, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 3  NASH
+state 4 (decimal 3, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 3  SEQ
+state 4 (decimal 3, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 3  SIM
+state 4 (decimal 3, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 3  GMR
+state 4 (decimal 3, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 3  SMR
+state 4 (decimal 3, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 4  NASH
+state 5 (decimal 4, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 4  SEQ
+state 5 (decimal 4, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 4  SIM
+state 5 (decimal 4, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 4  GMR
+state 5 (decimal 4, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 4  SMR
+state 5 (decimal 4, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 5  NASH
+state 6 (decimal 5, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 5  SEQ
+state 6 (decimal 5, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 5  SIM
+state 6 (decimal 5, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 5  GMR
+state 6 (decimal 5, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 5  SMR
+state 6 (decimal 5, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 6  NASH
+state 7 (decimal 6, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 6  SEQ
+state 7 (decimal 6, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 6  SIM
+state 7 (decimal 6, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 6  GMR
+state 7 (decimal 6, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 6  SMR
+state 7 (decimal 6, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 7  NASH
+state 8 (decimal 7, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 7  SEQ
+state 8 (decimal 7, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 7  SIM
+state 8 (decimal 7, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 7  GMR
+state 8 (decimal 7, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 7  SMR
+state 8 (decimal 7, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 8  NASH
+state 9 (decimal 8, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 8  SEQ
+state 9 (decimal 8, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 8  SIM
+state 9 (decimal 8, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 8  GMR
+state 9 (decimal 8, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 8  SMR
+state 9 (decimal 8, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 9  NASH
+state 10 (decimal 9, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 9  SEQ
+state 10 (decimal 9, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 9  SIM
+state 10 (decimal 9, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 9  GMR
+state 10 (decimal 9, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 9  SMR
+state 10 (decimal 9, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 10  NASH
+state 11 (decimal 10, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 10  SEQ
+state 11 (decimal 10, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 10  SIM
+state 11 (decimal 10, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 10  GMR
+state 11 (decimal 10, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 10  SMR
+state 11 (decimal 10, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 11  NASH
+state 12 (decimal 11, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 11  SEQ
+state 12 (decimal 11, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 11  SIM
+state 12 (decimal 11, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 11  GMR
+state 12 (decimal 11, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 11  SMR
+state 12 (decimal 11, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 12  NASH
+state 13 (decimal 16, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 12  SEQ
+state 13 (decimal 16, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 12  SIM
+state 13 (decimal 16, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 12  GMR
+state 13 (decimal 16, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 12  SMR
+state 13 (decimal 16, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 13  NASH
+state 14 (decimal 17, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 13  SEQ
+state 14 (decimal 17, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 13  SIM
+state 14 (decimal 17, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 13  GMR
+state 14 (decimal 17, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 13  SMR
+state 14 (decimal 17, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 14  NASH
+state 15 (decimal 18, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 14  SEQ
+state 15 (decimal 18, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 14  SIM
+state 15 (decimal 18, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 14  GMR
+state 15 (decimal 18, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 14  SMR
+state 15 (decimal 18, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 15  NASH
+state 16 (decimal 19, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 15  SEQ
+state 16 (decimal 19, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 15  SIM
+state 16 (decimal 19, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 15  GMR
+state 16 (decimal 19, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 15  SMR
+state 16 (decimal 19, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 16  NASH
+state 17 (decimal 20, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 16  SEQ
+state 17 (decimal 20, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 16  SIM
+state 17 (decimal 20, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 16  GMR
+state 17 (decimal 20, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 16  SMR
+state 17 (decimal 20, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 17  NASH
+state 18 (decimal 21, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 17  SEQ
+state 18 (decimal 21, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 17  SIM
+state 18 (decimal 21, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 17  GMR
+state 18 (decimal 21, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 17  SMR
+state 18 (decimal 21, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 18  NASH
+state 19 (decimal 22, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 18  SEQ
+state 19 (decimal 22, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 18  SIM
+state 19 (decimal 22, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 18  GMR
+state 19 (decimal 22, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 18  SMR
+state 19 (decimal 22, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 19  NASH
+state 20 (decimal 23, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 19  SEQ
+state 20 (decimal 23, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 19  SIM
+state 20 (decimal 23, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 19  GMR
+state 20 (decimal 23, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 19  SMR
+state 20 (decimal 23, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 20  NASH
+state 21 (decimal 24, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 20  SEQ
+state 21 (decimal 24, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 20  SIM
+state 21 (decimal 24, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 20  GMR
+state 21 (decimal 24, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 20  SMR
+state 21 (decimal 24, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 21  NASH
+state 22 (decimal 25, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 21  SEQ
+state 22 (decimal 25, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 21  SIM
+state 22 (decimal 25, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 21  GMR
+state 22 (decimal 25, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 21  SMR
+state 22 (decimal 25, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 22  NASH
+state 23 (decimal 26, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 22  SEQ
+state 23 (decimal 26, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 22  SIM
+state 23 (decimal 26, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 22  GMR
+state 23 (decimal 26, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 22  SMR
+state 23 (decimal 26, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 23  NASH
+state 24 (decimal 27, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 23  SEQ
+state 24 (decimal 27, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 23  SIM
+state 24 (decimal 27, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 23  GMR
+state 24 (decimal 27, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 23  SMR
+state 24 (decimal 27, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 24  NASH
+state 25 (decimal 32, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 24  SEQ
+state 25 (decimal 32, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 24  SIM
+state 25 (decimal 32, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 24  GMR
+state 25 (decimal 32, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 24  SMR
+state 25 (decimal 32, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 25  NASH
+state 26 (decimal 33, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 25  SEQ
+state 26 (decimal 33, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 25  SIM
+state 26 (decimal 33, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 25  GMR
+state 26 (decimal 33, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 25  SMR
+state 26 (decimal 33, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 26  NASH
+state 27 (decimal 36, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 26  SEQ
+state 27 (decimal 36, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 26  SIM
+state 27 (decimal 36, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 26  GMR
+state 27 (decimal 36, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 26  SMR
+state 27 (decimal 36, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 27  NASH
+state 28 (decimal 37, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 27  SEQ
+state 28 (decimal 37, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 27  SIM
+state 28 (decimal 37, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 27  GMR
+state 28 (decimal 37, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 27  SMR
+state 28 (decimal 37, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 28  NASH
+state 29 (decimal 40, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 28  SEQ
+state 29 (decimal 40, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 28  SIM
+state 29 (decimal 40, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 28  GMR
+state 29 (decimal 40, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 28  SMR
+state 29 (decimal 40, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 29  NASH
+state 30 (decimal 41, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 29  SEQ
+state 30 (decimal 41, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 29  SIM
+state 30 (decimal 41, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 29  GMR
+state 30 (decimal 41, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 29  SMR
+state 30 (decimal 41, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 30  NASH
+state 31 (decimal 64, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 30  SEQ
+state 31 (decimal 64, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 30  SIM
+state 31 (decimal 64, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 30  GMR
+state 31 (decimal 64, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 30  SMR
+state 31 (decimal 64, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 31  NASH
+state 32 (decimal 65, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 31  SEQ
+state 32 (decimal 65, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 31  SIM
+state 32 (decimal 65, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 31  GMR
+state 32 (decimal 65, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 31  SMR
+state 32 (decimal 65, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 32  NASH
+state 33 (decimal 68, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 32  SEQ
+state 33 (decimal 68, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 32  SIM
+state 33 (decimal 68, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 32  GMR
+state 33 (decimal 68, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 32  SMR
+state 33 (decimal 68, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 33  NASH
+state 34 (decimal 69, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 33  SEQ
+state 34 (decimal 69, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 33  SIM
+state 34 (decimal 69, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 33  GMR
+state 34 (decimal 69, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 33  SMR
+state 34 (decimal 69, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 34  NASH
+state 35 (decimal 72, payoff 2) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 34  SEQ
+state 35 (decimal 72, payoff 2) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 34  SIM
+state 35 (decimal 72, payoff 2) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 34  GMR
+state 35 (decimal 72, payoff 2) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 34  SMR
+state 35 (decimal 72, payoff 2) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 35  NASH
+state 36 (decimal 73, payoff 1) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 35  SEQ
+state 36 (decimal 73, payoff 1) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 35  SIM
+state 36 (decimal 73, payoff 1) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 35  GMR
+state 36 (decimal 73, payoff 1) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 35  SMR
+state 36 (decimal 73, payoff 1) is SMR stable since focal DM IJC has no UIs available.
+
+#DM TF  state 0  NASH
+state 1 (decimal 0, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 0  SEQ
+state 1 (decimal 0, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 0  SIM
+state 1 (decimal 0, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 0  GMR
+state 1 (decimal 0, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 0  SMR
+state 1 (decimal 0, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 1  NASH
+state 2 (decimal 1, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 1  SEQ
+state 2 (decimal 1, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 1  SIM
+state 2 (decimal 1, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 1  GMR
+state 2 (decimal 1, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 1  SMR
+state 2 (decimal 1, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 2  NASH
+state 3 (decimal 2, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 2  SEQ
+state 3 (decimal 2, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 2  SIM
+state 3 (decimal 2, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 2  GMR
+state 3 (decimal 2, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 2  SMR
+state 3 (decimal 2, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 3  NASH
+state 4 (decimal 3, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 3  SEQ
+state 4 (decimal 3, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 3  SIM
+state 4 (decimal 3, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 3  GMR
+state 4 (decimal 3, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 3  SMR
+state 4 (decimal 3, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 4  NASH
+state 5 (decimal 4, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 4  SEQ
+state 5 (decimal 4, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 4  SIM
+state 5 (decimal 4, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 4  GMR
+state 5 (decimal 4, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 4  SMR
+state 5 (decimal 4, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 5  NASH
+state 6 (decimal 5, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 5  SEQ
+state 6 (decimal 5, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 5  SIM
+state 6 (decimal 5, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 5  GMR
+state 6 (decimal 5, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 5  SMR
+state 6 (decimal 5, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 6  NASH
+state 7 (decimal 6, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 6  SEQ
+state 7 (decimal 6, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 6  SIM
+state 7 (decimal 6, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 6  GMR
+state 7 (decimal 6, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 6  SMR
+state 7 (decimal 6, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 7  NASH
+state 8 (decimal 7, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 7  SEQ
+state 8 (decimal 7, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 7  SIM
+state 8 (decimal 7, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 7  GMR
+state 8 (decimal 7, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 7  SMR
+state 8 (decimal 7, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 8  NASH
+state 9 (decimal 8, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 8  SEQ
+state 9 (decimal 8, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 8  SIM
+state 9 (decimal 8, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 8  GMR
+state 9 (decimal 8, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 8  SMR
+state 9 (decimal 8, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 9  NASH
+state 10 (decimal 9, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 9  SEQ
+state 10 (decimal 9, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 9  SIM
+state 10 (decimal 9, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 9  GMR
+state 10 (decimal 9, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 9  SMR
+state 10 (decimal 9, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 10  NASH
+state 11 (decimal 10, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 10  SEQ
+state 11 (decimal 10, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 10  SIM
+state 11 (decimal 10, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 10  GMR
+state 11 (decimal 10, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 10  SMR
+state 11 (decimal 10, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 11  NASH
+state 12 (decimal 11, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 11  SEQ
+state 12 (decimal 11, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 11  SIM
+state 12 (decimal 11, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 11  GMR
+state 12 (decimal 11, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 11  SMR
+state 12 (decimal 11, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 12  NASH
+state 13 (decimal 16, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 12  SEQ
+state 13 (decimal 16, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 12  SIM
+state 13 (decimal 16, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 12  GMR
+state 13 (decimal 16, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 12  SMR
+state 13 (decimal 16, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 13  NASH
+state 14 (decimal 17, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 13  SEQ
+state 14 (decimal 17, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 13  SIM
+state 14 (decimal 17, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 13  GMR
+state 14 (decimal 17, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 13  SMR
+state 14 (decimal 17, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 14  NASH
+state 15 (decimal 18, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 14  SEQ
+state 15 (decimal 18, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 14  SIM
+state 15 (decimal 18, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 14  GMR
+state 15 (decimal 18, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 14  SMR
+state 15 (decimal 18, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 15  NASH
+state 16 (decimal 19, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 15  SEQ
+state 16 (decimal 19, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 15  SIM
+state 16 (decimal 19, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 15  GMR
+state 16 (decimal 19, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 15  SMR
+state 16 (decimal 19, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 16  NASH
+state 17 (decimal 20, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 16  SEQ
+state 17 (decimal 20, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 16  SIM
+state 17 (decimal 20, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 16  GMR
+state 17 (decimal 20, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 16  SMR
+state 17 (decimal 20, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 17  NASH
+state 18 (decimal 21, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 17  SEQ
+state 18 (decimal 21, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 17  SIM
+state 18 (decimal 21, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 17  GMR
+state 18 (decimal 21, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 17  SMR
+state 18 (decimal 21, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 18  NASH
+state 19 (decimal 22, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 18  SEQ
+state 19 (decimal 22, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 18  SIM
+state 19 (decimal 22, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 18  GMR
+state 19 (decimal 22, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 18  SMR
+state 19 (decimal 22, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 19  NASH
+state 20 (decimal 23, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 19  SEQ
+state 20 (decimal 23, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 19  SIM
+state 20 (decimal 23, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 19  GMR
+state 20 (decimal 23, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 19  SMR
+state 20 (decimal 23, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 20  NASH
+state 21 (decimal 24, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 20  SEQ
+state 21 (decimal 24, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 20  SIM
+state 21 (decimal 24, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 20  GMR
+state 21 (decimal 24, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 20  SMR
+state 21 (decimal 24, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 21  NASH
+state 22 (decimal 25, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 21  SEQ
+state 22 (decimal 25, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 21  SIM
+state 22 (decimal 25, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 21  GMR
+state 22 (decimal 25, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 21  SMR
+state 22 (decimal 25, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 22  NASH
+state 23 (decimal 26, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 22  SEQ
+state 23 (decimal 26, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 22  SIM
+state 23 (decimal 26, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 22  GMR
+state 23 (decimal 26, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 22  SMR
+state 23 (decimal 26, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 23  NASH
+state 24 (decimal 27, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 23  SEQ
+state 24 (decimal 27, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 23  SIM
+state 24 (decimal 27, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 23  GMR
+state 24 (decimal 27, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 23  SMR
+state 24 (decimal 27, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 24  NASH
+state 25 (decimal 32, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 24  SEQ
+state 25 (decimal 32, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 24  SIM
+state 25 (decimal 32, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 24  GMR
+state 25 (decimal 32, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 24  SMR
+state 25 (decimal 32, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 25  NASH
+state 26 (decimal 33, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 25  SEQ
+state 26 (decimal 33, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 25  SIM
+state 26 (decimal 33, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 25  GMR
+state 26 (decimal 33, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 25  SMR
+state 26 (decimal 33, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 26  NASH
+state 27 (decimal 36, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 26  SEQ
+state 27 (decimal 36, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 26  SIM
+state 27 (decimal 36, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 26  GMR
+state 27 (decimal 36, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 26  SMR
+state 27 (decimal 36, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 27  NASH
+state 28 (decimal 37, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 27  SEQ
+state 28 (decimal 37, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 27  SIM
+state 28 (decimal 37, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 27  GMR
+state 28 (decimal 37, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 27  SMR
+state 28 (decimal 37, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 28  NASH
+state 29 (decimal 40, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 28  SEQ
+state 29 (decimal 40, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 28  SIM
+state 29 (decimal 40, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 28  GMR
+state 29 (decimal 40, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 28  SMR
+state 29 (decimal 40, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 29  NASH
+state 30 (decimal 41, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 29  SEQ
+state 30 (decimal 41, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 29  SIM
+state 30 (decimal 41, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 29  GMR
+state 30 (decimal 41, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 29  SMR
+state 30 (decimal 41, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 30  NASH
+state 31 (decimal 64, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 30  SEQ
+state 31 (decimal 64, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 30  SIM
+state 31 (decimal 64, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 30  GMR
+state 31 (decimal 64, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 30  SMR
+state 31 (decimal 64, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 31  NASH
+state 32 (decimal 65, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 31  SEQ
+state 32 (decimal 65, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 31  SIM
+state 32 (decimal 65, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 31  GMR
+state 32 (decimal 65, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 31  SMR
+state 32 (decimal 65, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 32  NASH
+state 33 (decimal 68, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 32  SEQ
+state 33 (decimal 68, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 32  SIM
+state 33 (decimal 68, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 32  GMR
+state 33 (decimal 68, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 32  SMR
+state 33 (decimal 68, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 33  NASH
+state 34 (decimal 69, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 33  SEQ
+state 34 (decimal 69, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 33  SIM
+state 34 (decimal 69, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 33  GMR
+state 34 (decimal 69, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 33  SMR
+state 34 (decimal 69, payoff 1) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 34  NASH
+state 35 (decimal 72, payoff 2) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 34  SEQ
+state 35 (decimal 72, payoff 2) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 34  SIM
+state 35 (decimal 72, payoff 2) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 34  GMR
+state 35 (decimal 72, payoff 2) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 34  SMR
+state 35 (decimal 72, payoff 2) is SMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 35  NASH
+state 36 (decimal 73, payoff 1) is Nash stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 35  SEQ
+state 36 (decimal 73, payoff 1) is SEQ stable for DM TF since they have no UIs from this state.
+
+#DM TF  state 35  SIM
+state 36 (decimal 73, payoff 1) is SIM stable since focal dm TF has no UIs available.
+
+#DM TF  state 35  GMR
+state 36 (decimal 73, payoff 1) is GMR stable since focal DM TF has no UIs available.
+
+#DM TF  state 35  SMR
+state 36 (decimal 73, payoff 1) is SMR stable since focal DM TF has no UIs available.

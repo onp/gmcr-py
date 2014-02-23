@@ -1,0 +1,298 @@
+
+#DM Syria  state 0  NASH
+state 1 (decimal 0, payoff 6) is Nash stable for DM Syria since they have no UIs from this state.
+
+#DM Syria  state 0  SEQ
+state 1 (decimal 0, payoff 6) is SEQ stable for DM Syria since they have no UIs from this state.
+
+#DM Syria  state 0  SIM
+state 1 (decimal 0, payoff 6) is SIM stable since focal dm Syria has no UIs available.
+
+#DM Syria  state 0  GMR
+state 1 (decimal 0, payoff 6) is GMR stable since focal DM Syria has no UIs available.
+
+#DM Syria  state 0  SMR
+state 1 (decimal 0, payoff 6) is SMR stable since focal DM Syria has no UIs available.
+
+#DM Syria  state 1  NASH
+state 2 (decimal 1, payoff 3) is NOT Nash stable for DM Syria since they have UIs available to: state 1 (decimal 0, payoff 6),state 3 (decimal 2, payoff 5)
+
+#DM Syria  state 1  SEQ
+From state 2 (decimal 1, payoff 3) Syria has UIs available to: state 1 (decimal 0, payoff 6)state 3 (decimal 2, payoff 5) .  Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is SEQ sanctioned for focal DM Syria by a move to state 4 (decimal 4, payoff 2) by other dms.  Check other focal DN UIs for sanctioning... 
+
+state 2 (decimal 1, payoff 3)) is unstable by SEQ for focal DM Syria, since their opponents have no less preferred sanctioning UIs from state 3 (decimal 2, payoff 5)
+
+
+#DM Syria  state 1  SIM
+From state 2 (decimal 1, payoff 3) Syria has UIs available to: state 1 (decimal 0, payoff 6)state 3 (decimal 2, payoff 5) .  Check for sanctioning...
+
+state 2 (decimal 1, payoff 3) is unstable by SIM for focal dm Syria, since their opponents have no UIs from state 2 (decimal 1, payoff 3).
+
+
+#DM Syria  state 1  GMR
+From state 2 (decimal 1, payoff 3) Syria has UIs available to: state 1 (decimal 0, payoff 6)state 3 (decimal 2, payoff 5).   Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is GMR sanctioned for focal DM Syria by a move to state 4 (decimal 4, payoff 2) by other DMs.
+
+state 2 (decimal 1, payoff 3)) is unstable by GMR for focal dm Syria, since their opponents have no less preferred sanctioning UIs from state 3 (decimal 2, payoff 5).
+
+
+#DM Syria  state 1  SMR
+From state 2 (decimal 1, payoff 3) Syria has UIs available to: state 1 (decimal 0, payoff 6)state 3 (decimal 2, payoff 5) .  Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is SMR sanctioned for focal DM Syria by a move to state 4 (decimal 4, payoff 2) by other dms.  Check for possible countermoves...
+
+    The sanctioned state state 4 (decimal 4, payoff 2) can be countermoved to ['state 6 (decimal 6, payoff 4)']. Check other sanctionings...
+
+state 2 (decimal 1, payoff 3)) is unstable by SMR for focal dm Syria, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 0, payoff 6) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Syria  state 2  NASH
+state 3 (decimal 2, payoff 5) is NOT Nash stable for DM Syria since they have UIs available to: state 1 (decimal 0, payoff 6)
+
+#DM Syria  state 2  SEQ
+From state 3 (decimal 2, payoff 5) Syria has UIs available to: state 1 (decimal 0, payoff 6) .  Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is SEQ sanctioned for focal DM Syria by a move to state 4 (decimal 4, payoff 2) by other dms.  Check other focal DN UIs for sanctioning... 
+
+state 3 (decimal 2, payoff 5) is stable by SEQ for focal dm Syria, since all available UIs ['state 1 (decimal 0, payoff 6)'] are sanctioned by other players. 
+
+
+#DM Syria  state 2  SIM
+From state 3 (decimal 2, payoff 5) Syria has UIs available to: state 1 (decimal 0, payoff 6) .  Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is SIM sanctioned for focal DM Syria by a move to state 6 (decimal 6, payoff 4) by other DMs, which would give a final state of state 4 (decimal 4, payoff 2).  Check other focal DM UIs for sanctioning...
+
+state 3 (decimal 2, payoff 5) is stable by SIM for focal DM Syria, since all available UIs ['state 1 (decimal 0, payoff 6)'] are sanctioned by other players.
+
+
+#DM Syria  state 2  GMR
+From state 3 (decimal 2, payoff 5) Syria has UIs available to: state 1 (decimal 0, payoff 6).   Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is GMR sanctioned for focal DM Syria by a move to state 4 (decimal 4, payoff 2) by other DMs.
+
+state 3 (decimal 2, payoff 5) is stable by GMR for focal DM Syria, since all available UIs ['state 1 (decimal 0, payoff 6)']are sanctioned by other players.
+
+
+#DM Syria  state 2  SMR
+From state 3 (decimal 2, payoff 5) Syria has UIs available to: state 1 (decimal 0, payoff 6) .  Check for sanctioning...
+
+A move to state 1 (decimal 0, payoff 6) is SMR sanctioned for focal DM Syria by a move to state 4 (decimal 4, payoff 2) by other dms.  Check for possible countermoves...
+
+    state 1 (decimal 0, payoff 6) remains sanctioned under SMR for focal DM Syria, since they cannot countermove their opponent's sanction to state 4 (decimal 4, payoff 2).
+
+state 3 (decimal 2, payoff 5) is stable by SMR for focal dm Syria, since all available UIs ['state 1 (decimal 0, payoff 6)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM Syria  state 3  NASH
+state 4 (decimal 4, payoff 2) is NOT Nash stable for DM Syria since they have UIs available to: state 6 (decimal 6, payoff 4)
+
+#DM Syria  state 3  SEQ
+From state 4 (decimal 4, payoff 2) Syria has UIs available to: state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 4 (decimal 4, payoff 2) is unstable by SEQ for focal DM Syria, since their opponents have no UIs from state 6 (decimal 6, payoff 4)
+
+
+#DM Syria  state 3  SIM
+From state 4 (decimal 4, payoff 2) Syria has UIs available to: state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 4 (decimal 4, payoff 2) is unstable by SIM for focal dm Syria, since their opponents have no UIs from state 4 (decimal 4, payoff 2).
+
+
+#DM Syria  state 3  GMR
+From state 4 (decimal 4, payoff 2) Syria has UIs available to: state 6 (decimal 6, payoff 4).   Check for sanctioning...
+
+state 4 (decimal 4, payoff 2)) is unstable by GMR for focal dm Syria, since their opponents have no less preferred sanctioning UIs from state 6 (decimal 6, payoff 4).
+
+
+#DM Syria  state 3  SMR
+From state 4 (decimal 4, payoff 2) Syria has UIs available to: state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 4 (decimal 4, payoff 2)) is unstable by SMR for focal dm Syria, since their opponents have no less preferred sanctioning UIs from state 6 (decimal 6, payoff 4) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Syria  state 4  NASH
+state 5 (decimal 5, payoff 1) is NOT Nash stable for DM Syria since they have UIs available to: state 4 (decimal 4, payoff 2),state 6 (decimal 6, payoff 4)
+
+#DM Syria  state 4  SEQ
+From state 5 (decimal 5, payoff 1) Syria has UIs available to: state 4 (decimal 4, payoff 2)state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 5 (decimal 5, payoff 1) is unstable by SEQ for focal DM Syria, since their opponents have no UIs from state 4 (decimal 4, payoff 2)
+
+
+#DM Syria  state 4  SIM
+From state 5 (decimal 5, payoff 1) Syria has UIs available to: state 4 (decimal 4, payoff 2)state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 5 (decimal 5, payoff 1)) is unstable by SIM for focal DM Syria, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 4, payoff 2).
+
+
+#DM Syria  state 4  GMR
+From state 5 (decimal 5, payoff 1) Syria has UIs available to: state 4 (decimal 4, payoff 2)state 6 (decimal 6, payoff 4).   Check for sanctioning...
+
+state 5 (decimal 5, payoff 1)) is unstable by GMR for focal dm Syria, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 4, payoff 2).
+
+
+#DM Syria  state 4  SMR
+From state 5 (decimal 5, payoff 1) Syria has UIs available to: state 4 (decimal 4, payoff 2)state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 5 (decimal 5, payoff 1)) is unstable by SMR for focal dm Syria, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 4, payoff 2) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Syria  state 5  NASH
+state 6 (decimal 6, payoff 4) is Nash stable for DM Syria since they have no UIs from this state.
+
+#DM Syria  state 5  SEQ
+state 6 (decimal 6, payoff 4) is SEQ stable for DM Syria since they have no UIs from this state.
+
+#DM Syria  state 5  SIM
+state 6 (decimal 6, payoff 4) is SIM stable since focal dm Syria has no UIs available.
+
+#DM Syria  state 5  GMR
+state 6 (decimal 6, payoff 4) is GMR stable since focal DM Syria has no UIs available.
+
+#DM Syria  state 5  SMR
+state 6 (decimal 6, payoff 4) is SMR stable since focal DM Syria has no UIs available.
+
+#DM Iraq  state 0  NASH
+state 1 (decimal 0, payoff 3) is NOT Nash stable for DM Iraq since they have UIs available to: state 4 (decimal 4, payoff 5)
+
+#DM Iraq  state 0  SEQ
+From state 1 (decimal 0, payoff 3) Iraq has UIs available to: state 4 (decimal 4, payoff 5) .  Check for sanctioning...
+
+state 1 (decimal 0, payoff 3)) is unstable by SEQ for focal DM Iraq, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 4, payoff 5)
+
+
+#DM Iraq  state 0  SIM
+From state 1 (decimal 0, payoff 3) Iraq has UIs available to: state 4 (decimal 4, payoff 5) .  Check for sanctioning...
+
+state 1 (decimal 0, payoff 3) is unstable by SIM for focal dm Iraq, since their opponents have no UIs from state 1 (decimal 0, payoff 3).
+
+
+#DM Iraq  state 0  GMR
+From state 1 (decimal 0, payoff 3) Iraq has UIs available to: state 4 (decimal 4, payoff 5).   Check for sanctioning...
+
+A move to state 4 (decimal 4, payoff 5) is GMR sanctioned for focal DM Iraq by a move to state 5 (decimal 5, payoff 2) by other DMs.
+
+state 1 (decimal 0, payoff 3) is stable by GMR for focal DM Iraq, since all available UIs ['state 4 (decimal 4, payoff 5)']are sanctioned by other players.
+
+
+#DM Iraq  state 0  SMR
+From state 1 (decimal 0, payoff 3) Iraq has UIs available to: state 4 (decimal 4, payoff 5) .  Check for sanctioning...
+
+A move to state 4 (decimal 4, payoff 5) is SMR sanctioned for focal DM Iraq by a move to state 5 (decimal 5, payoff 2) by other dms.  Check for possible countermoves...
+
+    The sanctioned state state 5 (decimal 5, payoff 2) can be countermoved to ['state 2 (decimal 1, payoff 6)']. Check other sanctionings...
+
+state 1 (decimal 0, payoff 3)) is unstable by SMR for focal dm Iraq, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 4, payoff 5) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Iraq  state 1  NASH
+state 2 (decimal 1, payoff 6) is Nash stable for DM Iraq since they have no UIs from this state.
+
+#DM Iraq  state 1  SEQ
+state 2 (decimal 1, payoff 6) is SEQ stable for DM Iraq since they have no UIs from this state.
+
+#DM Iraq  state 1  SIM
+state 2 (decimal 1, payoff 6) is SIM stable since focal dm Iraq has no UIs available.
+
+#DM Iraq  state 1  GMR
+state 2 (decimal 1, payoff 6) is GMR stable since focal DM Iraq has no UIs available.
+
+#DM Iraq  state 1  SMR
+state 2 (decimal 1, payoff 6) is SMR stable since focal DM Iraq has no UIs available.
+
+#DM Iraq  state 2  NASH
+state 3 (decimal 2, payoff 1) is NOT Nash stable for DM Iraq since they have UIs available to: state 6 (decimal 6, payoff 4)
+
+#DM Iraq  state 2  SEQ
+From state 3 (decimal 2, payoff 1) Iraq has UIs available to: state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 1) is unstable by SEQ for focal DM Iraq, since their opponents have no UIs from state 6 (decimal 6, payoff 4)
+
+
+#DM Iraq  state 2  SIM
+From state 3 (decimal 2, payoff 1) Iraq has UIs available to: state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 1)) is unstable by SIM for focal DM Iraq, since their opponents have no less preferred sanctioning UIs from state 6 (decimal 6, payoff 4).
+
+
+#DM Iraq  state 2  GMR
+From state 3 (decimal 2, payoff 1) Iraq has UIs available to: state 6 (decimal 6, payoff 4).   Check for sanctioning...
+
+state 3 (decimal 2, payoff 1)) is unstable by GMR for focal dm Iraq, since their opponents have no less preferred sanctioning UIs from state 6 (decimal 6, payoff 4).
+
+
+#DM Iraq  state 2  SMR
+From state 3 (decimal 2, payoff 1) Iraq has UIs available to: state 6 (decimal 6, payoff 4) .  Check for sanctioning...
+
+state 3 (decimal 2, payoff 1)) is unstable by SMR for focal dm Iraq, since their opponents have no less preferred sanctioning UIs from state 6 (decimal 6, payoff 4) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Iraq  state 3  NASH
+state 4 (decimal 4, payoff 5) is Nash stable for DM Iraq since they have no UIs from this state.
+
+#DM Iraq  state 3  SEQ
+state 4 (decimal 4, payoff 5) is SEQ stable for DM Iraq since they have no UIs from this state.
+
+#DM Iraq  state 3  SIM
+state 4 (decimal 4, payoff 5) is SIM stable since focal dm Iraq has no UIs available.
+
+#DM Iraq  state 3  GMR
+state 4 (decimal 4, payoff 5) is GMR stable since focal DM Iraq has no UIs available.
+
+#DM Iraq  state 3  SMR
+state 4 (decimal 4, payoff 5) is SMR stable since focal DM Iraq has no UIs available.
+
+#DM Iraq  state 4  NASH
+state 5 (decimal 5, payoff 2) is NOT Nash stable for DM Iraq since they have UIs available to: state 2 (decimal 1, payoff 6)
+
+#DM Iraq  state 4  SEQ
+From state 5 (decimal 5, payoff 2) Iraq has UIs available to: state 2 (decimal 1, payoff 6) .  Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 6) is SEQ sanctioned for focal DM Iraq by a move to state 3 (decimal 2, payoff 1) by other dms.  Check other focal DN UIs for sanctioning... 
+
+state 5 (decimal 5, payoff 2) is stable by SEQ for focal dm Iraq, since all available UIs ['state 2 (decimal 1, payoff 6)'] are sanctioned by other players. 
+
+
+#DM Iraq  state 4  SIM
+From state 5 (decimal 5, payoff 2) Iraq has UIs available to: state 2 (decimal 1, payoff 6) .  Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 6) is SIM sanctioned for focal DM Iraq by a move to state 6 (decimal 6, payoff 4) by other DMs, which would give a final state of state 3 (decimal 2, payoff 1).  Check other focal DM UIs for sanctioning...
+
+state 5 (decimal 5, payoff 2) is stable by SIM for focal DM Iraq, since all available UIs ['state 2 (decimal 1, payoff 6)'] are sanctioned by other players.
+
+
+#DM Iraq  state 4  GMR
+From state 5 (decimal 5, payoff 2) Iraq has UIs available to: state 2 (decimal 1, payoff 6).   Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 6) is GMR sanctioned for focal DM Iraq by a move to state 3 (decimal 2, payoff 1) by other DMs.
+
+state 5 (decimal 5, payoff 2) is stable by GMR for focal DM Iraq, since all available UIs ['state 2 (decimal 1, payoff 6)']are sanctioned by other players.
+
+
+#DM Iraq  state 4  SMR
+From state 5 (decimal 5, payoff 2) Iraq has UIs available to: state 2 (decimal 1, payoff 6) .  Check for sanctioning...
+
+A move to state 2 (decimal 1, payoff 6) is SMR sanctioned for focal DM Iraq by a move to state 3 (decimal 2, payoff 1) by other dms.  Check for possible countermoves...
+
+    The sanctioned state state 3 (decimal 2, payoff 1) can be countermoved to ['state 6 (decimal 6, payoff 4)']. Check other sanctionings...
+
+state 5 (decimal 5, payoff 2)) is unstable by SMR for focal dm Iraq, since their opponents have no less preferred sanctioning UIs from state 2 (decimal 1, payoff 6) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Iraq  state 5  NASH
+state 6 (decimal 6, payoff 4) is Nash stable for DM Iraq since they have no UIs from this state.
+
+#DM Iraq  state 5  SEQ
+state 6 (decimal 6, payoff 4) is SEQ stable for DM Iraq since they have no UIs from this state.
+
+#DM Iraq  state 5  SIM
+state 6 (decimal 6, payoff 4) is SIM stable since focal dm Iraq has no UIs available.
+
+#DM Iraq  state 5  GMR
+state 6 (decimal 6, payoff 4) is GMR stable since focal DM Iraq has no UIs available.
+
+#DM Iraq  state 5  SMR
+state 6 (decimal 6, payoff 4) is SMR stable since focal DM Iraq has no UIs available.

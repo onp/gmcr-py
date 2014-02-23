@@ -61,8 +61,6 @@ class DecisionMaker:
         if self.conflict.useManualPreferenceVectors:
             self.payoffs = gmcrUtil.mapPrefVec2Payoffs(self.preferenceVector,self.conflict.feasibles)
         else:
-            print("\nvalidating preferences for "+self.name)
-            print([pref.name for pref in self.preferences])
             self.preferences.validate()
             self.weightPreferences()
             result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)
@@ -113,14 +111,8 @@ class Condition:
         """Returns false if one of the options the condition depends on has been removed form the game."""
         for opt in self.options:
             if opt not in self.conflict.options:
-                print("Condition " + self.name + " became invalid and was removed from the conflict.")
                 return False
-        oldName = self.name
         self.updateName()
-        if oldName != self.name:
-            print(oldName+' was changed to '+self.name)
-        else:
-            print(self.name+' was valid.')
         return True
         
     def export_rep(self):
@@ -177,14 +169,8 @@ class CompoundCondition:
         """Returns False if one of the options the condition depends on has been removed form the game."""
         for cond in self.conditions:
             if not cond.isValid():
-                print("Condition " + self.name + " became invalid and was removed from the conflict.")
                 return False
-        oldName = self.name
         self.updateName()
-        if oldName != self.name:
-            print(oldName+' was changed to '+self.name)
-        else:
-            print(self.name+' was valid.')
         return True
     
     def export_rep(self,state):
@@ -385,6 +371,9 @@ class FeasibleList:
     
     def __len__(self):
         return len(self.decimal)
+        
+    def __iter__(self):
+        return iter(range(len(self.decimal)))
 
 class Coalition:
     """Combination of two or more decision makers. Has equivalent interfaces."""
@@ -506,7 +495,6 @@ class ConflictModel:
     def breakingChange(self):
         self.useManualPreferenceVectors = False
         self.reorderOptionsByDM()
-        print("\nvalidating infeasible conditions.")
         self.infeasibles.validate()
         self.recalculateFeasibleStates()
         for dm in self.decisionMakers:

@@ -1,0 +1,1710 @@
+
+#DM US Support  state 0  NASH
+state 1 (decimal 34, payoff 21) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 0  SEQ
+state 1 (decimal 34, payoff 21) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 0  SIM
+state 1 (decimal 34, payoff 21) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 0  GMR
+state 1 (decimal 34, payoff 21) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 0  SMR
+state 1 (decimal 34, payoff 21) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 1  NASH
+state 2 (decimal 36, payoff 21) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 1  SEQ
+state 2 (decimal 36, payoff 21) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 1  SIM
+state 2 (decimal 36, payoff 21) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 1  GMR
+state 2 (decimal 36, payoff 21) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 1  SMR
+state 2 (decimal 36, payoff 21) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 2  NASH
+state 3 (decimal 41, payoff 23) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 2  SEQ
+state 3 (decimal 41, payoff 23) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 2  SIM
+state 3 (decimal 41, payoff 23) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 2  GMR
+state 3 (decimal 41, payoff 23) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 2  SMR
+state 3 (decimal 41, payoff 23) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 3  NASH
+state 4 (decimal 42, payoff 20) is NOT Nash stable for DM US Support since they have UIs available to: state 3 (decimal 41, payoff 23)
+
+#DM US Support  state 3  SEQ
+From state 4 (decimal 42, payoff 20) US Support has UIs available to: state 3 (decimal 41, payoff 23) .  Check for sanctioning...
+
+state 4 (decimal 42, payoff 20) is unstable by SEQ for focal DM US Support, since their opponents have no UIs from state 3 (decimal 41, payoff 23)
+
+
+#DM US Support  state 3  SIM
+From state 4 (decimal 42, payoff 20) US Support has UIs available to: state 3 (decimal 41, payoff 23) .  Check for sanctioning...
+
+state 4 (decimal 42, payoff 20) is unstable by SIM for focal dm US Support, since their opponents have no UIs from state 4 (decimal 42, payoff 20).
+
+
+#DM US Support  state 3  GMR
+From state 4 (decimal 42, payoff 20) US Support has UIs available to: state 3 (decimal 41, payoff 23).   Check for sanctioning...
+
+state 4 (decimal 42, payoff 20)) is unstable by GMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 3 (decimal 41, payoff 23).
+
+
+#DM US Support  state 3  SMR
+From state 4 (decimal 42, payoff 20) US Support has UIs available to: state 3 (decimal 41, payoff 23) .  Check for sanctioning...
+
+state 4 (decimal 42, payoff 20)) is unstable by SMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 3 (decimal 41, payoff 23) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Support  state 4  NASH
+state 5 (decimal 50, payoff 19) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 4  SEQ
+state 5 (decimal 50, payoff 19) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 4  SIM
+state 5 (decimal 50, payoff 19) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 4  GMR
+state 5 (decimal 50, payoff 19) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 4  SMR
+state 5 (decimal 50, payoff 19) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 5  NASH
+state 6 (decimal 52, payoff 19) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 5  SEQ
+state 6 (decimal 52, payoff 19) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 5  SIM
+state 6 (decimal 52, payoff 19) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 5  GMR
+state 6 (decimal 52, payoff 19) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 5  SMR
+state 6 (decimal 52, payoff 19) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 6  NASH
+state 7 (decimal 57, payoff 22) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 6  SEQ
+state 7 (decimal 57, payoff 22) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 6  SIM
+state 7 (decimal 57, payoff 22) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 6  GMR
+state 7 (decimal 57, payoff 22) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 6  SMR
+state 7 (decimal 57, payoff 22) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 7  NASH
+state 8 (decimal 58, payoff 18) is NOT Nash stable for DM US Support since they have UIs available to: state 7 (decimal 57, payoff 22)
+
+#DM US Support  state 7  SEQ
+From state 8 (decimal 58, payoff 18) US Support has UIs available to: state 7 (decimal 57, payoff 22) .  Check for sanctioning...
+
+state 8 (decimal 58, payoff 18)) is unstable by SEQ for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 7 (decimal 57, payoff 22)
+
+
+#DM US Support  state 7  SIM
+From state 8 (decimal 58, payoff 18) US Support has UIs available to: state 7 (decimal 57, payoff 22) .  Check for sanctioning...
+
+state 8 (decimal 58, payoff 18)) is unstable by SIM for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 7 (decimal 57, payoff 22).
+
+
+#DM US Support  state 7  GMR
+From state 8 (decimal 58, payoff 18) US Support has UIs available to: state 7 (decimal 57, payoff 22).   Check for sanctioning...
+
+A move to state 7 (decimal 57, payoff 22) is GMR sanctioned for focal DM US Support by a move to state 14 (decimal 89, payoff 11) by other DMs.
+
+state 8 (decimal 58, payoff 18) is stable by GMR for focal DM US Support, since all available UIs ['state 7 (decimal 57, payoff 22)']are sanctioned by other players.
+
+
+#DM US Support  state 7  SMR
+From state 8 (decimal 58, payoff 18) US Support has UIs available to: state 7 (decimal 57, payoff 22) .  Check for sanctioning...
+
+A move to state 7 (decimal 57, payoff 22) is SMR sanctioned for focal DM US Support by a move to state 14 (decimal 89, payoff 11) by other dms.  Check for possible countermoves...
+
+    state 7 (decimal 57, payoff 22) remains sanctioned under SMR for focal DM US Support, since they cannot countermove their opponent's sanction to state 14 (decimal 89, payoff 11).
+
+state 8 (decimal 58, payoff 18) is stable by SMR for focal dm US Support, since all available UIs ['state 7 (decimal 57, payoff 22)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM US Support  state 8  NASH
+state 9 (decimal 66, payoff 17) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 8  SEQ
+state 9 (decimal 66, payoff 17) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 8  SIM
+state 9 (decimal 66, payoff 17) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 8  GMR
+state 9 (decimal 66, payoff 17) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 8  SMR
+state 9 (decimal 66, payoff 17) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 9  NASH
+state 10 (decimal 68, payoff 13) is NOT Nash stable for DM US Support since they have UIs available to: state 9 (decimal 66, payoff 17)
+
+#DM US Support  state 9  SEQ
+From state 10 (decimal 68, payoff 13) US Support has UIs available to: state 9 (decimal 66, payoff 17) .  Check for sanctioning...
+
+state 10 (decimal 68, payoff 13)) is unstable by SEQ for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 9 (decimal 66, payoff 17)
+
+
+#DM US Support  state 9  SIM
+From state 10 (decimal 68, payoff 13) US Support has UIs available to: state 9 (decimal 66, payoff 17) .  Check for sanctioning...
+
+state 10 (decimal 68, payoff 13) is unstable by SIM for focal dm US Support, since their opponents have no UIs from state 10 (decimal 68, payoff 13).
+
+
+#DM US Support  state 9  GMR
+From state 10 (decimal 68, payoff 13) US Support has UIs available to: state 9 (decimal 66, payoff 17).   Check for sanctioning...
+
+state 10 (decimal 68, payoff 13)) is unstable by GMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 9 (decimal 66, payoff 17).
+
+
+#DM US Support  state 9  SMR
+From state 10 (decimal 68, payoff 13) US Support has UIs available to: state 9 (decimal 66, payoff 17) .  Check for sanctioning...
+
+state 10 (decimal 68, payoff 13)) is unstable by SMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 9 (decimal 66, payoff 17) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Support  state 10  NASH
+state 11 (decimal 74, payoff 15) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 10  SEQ
+state 11 (decimal 74, payoff 15) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 10  SIM
+state 11 (decimal 74, payoff 15) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 10  GMR
+state 11 (decimal 74, payoff 15) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 10  SMR
+state 11 (decimal 74, payoff 15) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 11  NASH
+state 12 (decimal 82, payoff 16) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 11  SEQ
+state 12 (decimal 82, payoff 16) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 11  SIM
+state 12 (decimal 82, payoff 16) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 11  GMR
+state 12 (decimal 82, payoff 16) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 11  SMR
+state 12 (decimal 82, payoff 16) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 12  NASH
+state 13 (decimal 84, payoff 12) is NOT Nash stable for DM US Support since they have UIs available to: state 12 (decimal 82, payoff 16)
+
+#DM US Support  state 12  SEQ
+From state 13 (decimal 84, payoff 12) US Support has UIs available to: state 12 (decimal 82, payoff 16) .  Check for sanctioning...
+
+state 13 (decimal 84, payoff 12)) is unstable by SEQ for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 12 (decimal 82, payoff 16)
+
+
+#DM US Support  state 12  SIM
+From state 13 (decimal 84, payoff 12) US Support has UIs available to: state 12 (decimal 82, payoff 16) .  Check for sanctioning...
+
+state 13 (decimal 84, payoff 12)) is unstable by SIM for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 12 (decimal 82, payoff 16).
+
+
+#DM US Support  state 12  GMR
+From state 13 (decimal 84, payoff 12) US Support has UIs available to: state 12 (decimal 82, payoff 16).   Check for sanctioning...
+
+A move to state 12 (decimal 82, payoff 16) is GMR sanctioned for focal DM US Support by a move to state 16 (decimal 146, payoff 9) by other DMs.
+
+state 13 (decimal 84, payoff 12) is stable by GMR for focal DM US Support, since all available UIs ['state 12 (decimal 82, payoff 16)']are sanctioned by other players.
+
+
+#DM US Support  state 12  SMR
+From state 13 (decimal 84, payoff 12) US Support has UIs available to: state 12 (decimal 82, payoff 16) .  Check for sanctioning...
+
+A move to state 12 (decimal 82, payoff 16) is SMR sanctioned for focal DM US Support by a move to state 16 (decimal 146, payoff 9) by other dms.  Check for possible countermoves...
+
+    state 12 (decimal 82, payoff 16) remains sanctioned under SMR for focal DM US Support, since they cannot countermove their opponent's sanction to state 16 (decimal 146, payoff 9).
+
+state 13 (decimal 84, payoff 12) is stable by SMR for focal dm US Support, since all available UIs ['state 12 (decimal 82, payoff 16)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM US Support  state 13  NASH
+state 14 (decimal 89, payoff 11) is NOT Nash stable for DM US Support since they have UIs available to: state 15 (decimal 90, payoff 14)
+
+#DM US Support  state 13  SEQ
+From state 14 (decimal 89, payoff 11) US Support has UIs available to: state 15 (decimal 90, payoff 14) .  Check for sanctioning...
+
+state 14 (decimal 89, payoff 11)) is unstable by SEQ for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 15 (decimal 90, payoff 14)
+
+
+#DM US Support  state 13  SIM
+From state 14 (decimal 89, payoff 11) US Support has UIs available to: state 15 (decimal 90, payoff 14) .  Check for sanctioning...
+
+state 14 (decimal 89, payoff 11) is unstable by SIM for focal dm US Support, since their opponents have no UIs from state 14 (decimal 89, payoff 11).
+
+
+#DM US Support  state 13  GMR
+From state 14 (decimal 89, payoff 11) US Support has UIs available to: state 15 (decimal 90, payoff 14).   Check for sanctioning...
+
+A move to state 15 (decimal 90, payoff 14) is GMR sanctioned for focal DM US Support by a move to state 19 (decimal 154, payoff 7) by other DMs.
+
+state 14 (decimal 89, payoff 11) is stable by GMR for focal DM US Support, since all available UIs ['state 15 (decimal 90, payoff 14)']are sanctioned by other players.
+
+
+#DM US Support  state 13  SMR
+From state 14 (decimal 89, payoff 11) US Support has UIs available to: state 15 (decimal 90, payoff 14) .  Check for sanctioning...
+
+A move to state 15 (decimal 90, payoff 14) is SMR sanctioned for focal DM US Support by a move to state 19 (decimal 154, payoff 7) by other dms.  Check for possible countermoves...
+
+    state 15 (decimal 90, payoff 14) remains sanctioned under SMR for focal DM US Support, since they cannot countermove their opponent's sanction to state 19 (decimal 154, payoff 7).
+
+state 14 (decimal 89, payoff 11) is stable by SMR for focal dm US Support, since all available UIs ['state 15 (decimal 90, payoff 14)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM US Support  state 14  NASH
+state 15 (decimal 90, payoff 14) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 14  SEQ
+state 15 (decimal 90, payoff 14) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 14  SIM
+state 15 (decimal 90, payoff 14) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 14  GMR
+state 15 (decimal 90, payoff 14) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 14  SMR
+state 15 (decimal 90, payoff 14) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 15  NASH
+state 16 (decimal 146, payoff 9) is NOT Nash stable for DM US Support since they have UIs available to: state 17 (decimal 148, payoff 10)
+
+#DM US Support  state 15  SEQ
+From state 16 (decimal 146, payoff 9) US Support has UIs available to: state 17 (decimal 148, payoff 10) .  Check for sanctioning...
+
+state 16 (decimal 146, payoff 9) is unstable by SEQ for focal DM US Support, since their opponents have no UIs from state 17 (decimal 148, payoff 10)
+
+
+#DM US Support  state 15  SIM
+From state 16 (decimal 146, payoff 9) US Support has UIs available to: state 17 (decimal 148, payoff 10) .  Check for sanctioning...
+
+Simultaneous moves towards 16 and 18 are not possible since the resultant state is infeasible.
+
+state 16 (decimal 146, payoff 9)) is unstable by SIM for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 17 (decimal 148, payoff 10).
+
+
+#DM US Support  state 15  GMR
+From state 16 (decimal 146, payoff 9) US Support has UIs available to: state 17 (decimal 148, payoff 10).   Check for sanctioning...
+
+A move to state 17 (decimal 148, payoff 10) is GMR sanctioned for focal DM US Support by a move to state 21 (decimal 276, payoff 6) by other DMs.
+
+state 16 (decimal 146, payoff 9) is stable by GMR for focal DM US Support, since all available UIs ['state 17 (decimal 148, payoff 10)']are sanctioned by other players.
+
+
+#DM US Support  state 15  SMR
+From state 16 (decimal 146, payoff 9) US Support has UIs available to: state 17 (decimal 148, payoff 10) .  Check for sanctioning...
+
+A move to state 17 (decimal 148, payoff 10) is SMR sanctioned for focal DM US Support by a move to state 21 (decimal 276, payoff 6) by other dms.  Check for possible countermoves...
+
+    state 17 (decimal 148, payoff 10) remains sanctioned under SMR for focal DM US Support, since they cannot countermove their opponent's sanction to state 21 (decimal 276, payoff 6).
+
+state 16 (decimal 146, payoff 9) is stable by SMR for focal dm US Support, since all available UIs ['state 17 (decimal 148, payoff 10)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM US Support  state 16  NASH
+state 17 (decimal 148, payoff 10) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 16  SEQ
+state 17 (decimal 148, payoff 10) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 16  SIM
+state 17 (decimal 148, payoff 10) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 16  GMR
+state 17 (decimal 148, payoff 10) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 16  SMR
+state 17 (decimal 148, payoff 10) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 17  NASH
+state 18 (decimal 153, payoff 8) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 17  SEQ
+state 18 (decimal 153, payoff 8) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 17  SIM
+state 18 (decimal 153, payoff 8) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 17  GMR
+state 18 (decimal 153, payoff 8) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 17  SMR
+state 18 (decimal 153, payoff 8) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 18  NASH
+state 19 (decimal 154, payoff 7) is NOT Nash stable for DM US Support since they have UIs available to: state 18 (decimal 153, payoff 8)
+
+#DM US Support  state 18  SEQ
+From state 19 (decimal 154, payoff 7) US Support has UIs available to: state 18 (decimal 153, payoff 8) .  Check for sanctioning...
+
+state 19 (decimal 154, payoff 7) is unstable by SEQ for focal DM US Support, since their opponents have no UIs from state 18 (decimal 153, payoff 8)
+
+
+#DM US Support  state 18  SIM
+From state 19 (decimal 154, payoff 7) US Support has UIs available to: state 18 (decimal 153, payoff 8) .  Check for sanctioning...
+
+state 19 (decimal 154, payoff 7) is unstable by SIM for focal dm US Support, since their opponents have no UIs from state 19 (decimal 154, payoff 7).
+
+
+#DM US Support  state 18  GMR
+From state 19 (decimal 154, payoff 7) US Support has UIs available to: state 18 (decimal 153, payoff 8).   Check for sanctioning...
+
+A move to state 18 (decimal 153, payoff 8) is GMR sanctioned for focal DM US Support by a move to state 22 (decimal 281, payoff 4) by other DMs.
+
+state 19 (decimal 154, payoff 7) is stable by GMR for focal DM US Support, since all available UIs ['state 18 (decimal 153, payoff 8)']are sanctioned by other players.
+
+
+#DM US Support  state 18  SMR
+From state 19 (decimal 154, payoff 7) US Support has UIs available to: state 18 (decimal 153, payoff 8) .  Check for sanctioning...
+
+A move to state 18 (decimal 153, payoff 8) is SMR sanctioned for focal DM US Support by a move to state 22 (decimal 281, payoff 4) by other dms.  Check for possible countermoves...
+
+    state 18 (decimal 153, payoff 8) remains sanctioned under SMR for focal DM US Support, since they cannot countermove their opponent's sanction to state 22 (decimal 281, payoff 4).
+
+state 19 (decimal 154, payoff 7) is stable by SMR for focal dm US Support, since all available UIs ['state 18 (decimal 153, payoff 8)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM US Support  state 19  NASH
+state 20 (decimal 274, payoff 5) is NOT Nash stable for DM US Support since they have UIs available to: state 21 (decimal 276, payoff 6)
+
+#DM US Support  state 19  SEQ
+From state 20 (decimal 274, payoff 5) US Support has UIs available to: state 21 (decimal 276, payoff 6) .  Check for sanctioning...
+
+state 20 (decimal 274, payoff 5) is unstable by SEQ for focal DM US Support, since their opponents have no UIs from state 21 (decimal 276, payoff 6)
+
+
+#DM US Support  state 19  SIM
+From state 20 (decimal 274, payoff 5) US Support has UIs available to: state 21 (decimal 276, payoff 6) .  Check for sanctioning...
+
+Simultaneous moves towards 20 and 22 are not possible since the resultant state is infeasible.
+
+state 20 (decimal 274, payoff 5)) is unstable by SIM for focal DM US Support, since their opponents have no less preferred sanctioning UIs from state 21 (decimal 276, payoff 6).
+
+
+#DM US Support  state 19  GMR
+From state 20 (decimal 274, payoff 5) US Support has UIs available to: state 21 (decimal 276, payoff 6).   Check for sanctioning...
+
+state 20 (decimal 274, payoff 5)) is unstable by GMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 21 (decimal 276, payoff 6).
+
+
+#DM US Support  state 19  SMR
+From state 20 (decimal 274, payoff 5) US Support has UIs available to: state 21 (decimal 276, payoff 6) .  Check for sanctioning...
+
+state 20 (decimal 274, payoff 5)) is unstable by SMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 21 (decimal 276, payoff 6) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Support  state 20  NASH
+state 21 (decimal 276, payoff 6) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 20  SEQ
+state 21 (decimal 276, payoff 6) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 20  SIM
+state 21 (decimal 276, payoff 6) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 20  GMR
+state 21 (decimal 276, payoff 6) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 20  SMR
+state 21 (decimal 276, payoff 6) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 21  NASH
+state 22 (decimal 281, payoff 4) is Nash stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 21  SEQ
+state 22 (decimal 281, payoff 4) is SEQ stable for DM US Support since they have no UIs from this state.
+
+#DM US Support  state 21  SIM
+state 22 (decimal 281, payoff 4) is SIM stable since focal dm US Support has no UIs available.
+
+#DM US Support  state 21  GMR
+state 22 (decimal 281, payoff 4) is GMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 21  SMR
+state 22 (decimal 281, payoff 4) is SMR stable since focal DM US Support has no UIs available.
+
+#DM US Support  state 22  NASH
+state 23 (decimal 282, payoff 3) is NOT Nash stable for DM US Support since they have UIs available to: state 22 (decimal 281, payoff 4)
+
+#DM US Support  state 22  SEQ
+From state 23 (decimal 282, payoff 3) US Support has UIs available to: state 22 (decimal 281, payoff 4) .  Check for sanctioning...
+
+state 23 (decimal 282, payoff 3) is unstable by SEQ for focal DM US Support, since their opponents have no UIs from state 22 (decimal 281, payoff 4)
+
+
+#DM US Support  state 22  SIM
+From state 23 (decimal 282, payoff 3) US Support has UIs available to: state 22 (decimal 281, payoff 4) .  Check for sanctioning...
+
+state 23 (decimal 282, payoff 3) is unstable by SIM for focal dm US Support, since their opponents have no UIs from state 23 (decimal 282, payoff 3).
+
+
+#DM US Support  state 22  GMR
+From state 23 (decimal 282, payoff 3) US Support has UIs available to: state 22 (decimal 281, payoff 4).   Check for sanctioning...
+
+state 23 (decimal 282, payoff 3)) is unstable by GMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 22 (decimal 281, payoff 4).
+
+
+#DM US Support  state 22  SMR
+From state 23 (decimal 282, payoff 3) US Support has UIs available to: state 22 (decimal 281, payoff 4) .  Check for sanctioning...
+
+state 23 (decimal 282, payoff 3)) is unstable by SMR for focal dm US Support, since their opponents have no less preferred sanctioning UIs from state 22 (decimal 281, payoff 4) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 0  NASH
+state 1 (decimal 34, payoff 7) is NOT Nash stable for DM US Opposition since they have UIs available to: state 4 (decimal 42, payoff 18)
+
+#DM US Opposition  state 0  SEQ
+From state 1 (decimal 34, payoff 7) US Opposition has UIs available to: state 4 (decimal 42, payoff 18) .  Check for sanctioning...
+
+state 1 (decimal 34, payoff 7)) is unstable by SEQ for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 42, payoff 18)
+
+
+#DM US Opposition  state 0  SIM
+From state 1 (decimal 34, payoff 7) US Opposition has UIs available to: state 4 (decimal 42, payoff 18) .  Check for sanctioning...
+
+state 1 (decimal 34, payoff 7) is unstable by SIM for focal dm US Opposition, since their opponents have no UIs from state 1 (decimal 34, payoff 7).
+
+
+#DM US Opposition  state 0  GMR
+From state 1 (decimal 34, payoff 7) US Opposition has UIs available to: state 4 (decimal 42, payoff 18).   Check for sanctioning...
+
+state 1 (decimal 34, payoff 7)) is unstable by GMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 42, payoff 18).
+
+
+#DM US Opposition  state 0  SMR
+From state 1 (decimal 34, payoff 7) US Opposition has UIs available to: state 4 (decimal 42, payoff 18) .  Check for sanctioning...
+
+state 1 (decimal 34, payoff 7)) is unstable by SMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 4 (decimal 42, payoff 18) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 1  NASH
+state 2 (decimal 36, payoff 23) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 1  SEQ
+state 2 (decimal 36, payoff 23) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 1  SIM
+state 2 (decimal 36, payoff 23) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 1  GMR
+state 2 (decimal 36, payoff 23) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 1  SMR
+state 2 (decimal 36, payoff 23) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 2  NASH
+state 3 (decimal 41, payoff 13) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 2  SEQ
+state 3 (decimal 41, payoff 13) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 2  SIM
+state 3 (decimal 41, payoff 13) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 2  GMR
+state 3 (decimal 41, payoff 13) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 2  SMR
+state 3 (decimal 41, payoff 13) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 3  NASH
+state 4 (decimal 42, payoff 18) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 3  SEQ
+state 4 (decimal 42, payoff 18) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 3  SIM
+state 4 (decimal 42, payoff 18) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 3  GMR
+state 4 (decimal 42, payoff 18) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 3  SMR
+state 4 (decimal 42, payoff 18) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 4  NASH
+state 5 (decimal 50, payoff 8) is NOT Nash stable for DM US Opposition since they have UIs available to: state 8 (decimal 58, payoff 19)
+
+#DM US Opposition  state 4  SEQ
+From state 5 (decimal 50, payoff 8) US Opposition has UIs available to: state 8 (decimal 58, payoff 19) .  Check for sanctioning...
+
+state 5 (decimal 50, payoff 8)) is unstable by SEQ for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 8 (decimal 58, payoff 19)
+
+
+#DM US Opposition  state 4  SIM
+From state 5 (decimal 50, payoff 8) US Opposition has UIs available to: state 8 (decimal 58, payoff 19) .  Check for sanctioning...
+
+state 5 (decimal 50, payoff 8)) is unstable by SIM for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 8 (decimal 58, payoff 19).
+
+
+#DM US Opposition  state 4  GMR
+From state 5 (decimal 50, payoff 8) US Opposition has UIs available to: state 8 (decimal 58, payoff 19).   Check for sanctioning...
+
+state 5 (decimal 50, payoff 8)) is unstable by GMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 8 (decimal 58, payoff 19).
+
+
+#DM US Opposition  state 4  SMR
+From state 5 (decimal 50, payoff 8) US Opposition has UIs available to: state 8 (decimal 58, payoff 19) .  Check for sanctioning...
+
+state 5 (decimal 50, payoff 8)) is unstable by SMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 8 (decimal 58, payoff 19) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 5  NASH
+state 6 (decimal 52, payoff 23) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 5  SEQ
+state 6 (decimal 52, payoff 23) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 5  SIM
+state 6 (decimal 52, payoff 23) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 5  GMR
+state 6 (decimal 52, payoff 23) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 5  SMR
+state 6 (decimal 52, payoff 23) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 6  NASH
+state 7 (decimal 57, payoff 14) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 6  SEQ
+state 7 (decimal 57, payoff 14) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 6  SIM
+state 7 (decimal 57, payoff 14) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 6  GMR
+state 7 (decimal 57, payoff 14) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 6  SMR
+state 7 (decimal 57, payoff 14) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 7  NASH
+state 8 (decimal 58, payoff 19) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 7  SEQ
+state 8 (decimal 58, payoff 19) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 7  SIM
+state 8 (decimal 58, payoff 19) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 7  GMR
+state 8 (decimal 58, payoff 19) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 7  SMR
+state 8 (decimal 58, payoff 19) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 8  NASH
+state 9 (decimal 66, payoff 9) is NOT Nash stable for DM US Opposition since they have UIs available to: state 11 (decimal 74, payoff 20)
+
+#DM US Opposition  state 8  SEQ
+From state 9 (decimal 66, payoff 9) US Opposition has UIs available to: state 11 (decimal 74, payoff 20) .  Check for sanctioning...
+
+state 9 (decimal 66, payoff 9) is unstable by SEQ for focal DM US Opposition, since their opponents have no UIs from state 11 (decimal 74, payoff 20)
+
+
+#DM US Opposition  state 8  SIM
+From state 9 (decimal 66, payoff 9) US Opposition has UIs available to: state 11 (decimal 74, payoff 20) .  Check for sanctioning...
+
+state 9 (decimal 66, payoff 9) is unstable by SIM for focal dm US Opposition, since their opponents have no UIs from state 9 (decimal 66, payoff 9).
+
+
+#DM US Opposition  state 8  GMR
+From state 9 (decimal 66, payoff 9) US Opposition has UIs available to: state 11 (decimal 74, payoff 20).   Check for sanctioning...
+
+state 9 (decimal 66, payoff 9)) is unstable by GMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 11 (decimal 74, payoff 20).
+
+
+#DM US Opposition  state 8  SMR
+From state 9 (decimal 66, payoff 9) US Opposition has UIs available to: state 11 (decimal 74, payoff 20) .  Check for sanctioning...
+
+state 9 (decimal 66, payoff 9)) is unstable by SMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 11 (decimal 74, payoff 20) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 9  NASH
+state 10 (decimal 68, payoff 23) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 9  SEQ
+state 10 (decimal 68, payoff 23) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 9  SIM
+state 10 (decimal 68, payoff 23) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 9  GMR
+state 10 (decimal 68, payoff 23) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 9  SMR
+state 10 (decimal 68, payoff 23) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 10  NASH
+state 11 (decimal 74, payoff 20) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 10  SEQ
+state 11 (decimal 74, payoff 20) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 10  SIM
+state 11 (decimal 74, payoff 20) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 10  GMR
+state 11 (decimal 74, payoff 20) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 10  SMR
+state 11 (decimal 74, payoff 20) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 11  NASH
+state 12 (decimal 82, payoff 10) is NOT Nash stable for DM US Opposition since they have UIs available to: state 15 (decimal 90, payoff 21)
+
+#DM US Opposition  state 11  SEQ
+From state 12 (decimal 82, payoff 10) US Opposition has UIs available to: state 15 (decimal 90, payoff 21) .  Check for sanctioning...
+
+state 12 (decimal 82, payoff 10)) is unstable by SEQ for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 15 (decimal 90, payoff 21)
+
+
+#DM US Opposition  state 11  SIM
+From state 12 (decimal 82, payoff 10) US Opposition has UIs available to: state 15 (decimal 90, payoff 21) .  Check for sanctioning...
+
+state 12 (decimal 82, payoff 10)) is unstable by SIM for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 15 (decimal 90, payoff 21).
+
+
+#DM US Opposition  state 11  GMR
+From state 12 (decimal 82, payoff 10) US Opposition has UIs available to: state 15 (decimal 90, payoff 21).   Check for sanctioning...
+
+state 12 (decimal 82, payoff 10)) is unstable by GMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 15 (decimal 90, payoff 21).
+
+
+#DM US Opposition  state 11  SMR
+From state 12 (decimal 82, payoff 10) US Opposition has UIs available to: state 15 (decimal 90, payoff 21) .  Check for sanctioning...
+
+state 12 (decimal 82, payoff 10)) is unstable by SMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 15 (decimal 90, payoff 21) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 12  NASH
+state 13 (decimal 84, payoff 23) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 12  SEQ
+state 13 (decimal 84, payoff 23) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 12  SIM
+state 13 (decimal 84, payoff 23) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 12  GMR
+state 13 (decimal 84, payoff 23) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 12  SMR
+state 13 (decimal 84, payoff 23) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 13  NASH
+state 14 (decimal 89, payoff 15) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 13  SEQ
+state 14 (decimal 89, payoff 15) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 13  SIM
+state 14 (decimal 89, payoff 15) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 13  GMR
+state 14 (decimal 89, payoff 15) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 13  SMR
+state 14 (decimal 89, payoff 15) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 14  NASH
+state 15 (decimal 90, payoff 21) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 14  SEQ
+state 15 (decimal 90, payoff 21) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 14  SIM
+state 15 (decimal 90, payoff 21) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 14  GMR
+state 15 (decimal 90, payoff 21) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 14  SMR
+state 15 (decimal 90, payoff 21) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 15  NASH
+state 16 (decimal 146, payoff 11) is NOT Nash stable for DM US Opposition since they have UIs available to: state 19 (decimal 154, payoff 22)
+
+#DM US Opposition  state 15  SEQ
+From state 16 (decimal 146, payoff 11) US Opposition has UIs available to: state 19 (decimal 154, payoff 22) .  Check for sanctioning...
+
+state 16 (decimal 146, payoff 11)) is unstable by SEQ for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 19 (decimal 154, payoff 22)
+
+
+#DM US Opposition  state 15  SIM
+From state 16 (decimal 146, payoff 11) US Opposition has UIs available to: state 19 (decimal 154, payoff 22) .  Check for sanctioning...
+
+Simultaneous moves towards 18 and 16 are not possible since the resultant state is infeasible.
+
+state 16 (decimal 146, payoff 11)) is unstable by SIM for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 19 (decimal 154, payoff 22).
+
+
+#DM US Opposition  state 15  GMR
+From state 16 (decimal 146, payoff 11) US Opposition has UIs available to: state 19 (decimal 154, payoff 22).   Check for sanctioning...
+
+state 16 (decimal 146, payoff 11)) is unstable by GMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 19 (decimal 154, payoff 22).
+
+
+#DM US Opposition  state 15  SMR
+From state 16 (decimal 146, payoff 11) US Opposition has UIs available to: state 19 (decimal 154, payoff 22) .  Check for sanctioning...
+
+state 16 (decimal 146, payoff 11)) is unstable by SMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 19 (decimal 154, payoff 22) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 16  NASH
+state 17 (decimal 148, payoff 23) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 16  SEQ
+state 17 (decimal 148, payoff 23) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 16  SIM
+state 17 (decimal 148, payoff 23) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 16  GMR
+state 17 (decimal 148, payoff 23) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 16  SMR
+state 17 (decimal 148, payoff 23) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 17  NASH
+state 18 (decimal 153, payoff 16) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 17  SEQ
+state 18 (decimal 153, payoff 16) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 17  SIM
+state 18 (decimal 153, payoff 16) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 17  GMR
+state 18 (decimal 153, payoff 16) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 17  SMR
+state 18 (decimal 153, payoff 16) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 18  NASH
+state 19 (decimal 154, payoff 22) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 18  SEQ
+state 19 (decimal 154, payoff 22) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 18  SIM
+state 19 (decimal 154, payoff 22) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 18  GMR
+state 19 (decimal 154, payoff 22) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 18  SMR
+state 19 (decimal 154, payoff 22) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 19  NASH
+state 20 (decimal 274, payoff 12) is NOT Nash stable for DM US Opposition since they have UIs available to: state 23 (decimal 282, payoff 22)
+
+#DM US Opposition  state 19  SEQ
+From state 20 (decimal 274, payoff 12) US Opposition has UIs available to: state 23 (decimal 282, payoff 22) .  Check for sanctioning...
+
+state 20 (decimal 274, payoff 12)) is unstable by SEQ for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 23 (decimal 282, payoff 22)
+
+
+#DM US Opposition  state 19  SIM
+From state 20 (decimal 274, payoff 12) US Opposition has UIs available to: state 23 (decimal 282, payoff 22) .  Check for sanctioning...
+
+Simultaneous moves towards 22 and 20 are not possible since the resultant state is infeasible.
+
+state 20 (decimal 274, payoff 12)) is unstable by SIM for focal DM US Opposition, since their opponents have no less preferred sanctioning UIs from state 23 (decimal 282, payoff 22).
+
+
+#DM US Opposition  state 19  GMR
+From state 20 (decimal 274, payoff 12) US Opposition has UIs available to: state 23 (decimal 282, payoff 22).   Check for sanctioning...
+
+state 20 (decimal 274, payoff 12)) is unstable by GMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 23 (decimal 282, payoff 22).
+
+
+#DM US Opposition  state 19  SMR
+From state 20 (decimal 274, payoff 12) US Opposition has UIs available to: state 23 (decimal 282, payoff 22) .  Check for sanctioning...
+
+state 20 (decimal 274, payoff 12)) is unstable by SMR for focal dm US Opposition, since their opponents have no less preferred sanctioning UIs from state 23 (decimal 282, payoff 22) that cannot be effectively countermoved by the focal dm.
+
+
+#DM US Opposition  state 20  NASH
+state 21 (decimal 276, payoff 23) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 20  SEQ
+state 21 (decimal 276, payoff 23) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 20  SIM
+state 21 (decimal 276, payoff 23) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 20  GMR
+state 21 (decimal 276, payoff 23) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 20  SMR
+state 21 (decimal 276, payoff 23) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 21  NASH
+state 22 (decimal 281, payoff 17) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 21  SEQ
+state 22 (decimal 281, payoff 17) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 21  SIM
+state 22 (decimal 281, payoff 17) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 21  GMR
+state 22 (decimal 281, payoff 17) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 21  SMR
+state 22 (decimal 281, payoff 17) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 22  NASH
+state 23 (decimal 282, payoff 22) is Nash stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 22  SEQ
+state 23 (decimal 282, payoff 22) is SEQ stable for DM US Opposition since they have no UIs from this state.
+
+#DM US Opposition  state 22  SIM
+state 23 (decimal 282, payoff 22) is SIM stable since focal dm US Opposition has no UIs available.
+
+#DM US Opposition  state 22  GMR
+state 23 (decimal 282, payoff 22) is GMR stable since focal DM US Opposition has no UIs available.
+
+#DM US Opposition  state 22  SMR
+state 23 (decimal 282, payoff 22) is SMR stable since focal DM US Opposition has no UIs available.
+
+#DM Canadian Opposition  state 0  NASH
+state 1 (decimal 34, payoff 13) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 0  SEQ
+state 1 (decimal 34, payoff 13) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 0  SIM
+state 1 (decimal 34, payoff 13) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 0  GMR
+state 1 (decimal 34, payoff 13) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 0  SMR
+state 1 (decimal 34, payoff 13) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 1  NASH
+state 2 (decimal 36, payoff 15) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 1  SEQ
+state 2 (decimal 36, payoff 15) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 1  SIM
+state 2 (decimal 36, payoff 15) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 1  GMR
+state 2 (decimal 36, payoff 15) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 1  SMR
+state 2 (decimal 36, payoff 15) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 2  NASH
+state 3 (decimal 41, payoff 7) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 2  SEQ
+state 3 (decimal 41, payoff 7) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 2  SIM
+state 3 (decimal 41, payoff 7) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 2  GMR
+state 3 (decimal 41, payoff 7) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 2  SMR
+state 3 (decimal 41, payoff 7) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 3  NASH
+state 4 (decimal 42, payoff 14) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 3  SEQ
+state 4 (decimal 42, payoff 14) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 3  SIM
+state 4 (decimal 42, payoff 14) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 3  GMR
+state 4 (decimal 42, payoff 14) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 3  SMR
+state 4 (decimal 42, payoff 14) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 4  NASH
+state 5 (decimal 50, payoff 11) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 1 (decimal 34, payoff 13)
+
+#DM Canadian Opposition  state 4  SEQ
+From state 5 (decimal 50, payoff 11) Canadian Opposition has UIs available to: state 1 (decimal 34, payoff 13) .  Check for sanctioning...
+
+state 5 (decimal 50, payoff 11)) is unstable by SEQ for focal DM Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 34, payoff 13)
+
+
+#DM Canadian Opposition  state 4  SIM
+From state 5 (decimal 50, payoff 11) Canadian Opposition has UIs available to: state 1 (decimal 34, payoff 13) .  Check for sanctioning...
+
+state 5 (decimal 50, payoff 11)) is unstable by SIM for focal DM Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 34, payoff 13).
+
+
+#DM Canadian Opposition  state 4  GMR
+From state 5 (decimal 50, payoff 11) Canadian Opposition has UIs available to: state 1 (decimal 34, payoff 13).   Check for sanctioning...
+
+state 5 (decimal 50, payoff 11)) is unstable by GMR for focal dm Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 34, payoff 13).
+
+
+#DM Canadian Opposition  state 4  SMR
+From state 5 (decimal 50, payoff 11) Canadian Opposition has UIs available to: state 1 (decimal 34, payoff 13) .  Check for sanctioning...
+
+state 5 (decimal 50, payoff 11)) is unstable by SMR for focal dm Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 1 (decimal 34, payoff 13) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Canadian Opposition  state 5  NASH
+state 6 (decimal 52, payoff 11) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 2 (decimal 36, payoff 15)
+
+#DM Canadian Opposition  state 5  SEQ
+From state 6 (decimal 52, payoff 11) Canadian Opposition has UIs available to: state 2 (decimal 36, payoff 15) .  Check for sanctioning...
+
+state 6 (decimal 52, payoff 11) is unstable by SEQ for focal DM Canadian Opposition, since their opponents have no UIs from state 2 (decimal 36, payoff 15)
+
+
+#DM Canadian Opposition  state 5  SIM
+From state 6 (decimal 52, payoff 11) Canadian Opposition has UIs available to: state 2 (decimal 36, payoff 15) .  Check for sanctioning...
+
+state 6 (decimal 52, payoff 11) is unstable by SIM for focal dm Canadian Opposition, since their opponents have no UIs from state 6 (decimal 52, payoff 11).
+
+
+#DM Canadian Opposition  state 5  GMR
+From state 6 (decimal 52, payoff 11) Canadian Opposition has UIs available to: state 2 (decimal 36, payoff 15).   Check for sanctioning...
+
+state 6 (decimal 52, payoff 11)) is unstable by GMR for focal dm Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 2 (decimal 36, payoff 15).
+
+
+#DM Canadian Opposition  state 5  SMR
+From state 6 (decimal 52, payoff 11) Canadian Opposition has UIs available to: state 2 (decimal 36, payoff 15) .  Check for sanctioning...
+
+state 6 (decimal 52, payoff 11)) is unstable by SMR for focal dm Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 2 (decimal 36, payoff 15) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Canadian Opposition  state 6  NASH
+state 7 (decimal 57, payoff 6) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 3 (decimal 41, payoff 7)
+
+#DM Canadian Opposition  state 6  SEQ
+From state 7 (decimal 57, payoff 6) Canadian Opposition has UIs available to: state 3 (decimal 41, payoff 7) .  Check for sanctioning...
+
+state 7 (decimal 57, payoff 6) is unstable by SEQ for focal DM Canadian Opposition, since their opponents have no UIs from state 3 (decimal 41, payoff 7)
+
+
+#DM Canadian Opposition  state 6  SIM
+From state 7 (decimal 57, payoff 6) Canadian Opposition has UIs available to: state 3 (decimal 41, payoff 7) .  Check for sanctioning...
+
+state 7 (decimal 57, payoff 6) is unstable by SIM for focal dm Canadian Opposition, since their opponents have no UIs from state 7 (decimal 57, payoff 6).
+
+
+#DM Canadian Opposition  state 6  GMR
+From state 7 (decimal 57, payoff 6) Canadian Opposition has UIs available to: state 3 (decimal 41, payoff 7).   Check for sanctioning...
+
+state 7 (decimal 57, payoff 6)) is unstable by GMR for focal dm Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 3 (decimal 41, payoff 7).
+
+
+#DM Canadian Opposition  state 6  SMR
+From state 7 (decimal 57, payoff 6) Canadian Opposition has UIs available to: state 3 (decimal 41, payoff 7) .  Check for sanctioning...
+
+state 7 (decimal 57, payoff 6)) is unstable by SMR for focal dm Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 3 (decimal 41, payoff 7) that cannot be effectively countermoved by the focal dm.
+
+
+#DM Canadian Opposition  state 7  NASH
+state 8 (decimal 58, payoff 12) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 4 (decimal 42, payoff 14)
+
+#DM Canadian Opposition  state 7  SEQ
+From state 8 (decimal 58, payoff 12) Canadian Opposition has UIs available to: state 4 (decimal 42, payoff 14) .  Check for sanctioning...
+
+A move to state 4 (decimal 42, payoff 14) is SEQ sanctioned for focal DM Canadian Opposition by a move to state 3 (decimal 41, payoff 7) by other dms.  Check other focal DN UIs for sanctioning... 
+
+state 8 (decimal 58, payoff 12) is stable by SEQ for focal dm Canadian Opposition, since all available UIs ['state 4 (decimal 42, payoff 14)'] are sanctioned by other players. 
+
+
+#DM Canadian Opposition  state 7  SIM
+From state 8 (decimal 58, payoff 12) Canadian Opposition has UIs available to: state 4 (decimal 42, payoff 14) .  Check for sanctioning...
+
+A move to state 4 (decimal 42, payoff 14) is SIM sanctioned for focal DM Canadian Opposition by a move to state 7 (decimal 57, payoff 6) by other DMs, which would give a final state of state 3 (decimal 41, payoff 7).  Check other focal DM UIs for sanctioning...
+
+state 8 (decimal 58, payoff 12) is stable by SIM for focal DM Canadian Opposition, since all available UIs ['state 4 (decimal 42, payoff 14)'] are sanctioned by other players.
+
+
+#DM Canadian Opposition  state 7  GMR
+From state 8 (decimal 58, payoff 12) Canadian Opposition has UIs available to: state 4 (decimal 42, payoff 14).   Check for sanctioning...
+
+A move to state 4 (decimal 42, payoff 14) is GMR sanctioned for focal DM Canadian Opposition by a move to state 3 (decimal 41, payoff 7) by other DMs.
+
+state 8 (decimal 58, payoff 12) is stable by GMR for focal DM Canadian Opposition, since all available UIs ['state 4 (decimal 42, payoff 14)']are sanctioned by other players.
+
+
+#DM Canadian Opposition  state 7  SMR
+From state 8 (decimal 58, payoff 12) Canadian Opposition has UIs available to: state 4 (decimal 42, payoff 14) .  Check for sanctioning...
+
+A move to state 4 (decimal 42, payoff 14) is SMR sanctioned for focal DM Canadian Opposition by a move to state 3 (decimal 41, payoff 7) by other dms.  Check for possible countermoves...
+
+    state 4 (decimal 42, payoff 14) remains sanctioned under SMR for focal DM Canadian Opposition, since they cannot countermove their opponent's sanction to state 3 (decimal 41, payoff 7).
+
+state 8 (decimal 58, payoff 12) is stable by SMR for focal dm Canadian Opposition, since all available UIs ['state 4 (decimal 42, payoff 14)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM Canadian Opposition  state 8  NASH
+state 9 (decimal 66, payoff 18) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 8  SEQ
+state 9 (decimal 66, payoff 18) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 8  SIM
+state 9 (decimal 66, payoff 18) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 8  GMR
+state 9 (decimal 66, payoff 18) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 8  SMR
+state 9 (decimal 66, payoff 18) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 9  NASH
+state 10 (decimal 68, payoff 18) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 9  SEQ
+state 10 (decimal 68, payoff 18) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 9  SIM
+state 10 (decimal 68, payoff 18) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 9  GMR
+state 10 (decimal 68, payoff 18) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 9  SMR
+state 10 (decimal 68, payoff 18) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 10  NASH
+state 11 (decimal 74, payoff 19) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 10  SEQ
+state 11 (decimal 74, payoff 19) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 10  SIM
+state 11 (decimal 74, payoff 19) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 10  GMR
+state 11 (decimal 74, payoff 19) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 10  SMR
+state 11 (decimal 74, payoff 19) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 11  NASH
+state 12 (decimal 82, payoff 16) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 9 (decimal 66, payoff 18)
+
+#DM Canadian Opposition  state 11  SEQ
+From state 12 (decimal 82, payoff 16) Canadian Opposition has UIs available to: state 9 (decimal 66, payoff 18) .  Check for sanctioning...
+
+state 12 (decimal 82, payoff 16)) is unstable by SEQ for focal DM Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 9 (decimal 66, payoff 18)
+
+
+#DM Canadian Opposition  state 11  SIM
+From state 12 (decimal 82, payoff 16) Canadian Opposition has UIs available to: state 9 (decimal 66, payoff 18) .  Check for sanctioning...
+
+state 12 (decimal 82, payoff 16)) is unstable by SIM for focal DM Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 9 (decimal 66, payoff 18).
+
+
+#DM Canadian Opposition  state 11  GMR
+From state 12 (decimal 82, payoff 16) Canadian Opposition has UIs available to: state 9 (decimal 66, payoff 18).   Check for sanctioning...
+
+A move to state 9 (decimal 66, payoff 18) is GMR sanctioned for focal DM Canadian Opposition by a move to state 1 (decimal 34, payoff 13) by other DMs.
+
+state 12 (decimal 82, payoff 16) is stable by GMR for focal DM Canadian Opposition, since all available UIs ['state 9 (decimal 66, payoff 18)']are sanctioned by other players.
+
+
+#DM Canadian Opposition  state 11  SMR
+From state 12 (decimal 82, payoff 16) Canadian Opposition has UIs available to: state 9 (decimal 66, payoff 18) .  Check for sanctioning...
+
+A move to state 9 (decimal 66, payoff 18) is SMR sanctioned for focal DM Canadian Opposition by a move to state 1 (decimal 34, payoff 13) by other dms.  Check for possible countermoves...
+
+    state 9 (decimal 66, payoff 18) remains sanctioned under SMR for focal DM Canadian Opposition, since they cannot countermove their opponent's sanction to state 1 (decimal 34, payoff 13).
+
+state 12 (decimal 82, payoff 16) is stable by SMR for focal dm Canadian Opposition, since all available UIs ['state 9 (decimal 66, payoff 18)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM Canadian Opposition  state 12  NASH
+state 13 (decimal 84, payoff 16) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 10 (decimal 68, payoff 18)
+
+#DM Canadian Opposition  state 12  SEQ
+From state 13 (decimal 84, payoff 16) Canadian Opposition has UIs available to: state 10 (decimal 68, payoff 18) .  Check for sanctioning...
+
+state 13 (decimal 84, payoff 16)) is unstable by SEQ for focal DM Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 10 (decimal 68, payoff 18)
+
+
+#DM Canadian Opposition  state 12  SIM
+From state 13 (decimal 84, payoff 16) Canadian Opposition has UIs available to: state 10 (decimal 68, payoff 18) .  Check for sanctioning...
+
+state 13 (decimal 84, payoff 16)) is unstable by SIM for focal DM Canadian Opposition, since their opponents have no less preferred sanctioning UIs from state 10 (decimal 68, payoff 18).
+
+
+#DM Canadian Opposition  state 12  GMR
+From state 13 (decimal 84, payoff 16) Canadian Opposition has UIs available to: state 10 (decimal 68, payoff 18).   Check for sanctioning...
+
+A move to state 10 (decimal 68, payoff 18) is GMR sanctioned for focal DM Canadian Opposition by a move to state 2 (decimal 36, payoff 15) by other DMs.
+
+state 13 (decimal 84, payoff 16) is stable by GMR for focal DM Canadian Opposition, since all available UIs ['state 10 (decimal 68, payoff 18)']are sanctioned by other players.
+
+
+#DM Canadian Opposition  state 12  SMR
+From state 13 (decimal 84, payoff 16) Canadian Opposition has UIs available to: state 10 (decimal 68, payoff 18) .  Check for sanctioning...
+
+A move to state 10 (decimal 68, payoff 18) is SMR sanctioned for focal DM Canadian Opposition by a move to state 2 (decimal 36, payoff 15) by other dms.  Check for possible countermoves...
+
+    state 10 (decimal 68, payoff 18) remains sanctioned under SMR for focal DM Canadian Opposition, since they cannot countermove their opponent's sanction to state 2 (decimal 36, payoff 15).
+
+state 13 (decimal 84, payoff 16) is stable by SMR for focal dm Canadian Opposition, since all available UIs ['state 10 (decimal 68, payoff 18)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM Canadian Opposition  state 13  NASH
+state 14 (decimal 89, payoff 8) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 13  SEQ
+state 14 (decimal 89, payoff 8) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 13  SIM
+state 14 (decimal 89, payoff 8) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 13  GMR
+state 14 (decimal 89, payoff 8) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 13  SMR
+state 14 (decimal 89, payoff 8) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 14  NASH
+state 15 (decimal 90, payoff 17) is NOT Nash stable for DM Canadian Opposition since they have UIs available to: state 11 (decimal 74, payoff 19)
+
+#DM Canadian Opposition  state 14  SEQ
+From state 15 (decimal 90, payoff 17) Canadian Opposition has UIs available to: state 11 (decimal 74, payoff 19) .  Check for sanctioning...
+
+state 15 (decimal 90, payoff 17) is unstable by SEQ for focal DM Canadian Opposition, since their opponents have no UIs from state 11 (decimal 74, payoff 19)
+
+
+#DM Canadian Opposition  state 14  SIM
+From state 15 (decimal 90, payoff 17) Canadian Opposition has UIs available to: state 11 (decimal 74, payoff 19) .  Check for sanctioning...
+
+state 15 (decimal 90, payoff 17) is unstable by SIM for focal dm Canadian Opposition, since their opponents have no UIs from state 15 (decimal 90, payoff 17).
+
+
+#DM Canadian Opposition  state 14  GMR
+From state 15 (decimal 90, payoff 17) Canadian Opposition has UIs available to: state 11 (decimal 74, payoff 19).   Check for sanctioning...
+
+A move to state 11 (decimal 74, payoff 19) is GMR sanctioned for focal DM Canadian Opposition by a move to state 4 (decimal 42, payoff 14) by other DMs.
+
+state 15 (decimal 90, payoff 17) is stable by GMR for focal DM Canadian Opposition, since all available UIs ['state 11 (decimal 74, payoff 19)']are sanctioned by other players.
+
+
+#DM Canadian Opposition  state 14  SMR
+From state 15 (decimal 90, payoff 17) Canadian Opposition has UIs available to: state 11 (decimal 74, payoff 19) .  Check for sanctioning...
+
+A move to state 11 (decimal 74, payoff 19) is SMR sanctioned for focal DM Canadian Opposition by a move to state 4 (decimal 42, payoff 14) by other dms.  Check for possible countermoves...
+
+    state 11 (decimal 74, payoff 19) remains sanctioned under SMR for focal DM Canadian Opposition, since they cannot countermove their opponent's sanction to state 4 (decimal 42, payoff 14).
+
+state 15 (decimal 90, payoff 17) is stable by SMR for focal dm Canadian Opposition, since all available UIs ['state 11 (decimal 74, payoff 19)'] are sanctioned by other players and cannot be countermoved.
+
+
+#DM Canadian Opposition  state 15  NASH
+state 16 (decimal 146, payoff 20) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 15  SEQ
+state 16 (decimal 146, payoff 20) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 15  SIM
+state 16 (decimal 146, payoff 20) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 15  GMR
+state 16 (decimal 146, payoff 20) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 15  SMR
+state 16 (decimal 146, payoff 20) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 16  NASH
+state 17 (decimal 148, payoff 20) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 16  SEQ
+state 17 (decimal 148, payoff 20) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 16  SIM
+state 17 (decimal 148, payoff 20) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 16  GMR
+state 17 (decimal 148, payoff 20) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 16  SMR
+state 17 (decimal 148, payoff 20) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 17  NASH
+state 18 (decimal 153, payoff 9) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 17  SEQ
+state 18 (decimal 153, payoff 9) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 17  SIM
+state 18 (decimal 153, payoff 9) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 17  GMR
+state 18 (decimal 153, payoff 9) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 17  SMR
+state 18 (decimal 153, payoff 9) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 18  NASH
+state 19 (decimal 154, payoff 21) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 18  SEQ
+state 19 (decimal 154, payoff 21) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 18  SIM
+state 19 (decimal 154, payoff 21) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 18  GMR
+state 19 (decimal 154, payoff 21) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 18  SMR
+state 19 (decimal 154, payoff 21) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 19  NASH
+state 20 (decimal 274, payoff 22) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 19  SEQ
+state 20 (decimal 274, payoff 22) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 19  SIM
+state 20 (decimal 274, payoff 22) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 19  GMR
+state 20 (decimal 274, payoff 22) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 19  SMR
+state 20 (decimal 274, payoff 22) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 20  NASH
+state 21 (decimal 276, payoff 22) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 20  SEQ
+state 21 (decimal 276, payoff 22) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 20  SIM
+state 21 (decimal 276, payoff 22) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 20  GMR
+state 21 (decimal 276, payoff 22) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 20  SMR
+state 21 (decimal 276, payoff 22) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 21  NASH
+state 22 (decimal 281, payoff 10) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 21  SEQ
+state 22 (decimal 281, payoff 10) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 21  SIM
+state 22 (decimal 281, payoff 10) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 21  GMR
+state 22 (decimal 281, payoff 10) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 21  SMR
+state 22 (decimal 281, payoff 10) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 22  NASH
+state 23 (decimal 282, payoff 23) is Nash stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 22  SEQ
+state 23 (decimal 282, payoff 23) is SEQ stable for DM Canadian Opposition since they have no UIs from this state.
+
+#DM Canadian Opposition  state 22  SIM
+state 23 (decimal 282, payoff 23) is SIM stable since focal dm Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 22  GMR
+state 23 (decimal 282, payoff 23) is GMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM Canadian Opposition  state 22  SMR
+state 23 (decimal 282, payoff 23) is SMR stable since focal DM Canadian Opposition has no UIs available.
+
+#DM IJC  state 0  NASH
+state 1 (decimal 34, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 0  SEQ
+state 1 (decimal 34, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 0  SIM
+state 1 (decimal 34, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 0  GMR
+state 1 (decimal 34, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 0  SMR
+state 1 (decimal 34, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 1  NASH
+state 2 (decimal 36, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 1  SEQ
+state 2 (decimal 36, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 1  SIM
+state 2 (decimal 36, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 1  GMR
+state 2 (decimal 36, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 1  SMR
+state 2 (decimal 36, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 2  NASH
+state 3 (decimal 41, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 2  SEQ
+state 3 (decimal 41, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 2  SIM
+state 3 (decimal 41, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 2  GMR
+state 3 (decimal 41, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 2  SMR
+state 3 (decimal 41, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 3  NASH
+state 4 (decimal 42, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 3  SEQ
+state 4 (decimal 42, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 3  SIM
+state 4 (decimal 42, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 3  GMR
+state 4 (decimal 42, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 3  SMR
+state 4 (decimal 42, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 4  NASH
+state 5 (decimal 50, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 4  SEQ
+state 5 (decimal 50, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 4  SIM
+state 5 (decimal 50, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 4  GMR
+state 5 (decimal 50, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 4  SMR
+state 5 (decimal 50, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 5  NASH
+state 6 (decimal 52, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 5  SEQ
+state 6 (decimal 52, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 5  SIM
+state 6 (decimal 52, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 5  GMR
+state 6 (decimal 52, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 5  SMR
+state 6 (decimal 52, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 6  NASH
+state 7 (decimal 57, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 6  SEQ
+state 7 (decimal 57, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 6  SIM
+state 7 (decimal 57, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 6  GMR
+state 7 (decimal 57, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 6  SMR
+state 7 (decimal 57, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 7  NASH
+state 8 (decimal 58, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 7  SEQ
+state 8 (decimal 58, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 7  SIM
+state 8 (decimal 58, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 7  GMR
+state 8 (decimal 58, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 7  SMR
+state 8 (decimal 58, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 8  NASH
+state 9 (decimal 66, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 8  SEQ
+state 9 (decimal 66, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 8  SIM
+state 9 (decimal 66, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 8  GMR
+state 9 (decimal 66, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 8  SMR
+state 9 (decimal 66, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 9  NASH
+state 10 (decimal 68, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 9  SEQ
+state 10 (decimal 68, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 9  SIM
+state 10 (decimal 68, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 9  GMR
+state 10 (decimal 68, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 9  SMR
+state 10 (decimal 68, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 10  NASH
+state 11 (decimal 74, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 10  SEQ
+state 11 (decimal 74, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 10  SIM
+state 11 (decimal 74, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 10  GMR
+state 11 (decimal 74, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 10  SMR
+state 11 (decimal 74, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 11  NASH
+state 12 (decimal 82, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 11  SEQ
+state 12 (decimal 82, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 11  SIM
+state 12 (decimal 82, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 11  GMR
+state 12 (decimal 82, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 11  SMR
+state 12 (decimal 82, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 12  NASH
+state 13 (decimal 84, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 12  SEQ
+state 13 (decimal 84, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 12  SIM
+state 13 (decimal 84, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 12  GMR
+state 13 (decimal 84, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 12  SMR
+state 13 (decimal 84, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 13  NASH
+state 14 (decimal 89, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 13  SEQ
+state 14 (decimal 89, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 13  SIM
+state 14 (decimal 89, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 13  GMR
+state 14 (decimal 89, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 13  SMR
+state 14 (decimal 89, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 14  NASH
+state 15 (decimal 90, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 14  SEQ
+state 15 (decimal 90, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 14  SIM
+state 15 (decimal 90, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 14  GMR
+state 15 (decimal 90, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 14  SMR
+state 15 (decimal 90, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 15  NASH
+state 16 (decimal 146, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 15  SEQ
+state 16 (decimal 146, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 15  SIM
+state 16 (decimal 146, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 15  GMR
+state 16 (decimal 146, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 15  SMR
+state 16 (decimal 146, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 16  NASH
+state 17 (decimal 148, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 16  SEQ
+state 17 (decimal 148, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 16  SIM
+state 17 (decimal 148, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 16  GMR
+state 17 (decimal 148, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 16  SMR
+state 17 (decimal 148, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 17  NASH
+state 18 (decimal 153, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 17  SEQ
+state 18 (decimal 153, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 17  SIM
+state 18 (decimal 153, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 17  GMR
+state 18 (decimal 153, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 17  SMR
+state 18 (decimal 153, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 18  NASH
+state 19 (decimal 154, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 18  SEQ
+state 19 (decimal 154, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 18  SIM
+state 19 (decimal 154, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 18  GMR
+state 19 (decimal 154, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 18  SMR
+state 19 (decimal 154, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 19  NASH
+state 20 (decimal 274, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 19  SEQ
+state 20 (decimal 274, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 19  SIM
+state 20 (decimal 274, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 19  GMR
+state 20 (decimal 274, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 19  SMR
+state 20 (decimal 274, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 20  NASH
+state 21 (decimal 276, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 20  SEQ
+state 21 (decimal 276, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 20  SIM
+state 21 (decimal 276, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 20  GMR
+state 21 (decimal 276, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 20  SMR
+state 21 (decimal 276, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 21  NASH
+state 22 (decimal 281, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 21  SEQ
+state 22 (decimal 281, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 21  SIM
+state 22 (decimal 281, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 21  GMR
+state 22 (decimal 281, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 21  SMR
+state 22 (decimal 281, payoff 23) is SMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 22  NASH
+state 23 (decimal 282, payoff 23) is Nash stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 22  SEQ
+state 23 (decimal 282, payoff 23) is SEQ stable for DM IJC since they have no UIs from this state.
+
+#DM IJC  state 22  SIM
+state 23 (decimal 282, payoff 23) is SIM stable since focal dm IJC has no UIs available.
+
+#DM IJC  state 22  GMR
+state 23 (decimal 282, payoff 23) is GMR stable since focal DM IJC has no UIs available.
+
+#DM IJC  state 22  SMR
+state 23 (decimal 282, payoff 23) is SMR stable since focal DM IJC has no UIs available.
