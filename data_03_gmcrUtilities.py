@@ -11,6 +11,13 @@ def reducePatterns(patterns):
     """Reduce patterns into compact dash notation. 
     
     Effectively a partial implementation of the Quine-McCluskey Algorithm?"""
+    for p in patterns:
+        if len(p) != len(patterns[0]):
+            raise ValueError("Patterns have different lengths.")
+            
+    if type(patterns) is not list:
+        raise TypeError("Patterns must be provided as a list.")
+
     newPatterns = []
     matched = []
     for x,p1 in enumerate(patterns):
@@ -58,23 +65,10 @@ def dec2yn(decState,numOpts):
     output = bin(decState).lstrip("0b").zfill(numOpts)[::-1].replace('1','Y').replace('0','N')
     return output
 
-#def _toIndex(stateList):
-#    """Translates a binary pattern from dash notation to index notation"""
-#   out = []
-#    for x in range(len(stateList)):
-#        if stateList[x] != '-':
-#            out.append((x,stateList[x]))
-#    return out
-#
-#def _fromIndex(idxList,numOpts):
-#    """Translates a binary pattern form index notation to dash notation"""
-#    out = ['-']*numOpts
-#    for x in idxList:
-#        out[x[0]]=x[1]
-#    return ''.join(out)
-
 def _subtractPattern(feas,sub):
     """Remove infeasible condition 'sub' from feasible condition 'feas' """
+    if len(feas) != len(sub):
+        raise ValueError("Patterns have different lengths.")
     sub = [x for x in enumerate(sub) if x[1] != '-']
     #check if targ overlaps with state:
     for x in sub:
@@ -91,14 +85,32 @@ def _subtractPattern(feas,sub):
             curr = curr[:idx]+val+curr[idx+1:]
     return remainingStates
 
-def rmvSt(feas,infeas):
-    """Subtract states 'infeas' from states 'currFeas'. """
-    orig = sum([2**x.count('-') for x in feas])
+def rmvSt(feas,rmv):
+    """Subtract YND 'rmv' from states list of states 'feas'.
+    
+    feas: list of YND states.
+    rmv: a single YND state.
+    returns: list feas - rmv, and the number of states removed.
+    """
+    orig = sum([2**x.count('-') for x in feas])  #Original number of states
     newfeas = []
     for pattern in feas:
-        newfeas += _subtractPattern(pattern,infeas)
-    numRmvd = orig - sum([2**x.count('-') for x in newfeas])
+        newfeas += _subtractPattern(pattern,rmv)
+    newfeas = reducePatterns(newfeas)
+    numRmvd = orig - sum([2**x.count('-') for x in newfeas])    #number of states removed
     return newfeas,numRmvd
+    
+def subtractStateSets(originalStates,statesToRemove):
+    """Returns the originalStates minus the statesToRemove.
+    
+    originalStates: list of YND states.
+    statesToRemove: list of YND states."""
+    
+    newStates = reducePatterns(originalStates)
+    for rmv in reducePatterns(statesToRemove):
+        newStates = rmvSt(newStates,rmv)[0]
+        
+    return newStates
 
 def mutuallyExclusive(mutEx):
     """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
