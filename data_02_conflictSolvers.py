@@ -380,7 +380,7 @@ class InverseSolver(RMGenerator):
             if varyRange != [0,0]:
                 varyRange = dm.preferenceVector[varyRange[0]:varyRange[1]]
                 for sl in varyRange:
-                    if sl is list:
+                    if type(sl) is list:
                         variedStates.extend([state-1 for state in sl])
                     else:
                         variedStates.append(sl-1)
@@ -390,9 +390,9 @@ class InverseSolver(RMGenerator):
                     if s0 != s1:
                         dm.improvementsInv[s0,s1] = numpy.nan
 
-            #dm.improvementsInv[s0,s1] indicates whether a state s0 is more preferred (+1), less preferred(-1),
-            # equally preferred(0), or has an unknown relation (nan) to another state s1. Generated based on
-            # the vary ranges selected.
+        #dm.improvementsInv[s0,s1] indicates whether a state s0 is more preferred (+1), 
+        # less preferred(-1), equally preferred(0), or has an unknown relation (nan) to 
+        # another state s1. Generated based on the vary ranges selected.
 
     def _decPerm(self,full,vary):
         """Returns all possible permutations of a list 'full' when only the span
