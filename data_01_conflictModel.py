@@ -393,7 +393,7 @@ class Coalition:
         return self.name
         
     def export_rep(self):
-        return [conflict.decisionMakers.index(dm) for dm in self.dms]
+        return {"name":self.name,"members":[conflict.decisionMakers.index(dm) for dm in self.dms]}
             
     def calculatePreferences(self):
         for dm in self.dms:

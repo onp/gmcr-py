@@ -20,28 +20,34 @@ class RMGenerator:
     Other methods are provided that allow the reachability data to be exported.
     
     """
-    def __init__(self,game):
+    def __init__(self,game,coalitions):
 
         self.game = game
+        self.coalitions = coalitions
 
-        for dm in self.game.decisionMakers:
-            dm.reachability = numpy.zeros((len(game.feasibles),len(game.feasibles)),numpy.int_)
-            pmTemp = numpy.array(dm.payoffs)
-            dm.payoffMatrix = pmTemp - pmTemp[:,numpy.newaxis]
+        for co in coalitions:
+            co.reachability = numpy.zeros((len(game.feasibles),len(game.feasibles)),numpy.int_)
+            if co.isCoalition:
+                pmTemp = numpy.array([dm.payoffs for dm in co]).transpose()
+                pmTemp = pmTemp[numpy.newaxis,:,:] - pmTemp[:,numpy.newaxis]
+                co.payoffMatrix = (pmTemp>0).all(axis=2)
+            else:
+                pmTemp = numpy.array(co.payoffs)
+                co.payoffMatrix = pmTemp[numpy.newaxis,:] - pmTemp[:,numpy.newaxis]
 
             # generate a flat list of move values controlled by other DMs
 
-            otherDMsMoves = [option.dec_val for otherDM in self.game.decisionMakers if otherDM!=dm for option in otherDM.options ]
-            focalDMmoves = [option.dec_val for option in dm.options]
+            otherCOsMoves = [option.dec_val for otherCO in coalitions if otherCO!=co for option in otherCO.options ]
+            focalCOmoves = [option.dec_val for option in co.options]
 
             # translate the list of moves values for other DMs into a list of base states
             fixedStates = [0]
-            for val in otherDMsMoves:
+            for val in otherCOsMoves:
                 fixedStates = [y+z for y in fixedStates for z in [0, val]]
 
             # translate the list of focal DM move values into a list of focal DM states
             manipulatedStates = [0]
-            for val in focalDMmoves:
+            for val in focalCOmoves:
                 manipulatedStates = [y+z for y in manipulatedStates for z in [0, val]]
 
             # find the full set of mutually reachable states (controlled by the focal DM) for each fixed state (controlled by the other DMs)
@@ -55,7 +61,7 @@ class RMGenerator:
                     for state1 in reachable:
                         s1 = self.game.feasibles.toOrdered[state1]-1
                         if s0 != s1:
-                            dm.reachability[s0,s1] =  1
+                            co.reachability[s0,s1] =  1
 
             # Remove irreversible states ######################################################
             for option in game.options:
@@ -69,33 +75,35 @@ class RMGenerator:
                                 val1 = state1yn[option.master_index]
                                 if val0 != val1:
                                 #remove irreversible moves from reachability matrix
-                                    dm.reachability[idx0,idx1] = 0
+                                    co.reachability[idx0,idx1] = 0
                                         
 
-    def reachable(self,dm,stateIdx):
-        """Returns a list of all states reachable by dm from state.
+    def reachable(self,co,stateIdx):
+        """Returns a list of all states reachable by a decisionMaker or coalition from state.
         
-        dm a DecisionMaker object.
-        stateIdx is the index of the state in the game.
+        co: a DecisionMaker or Coalition that was passed to the constructor.
+        stateIdx: the index of the state in the game.
         """
-        reachVec = numpy.nonzero(dm.reachability[stateIdx,:])[0].tolist()
+        if co not in self.coalitions:
+            raise ValueError("DM or Coalition was not in this scenario.")
+        reachVec = numpy.nonzero(co.reachability[stateIdx,:])[0].tolist()
         return reachVec
 
-    def UIs(self,dm,stateIdx,refState=None):
+    def UIs(self,co,stateIdx,refState=None):
         """Returns a list of a unilateral improvements available to dm from state.
         
-        dm is the integer index of the decision maker.
+        co: a DecisionMaker or Coalition that was passed to the constructor.
         stateIdx is the index of the state in the game.
         refState (optional) is another state to be used as a baseline for 
             determining whether or not a state is an improvement -- states will
             be returned as UIs only if they are reachable from stateIdx and more
             preferred from refState.
         """
+        if co not in self.coalitions:
+            raise ValueError("DM or Coalition was not in this scenario.")
         if refState is None:
             refState = stateIdx
-        
-        UIvec = numpy.nonzero(dm.reachability[stateIdx,:] * dm.payoffMatrix[refState,:] > 0)[0].tolist()
-
+        UIvec = numpy.nonzero(co.reachability[stateIdx,:] * co.payoffMatrix[refState,:] > 0)[0].tolist()
         return UIvec
 
     def saveJSON(self,file):
@@ -105,6 +113,8 @@ class RMGenerator:
         """
         gameData = self.game.export_rep()
         
+        gameData["coalitions"] = self.coalitions.export_rep()
+        
         nodes = []
 
         for stateIdx,stateDec in enumerate(self.game.feasibles.decimal):
@@ -112,11 +122,11 @@ class RMGenerator:
             stateOrd = self.game.feasibles.ordered[stateIdx]
             reachable = []
 
-            for dmInd,dm in enumerate(self.game.decisionMakers):
-                for rchSt in self.reachable(dm,stateIdx):
+            for coInd,co in enumerate(self.coalitions):
+                for rchSt in self.reachable(co,stateIdx):
                     reachable.append({'target':rchSt,
-                                      'dm': 'dm%s'%dmInd,
-                                      'payoffChange':int(dm.payoffMatrix[stateIdx,rchSt])})
+                                      'dm': 'dm%s'%coInd,
+                                      'payoffChange':int(co.payoffMatrix[stateIdx,rchSt])})
                          
             nodes.append({'id':stateIdx,
                           'decimal':str(stateDec),
@@ -135,7 +145,7 @@ class LogicalSolver(RMGenerator):
     
     """
     def __init__(self,game):
-        RMGenerator.__init__(self,game)
+        RMGenerator.__init__(self,game,game.decisionMakers)
 
     def chattyHelper(self,dm,state):
         """Used in generating narration for the verbose versions of the stability calculations"""
@@ -367,7 +377,7 @@ class LogicalSolver(RMGenerator):
 
 class InverseSolver(RMGenerator):
     def __init__(self,game,vary=None,desiredEquilibria=None):
-        RMGenerator.__init__(self,game)
+        RMGenerator.__init__(self,game,game.decisionMakers)
 
         self.desEq = desiredEquilibria
         self.vary  = vary
