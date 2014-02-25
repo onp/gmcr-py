@@ -5,6 +5,7 @@
 import numpy
 import itertools
 import json
+import data_01_conflictModel as model
 from tkinter import filedialog
 
 class RMGenerator:
@@ -23,9 +24,17 @@ class RMGenerator:
     def __init__(self,game,coalitions):
 
         self.game = game
-        self.coalitions = coalitions
+        if coalitions is None:
+            self.coalitions = self.game.decisionMakers
+        else:
+            if type(coalitions) is not list:
+                raise TypeError("Coalitions must be provided as a list.")
+            for co in coalitions:
+                if type(co) not in [model.DecisionMaker,model.Coalition]:
+                    raise TypeError("List items must be Coalitions or DecisionMakers.")
+            self.coalitions = coalitions
 
-        for co in coalitions:
+        for co in self.coalitions:
             co.reachability = numpy.zeros((len(game.feasibles),len(game.feasibles)),numpy.int_)
             if co.isCoalition:
                 pmTemp = numpy.array([dm.payoffs for dm in co]).transpose()
@@ -37,7 +46,7 @@ class RMGenerator:
 
             # generate a flat list of move values controlled by other DMs
 
-            otherCOsMoves = [option.dec_val for otherCO in coalitions if otherCO!=co for option in otherCO.options ]
+            otherCOsMoves = [option.dec_val for otherCO in self.coalitions if otherCO!=co for option in otherCO.options ]
             focalCOmoves = [option.dec_val for option in co.options]
 
             # translate the list of moves values for other DMs into a list of base states
@@ -141,15 +150,17 @@ class RMGenerator:
 
 
 class LogicalSolver(RMGenerator):
-    """Solves the games for equilibria, based on the logical definitions of stability concepts.
-    
-    """
-    def __init__(self,game):
-        RMGenerator.__init__(self,game,game.decisionMakers)
+    """Solves the games for equilibria, based on the logical definitions of stability concepts."""
+    def __init__(self,game,coalitions=None):
+        RMGenerator.__init__(self,game,coalitions)
 
-    def chattyHelper(self,dm,state):
-        """Used in generating narration for the verbose versions of the stability calculations"""
-        snippet = 'state %s (decimal %s, payoff %s)' %(state+1, self.game.feasibles.decimal[state], dm.payoffs[state])
+    def chattyHelper(self,co,state):
+        """Used in generating narration for the verbose versions of the stability calculations."""
+        if co.isCoalition:
+            pay = [dm.payoffs[state] for dm in co.members]
+        else:
+            pay  = co.payoffs[state]
+        snippet = 'state %s (decimal %s, payoff %s)' %(state+1, self.game.feasibles.decimal[state], pay)
         return snippet
 
 
@@ -175,15 +186,15 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state1)]     #find all possible UIs available to other players
-                if not otherDMuis:
+                otherCOuis = [x for oCO in self.coalitions if oCO != dm for x in self.UIs(oCO,state1)]     #find all possible UIs available to other players
+                if not otherCOuis:
                     seqStab=0
                     narr += self.chattyHelper(dm,state0)+' is unstable by SEQ for focal DM '+dm.name+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n\n'
                     return seqStab,narr
                 else:
                     stable=0
-                    for state2 in otherDMuis:
-                        if dm.payoffs[state2] <= dm.payoffs[state0]:
+                    for state2 in otherCOuis:
+                        if dm.payoffMatrix[state0,state2]  <= 0:
                             stable = 1
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is SEQ sanctioned for focal DM '+ dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check other focal DN UIs for sanctioning... \n\n'
                             break
@@ -208,7 +219,7 @@ class LogicalSolver(RMGenerator):
             narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
-            otherDMuis = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
+            otherDMuis = [x for oDM in self.coalitions if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
             if not otherDMuis:
                 simStab=0
                 narr += self.chattyHelper(dm,state0)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state0) + '.\n\n'
@@ -220,7 +231,7 @@ class LogicalSolver(RMGenerator):
                         state2combinedDec = self.game.feasibles.decimal[state1]+self.game.feasibles.decimal[state2]-self.game.feasibles.decimal[state0]
                         if state2combinedDec in self.game.feasibles.decimal:
                             state2combined = self.game.feasibles.decimal.index(state2combinedDec)
-                            if dm.payoffs[state2combined] <= dm.payoffs[state0]:
+                            if dm.payoffMatrix[state0,state2combined] <= 0:
                                 stable = 1
                                 narr += 'A move to '+self.chattyHelper(dm,state1)+' is SIM sanctioned for focal DM ' + dm.name + ' by a move to '+self.chattyHelper(dm,state2)+' by other DMs, which would give a final state of ' + self.chattyHelper(dm,state2combined) + '.  Check other focal DM UIs for sanctioning...\n\n'
                                 break
@@ -247,7 +258,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
                 if not otherDMums:
                     gmrStab=0
                     narr += self.chattyHelper(dm,state0)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
@@ -255,7 +266,7 @@ class LogicalSolver(RMGenerator):
                 else:
                     stable=0
                     for state2 in otherDMums:
-                        if dm.payoffs[state2] <= dm.payoffs[state0]:
+                        if dm.payoffMatrix[state0,state2] <= 0:
                             stable = 1
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is GMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other DMs.\n\n'
                             break
@@ -281,7 +292,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMums = [x for oDM in self.game.decisionMakers if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
 
                 if not otherDMums:
                     smrStab=0
@@ -290,7 +301,7 @@ class LogicalSolver(RMGenerator):
                 else:
                     stable=0
                     for state2 in otherDMums:
-                        if dm.payoffs[state2] <= dm.payoffs[state0]:     # if a sanctioning state exists...
+                        if dm.payoffMatrix[state0,state2] <= 0:     # if a sanctioning state exists...
                             narr += 'A move to '+self.chattyHelper(dm,state1)+' is SMR sanctioned for focal DM '+dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check for possible countermoves...\n\n'
                             stable = 1
                             ui2 = self.UIs(dm,state2,state0)         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state0'
@@ -315,8 +326,8 @@ class LogicalSolver(RMGenerator):
     def findEquilibria(self):
         """Calculates the equalibrium states that exist within the game for each stability concept."""
             #Nash calculation
-        nashStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.game.decisionMakers):
+        nashStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.coalitions):
             for state in range(len(self.game.feasibles)):
                 nashStabilities[idx,state]= self.nash(dm,state)[0]
 
@@ -325,8 +336,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SEQ calculation
-        seqStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.game.decisionMakers):
+        seqStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.coalitions):
             for state in range(len(self.game.feasibles)):
                 seqStabilities[idx,state]= self.seq(dm,state)[0]
 
@@ -335,8 +346,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SIM calculation
-        simStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.game.decisionMakers):
+        simStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.coalitions):
             for state in range(len(self.game.feasibles)):
                 simStabilities[idx,state] = self.sim(dm,state)[0]
 
@@ -348,8 +359,8 @@ class LogicalSolver(RMGenerator):
         self.seqSimEquilibria = numpy.invert(sum(seqSimStabilities,0).astype('bool'))
 
             #GMR calculation
-        gmrStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.game.decisionMakers):
+        gmrStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.coalitions):
             for state in range(len(self.game.feasibles)):
                 gmrStabilities[idx,state]=self.gmr(dm,state)[0]
 
@@ -358,8 +369,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SMR calculations
-        smrStabilities = numpy.zeros((len(self.game.decisionMakers),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.game.decisionMakers):
+        smrStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.coalitions):
             for state in range(len(self.game.feasibles)):
                 smrStabilities[idx,state]=self.smr(dm,state)[0]
 
@@ -376,8 +387,8 @@ class LogicalSolver(RMGenerator):
 
 
 class InverseSolver(RMGenerator):
-    def __init__(self,game,vary=None,desiredEquilibria=None):
-        RMGenerator.__init__(self,game,game.decisionMakers)
+    def __init__(self,game,vary=None,desiredEquilibria=None,coalitions=None):
+        RMGenerator.__init__(self,game,coalitions)
 
         self.desEq = desiredEquilibria
         self.vary  = vary

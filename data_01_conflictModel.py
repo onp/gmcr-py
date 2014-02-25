@@ -378,7 +378,7 @@ class FeasibleList:
 class Coalition:
     """Combination of two or more decision makers. Has equivalent interfaces."""
     def __init__(self,conflict,dms):
-        self.dms = dms
+        self.members = dms
         self.isCoalition = True
         self.name = ', '.join([dm.name for dm in dms])
         self.conflict = conflict
@@ -391,6 +391,9 @@ class Coalition:
                 
     def __str__(self):
         return self.name
+        
+    def __iter__(self):
+        return iter(self.members)
         
     def export_rep(self):
         return {"name":self.name,"members":[conflict.decisionMakers.index(dm) for dm in self.dms]}
