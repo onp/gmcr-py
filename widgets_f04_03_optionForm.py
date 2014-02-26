@@ -16,20 +16,29 @@ class OptionFormTable(ttk.Frame):
         self.conflict = conflict
         
         #widgets
-        self.table = ttk.Treeview(self)
-        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,command = self.table.yview)
-        self.scrollX = ttk.Scrollbar(self, orient=HORIZONTAL,command = self.table.xview)
+        self.tableCanvas = Canvas(self)
+        self.table = ttk.Frame(self.tableCanvas)
+        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,command = self.tableCanvas.yview)
+        self.scrollX = ttk.Scrollbar(self, orient=HORIZONTAL,command = self.tableCanvas.xview)
         
         #configuration
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
         
-        self.table['show'] = 'headings'
-        self.table.grid(column=0,row=0,sticky=(N,S,E,W))
+        def resize(event):
+            self.tableCanvas.configure(scrollregion=self.tableCanvas.bbox("all"))
+        
+        self.tableCanvas.grid(column=0,row=0,sticky=(N,S,E,W))
         self.scrollY.grid(column=1,row=0,sticky=(N,S,E,W))
         self.scrollX.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.table.configure(yscrollcommand=self.scrollY.set)
-        self.table.configure(xscrollcommand=self.scrollX.set)
+        self.tableCanvas.configure(yscrollcommand=self.scrollY.set)
+        self.tableCanvas.configure(xscrollcommand=self.scrollX.set)
+        self.tableCanvas.create_window((0,0),window=self.table,anchor='nw')
+        self.table.bind("<Configure>",resize)
+        
+        self.style = ttk.Style()
+        self.style.configure('header.TLabel',background="green")
+        self.style.configure('footer.TLabel',background="green")
         
         self.buildTable()
     
@@ -82,30 +91,16 @@ class OptionFormTable(ttk.Frame):
         
         #push to display
         
-        for child in self.table.get_children():
-            self.table.delete(child)
-        
-        self.table['columns'] = list(range(len(feasibles) + 2))
+        for child in self.table.winfo_children():
+            child.destroy()
         
         for row in range(tableData.shape[0]):
             if row<2:
-                tag = "head"
+                tag = "header"
             elif row<(len(self.conflict.options)+2):
                 tag = "body"
             else:
-                tag = "foot"
-            self.table.insert('','end',values = tableData[row,:].tolist(),tags = (tag,))
-            
-        self.table.tag_configure("head",background="gray80")
-        self.table.tag_configure("foot",background="gray80")
-        
-        #column sizing
-        for col in range(len(feasibles) + 2):
-            self.table.column(col,stretch=False)
-        self.table.column(0,width=200)
-        self.table.column(0,minwidth=150)
-        self.table.column(1,width=200)
-        self.table.column(1,minwidth=150)
-        for col in range(2,(len(feasibles) + 2)):
-            self.table.column(col,width=22)
-            self.table.column(col,minwidth=17)
+                tag = "footer"
+            for col in range(tableData.shape[1]):
+                newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
+                newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
