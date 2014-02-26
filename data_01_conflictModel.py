@@ -173,7 +173,7 @@ class CompoundCondition:
         self.updateName()
         return True
     
-    def export_rep(self,state):
+    def export_rep(self):
         return {"compound":True,"members":[cond.export_rep() for cond in self.conditions]}
     
 
