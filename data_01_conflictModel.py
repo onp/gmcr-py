@@ -311,7 +311,7 @@ class ConditionList(ObjectList):
         elif isinstance(item,list):
             newCondition = Condition(self.conflict,item)
         elif isinstance(item,dict):
-            newCondition = CompoundCondition(item['members'])
+            newCondition = CompoundCondition(self.conflict,item['members'])
         else:
             raise TypeError('Not a valid Condition Object')
             

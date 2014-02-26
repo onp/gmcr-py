@@ -96,8 +96,8 @@ class OptionFormTable(ttk.Frame):
                 tag = "foot"
             self.table.insert('','end',values = tableData[row,:].tolist(),tags = (tag,))
             
-        self.table.tag_configure("head",background="green")
-        self.table.tag_configure("foot",background="green")
+        self.table.tag_configure("head",background="gray80")
+        self.table.tag_configure("foot",background="gray80")
         
         #column sizing
         for col in range(len(feasibles) + 2):
