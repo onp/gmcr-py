@@ -191,6 +191,8 @@ class PreferencesFrame(ttk.Frame):
         self.dm = self.vectors.dm
         self.preferenceDisp.changeDM(self.dm)
         self.optionTable.buildTable(self.dm)
+        self.staging.clear()
+        self.editor.setStates('clear')
         if self.dm is None:
             self.preferenceDisp.disable()
             self.editor.disable()

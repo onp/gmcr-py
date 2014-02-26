@@ -217,10 +217,12 @@ class PreferenceListDisplay(ttk.Frame):
             self.disp.delete(child)
         if self.dm is not None:
             self.dm.weightPreferences()
+            self.keys = []
             for pref in self.dm.preferences:
                 key = self.disp.insert('','end',text=pref.name)
                 self.disp.set(key,'state',pref.name)
                 self.disp.set(key,'weight',pref.weight)
+                self.keys.append(key)
         
         
     def disable(self,event=None):
@@ -250,31 +252,36 @@ class PreferenceListDisplay(ttk.Frame):
         """Called whenever an item is moved upwards."""
         idx = self.selIdx
         if (idx !=0) and (self.dm is not None):
+            newIdx = idx-1
             self.dm.preferences.moveCondition(idx,idx-1)
             self.event_generate('<<ValueChange>>')
-            self.disp.selection_set(self.selId)
+            self.disp.selection_set(self.keys[newIdx])
             self.selChgCmd()
 
     def downCmd(self,*args):
         """Called whenever an item is moved downwards."""
         idx = self.selIdx
         if (idx != len(self.dm.preferences)-1) and (self.dm is not None):
+            newIdx = idx+1
             self.dm.preferences.moveCondition(idx,idx+1)
             self.event_generate('<<ValueChange>>')
-            self.disp.selection_set(self.selId)
+            self.disp.selection_set(self.keys[newIdx])
             self.selChgCmd()
 
     def delCmd(self,*args):
         """Called when an item is deleted."""
-        newSelId = self.disp.next(self.selId)
-        if newSelId == '':
-            newSelId = self.disp.prev(self.selId)
+        if self.selIdx < len(self.keys)-1:
+            newSelIdx = self.selIdx
+        elif len(self.keys) <= 1:
+            newSelIdx = None
+        else:
+            newSelIdx = self.selIdx-1
                 
         self.dm.preferences.removeCondition(self.selIdx)
         self.event_generate('<<ValueChange>>')
         
-        if newSelId != '':
-            self.disp.selection_set(newSelId)
+        if newSelIdx is not None:
+            self.disp.selection_set(self.keys[newSelIdx])
         else:
             self.selId = None
             self.selIdx = None
