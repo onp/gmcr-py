@@ -39,10 +39,9 @@ class RankingEditor(ttk.Frame):
             self.errorDetails += "  See DM %s's preference ranking."%(self.dm.name)
             self.master.event_generate("<<errorChange>>")
             return
-        print('passed test')
-        self.master.event_generate("<<errorChange>>")
         self.dm.preferenceVector = prefVec
         self.dm.calculatePreferences()
+        self.master.event_generate("<<errorChange>>")
         
     def enableWidget(self):
         self.prefVecEntry['state'] = 'normal'
@@ -110,7 +109,7 @@ class PVecEditMaster(ttk.Frame):
     def updateErrors(self,event=None):
         messages = [editor.errorDetails for editor in self.vectorEditors if editor.errorDetails]
         self.game.preferenceErrors = len(messages)
-        self.event_generate("<<breakingChange>>")
+        
 
         self.errorDisplay['state'] = 'normal'
         self.errorDisplay.delete('1.0','end')
@@ -121,5 +120,6 @@ class PVecEditMaster(ttk.Frame):
         else:
             self.errorDisplay.insert('1.0',"No Errors.  Preference rankings are valid.")
             self.errorDisplay['foreground'] = 'black'
+            self.event_generate("<<PreferenceVectorChange>>")
         self.errorDisplay['state'] = 'disabled'
 

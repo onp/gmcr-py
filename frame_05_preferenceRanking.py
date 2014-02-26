@@ -10,12 +10,13 @@ from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 from widgets_f05_01_PrefRank import PVecEditMaster
+from widgets_f04_03_optionForm import OptionFormTable
 import data_03_gmcrUtilities as gmcrUtil
 
 class PreferenceVectorFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
-        ttk.Frame.__init__(self,master,*args)
+    def __init__(self,master,game):
+        ttk.Frame.__init__(self,master)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
@@ -69,12 +70,13 @@ class PreferenceVectorFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.content = PVecEditMaster(self,self.game)
+        self.prefEditor = PVecEditMaster(self,self.game)
+        self.stateTable = OptionFormTable(self,self.game)
 
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0,row=0,sticky=(N,S,E,W))
+        self.grid(column=0,row=0,rowspan=5,sticky=(N,S,E,W))
         self.grid_remove()
 
         #configuring infoFrame & infoFrame widgets
@@ -88,11 +90,13 @@ class PreferenceVectorFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
-        self.content.grid(row=0,column=0,sticky=(N,S,E,W))
+        self.prefEditor.grid(row=0,column=0,sticky=(N,S,E,W))
+        self.stateTable.grid(row=1,column=0,sticky=(N,S,E,W))
         self.columnconfigure(0,weight=1)
+        self.rowconfigure(1,weight=1)
 
         # bindings
-
+        self.prefEditor.bind("<<PreferenceVectorChange>>",self.rebuildTable)
     
         self.built = True
         
@@ -121,7 +125,11 @@ class PreferenceVectorFrame(ttk.Frame):
         self.helpFrame.grid_remove()
 
     def refresh(self,*args):
-        self.content.refresh()
+        self.prefEditor.refresh()
+        self.stateTable.buildTable()
+        
+    def rebuildTable(self,event=None):
+        self.stateTable.buildTable()
 
 
 
