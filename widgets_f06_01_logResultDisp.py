@@ -59,6 +59,7 @@ class CoalitionSelector(ttk.Frame):
         numDMs = len(self.conflict.decisionMakers)
         newCos = []
         seen = []
+        areCoalitions = False
         for itm in newCoIdxs:
             if type(itm) is int:
                 if itm in seen:
@@ -87,12 +88,16 @@ class CoalitionSelector(ttk.Frame):
                             seen.append(itm2)
                             newCoMembers.append(self.conflict.decisionMakers[itm2-1])
                 newCos.append(self.conflict.newCoalition(newCoMembers))
+                areCoalitions = True
             else:
                 self.statusVar.set("%s is an invalid entry"%itm)
                 return True
         if len(seen) == numDMs:
             self.statusVar.set("Input OK.")
-            self.conflict.coalitions = newCos
+            if areCoalitions:
+                self.conflict.coalitions = newCos
+            else:
+                self.conflict.coalitions = None
             self.event_generate("<<CoalitionsChanged>>")
         else:
             self.statusVar.set("Missing DMs"%([x+1 for x in range(numDMs) if x+1 not in seen]))
@@ -204,6 +209,7 @@ class LogNarrator(ttk.Frame):
         self.dmVar = StringVar()
         self.stateVar = StringVar()
         self.eqTypeVar = StringVar()
+        self.useCoalitions = False
         
         self.dmSel = ttk.Combobox(self,textvariable=self.dmVar,state='readonly')
         self.dmSel.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
@@ -234,7 +240,12 @@ class LogNarrator(ttk.Frame):
         self.refresh()
         
     def refresh(self):
-        self.dmSel['values'] = tuple([dm.name for dm in self.conflict.decisionMakers])
+        if self.conflict.coalitions is None:
+            self.useCoalitions = False
+            self.dmSel['values'] = tuple([dm.name for dm in self.conflict.decisionMakers])
+        else:
+            self.useCoalitions = True
+            self.dmSel['values'] = tuple([co.name for co in self.conflict.coalitions])
         self.dmSel.current(0)
         self.stateSel['values'] = tuple(self.conflict.feasibles.ordered)
         self.stateSel.current(0)
@@ -242,7 +253,10 @@ class LogNarrator(ttk.Frame):
         
     def refreshNarration(self,*args):
         self.equilibriumNarrator.delete('1.0','end')
-        dm = self.conflict.decisionMakers[self.dmSel.current()]
+        if self.useCoalitions:
+            dm = self.conflict.coalitions[self.dmSel.current()]
+        else:
+            dm = self.conflict.decisionMakers[self.dmSel.current()]
         state = self.stateSel.current()
         eqType = self.eqTypeVar.get()
         if eqType == "Nash":
