@@ -10,20 +10,20 @@ Also includes functionality for exporting reachability data.
 
 from tkinter import *
 from tkinter import ttk
-from data_01_conflictModel import ConflictModel
-from widgets_f06_01_logResultDisp import LogResultDisp
+from data_02_conflictSolvers import LogicalSolver
+from widgets_f06_01_logResultDisp import *
 
 
 
 class ResultFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
-        self.game = game
+        self.conflict = conflict
 
         self.buttonLabel= 'Equilibria'     #Label used for button to select frame in the main program.
         self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
@@ -34,13 +34,13 @@ class ResultFrame(ttk.Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
+        if len(self.conflict.decisionMakers) < 1:
             return False
-        if len(self.game.options) < 1:
+        if len(self.conflict.options) < 1:
             return False
-        if len(self.game.feasibles) < 1:
+        if len(self.conflict.feasibles) < 1:
             return False
-        if self.game.preferenceErrors:
+        if self.conflict.preferenceErrors:
             return False
         else:
             return True
@@ -52,13 +52,14 @@ class ResultFrame(ttk.Frame):
         self.infoText = StringVar(value='information here reflects \nthe state of the module')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value="The stability of each state in the game is listed in the upper box, "
+        self.helpText = StringVar(value="The stability of each state in the conflict is listed in the upper box, "
                 "giving results under a number of different stability criterion. The lower box combined with "
                 "the drop down menus in the centre allow the logic which defines the stability/instability "
                 "of each option to be examined.")
 
         #Define frame-specific variables
-
+        self.sol = LogicalSolver(self.conflict)
+        self.sol.findEquilibria()
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
         self.infoLabel  = ttk.Label(self.infoFrame,textvariable = self.infoText)
@@ -66,8 +67,16 @@ class ResultFrame(ttk.Frame):
         # helpFrame : frame and label definitions (with master of 'self.helpFrame')
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
-        #Define frame-specific input widgets (with 'self' or a child therof as master)
-        self.logRes = LogResultDisp(self,self.game)
+        #Define frame-specific input widgets (with 'self' or a child thereof as master)
+        self.paneMaster = PanedWindow(self,orient=HORIZONTAL,sashwidth=10,sashrelief="raised",sashpad=3,relief="sunken")
+        
+        self.pane1 = ttk.Frame(self.paneMaster)
+        self.coalitionSelector = CoalitionSelector(self.pane1,self.conflict,self)
+        self.solutionTable = OptionFormSolutionTable(self.pane1,self.conflict,self)
+        self.exporter = Exporter(self.pane1,self.conflict,self)
+        
+        self.pane2 = ttk.Frame(self.paneMaster)
+        self.narrator = LogNarrator(self.pane2,self.conflict,self)
 
 
         # ########  preliminary gridding and option configuration
@@ -89,10 +98,22 @@ class ResultFrame(ttk.Frame):
         self.helpLabel.grid(column=0,row=0,sticky=(N,S,E,W))
 
         #configuring frame-specific options
-        self.logRes.grid(column=0,row=1,sticky=(N,S,E,W))
+        self.paneMaster.grid(column=0,row=1,sticky=(N,S,E,W))
+        self.paneMaster.add(self.pane1)
+        self.pane1.rowconfigure(1,weight=1)
+        self.pane1.columnconfigure(0,weight=1)
+        self.coalitionSelector.grid(row=0,column=0,sticky=(N,S,E,W))
+        self.solutionTable.grid(row=1,column=0,sticky=(N,S,E,W))
+        self.exporter.grid(row=2,column=0,sticky=(N,S,E,W))
+        
+        self.paneMaster.add(self.pane2)
+        self.pane2.rowconfigure(0,weight=1)
+        self.pane2.columnconfigure(0,weight=1)
+        self.narrator.grid(row=0,column=0,sticky=(N,S,E,W))
+
 
         # bindings
-            #None
+        self.coalitionSelector.bind("<<CoalitionsChanged>>",self.coalitionChange)
             
         self.built = True
         
@@ -111,8 +132,9 @@ class ResultFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
-        self.logRes.refreshDisplay()
-        self.logRes.refreshSolution()
+        self.coalitionSelector.refresh()
+        self.solutionTable.refresh()
+        self.narrator.refresh()
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
@@ -122,7 +144,12 @@ class ResultFrame(ttk.Frame):
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
 
-
+    def coalitionChange(self,event=None):
+        self.sol = LogicalSolver(self.conflict)
+        self.sol.findEquilibria()
+        self.coalitionSelector.refresh()
+        self.solutionTable.refresh()
+        self.narrator.refresh()
 
 
 
@@ -137,7 +164,8 @@ class ResultFrame(ttk.Frame):
 
 
 def main():
-
+    from data_01_conflictModel import ConflictModel
+    
     root = Tk()
     root.columnconfigure(0,weight=1)
     root.rowconfigure(0,weight=1)
@@ -150,9 +178,15 @@ def main():
     hSep = ttk.Separator(cFrame,orient=VERTICAL)
     hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
-    testGame = ConflictModel('pris.gmcr')
+    conf = ConflictModel()
+    conf.load_from_file("save_files/Garrison.gmcr")
 
-    testFrame = ResultFrame(cFrame,testGame)
+    testFrame = ResultFrame(cFrame,conf)
+    if testFrame.hasRequiredData():
+        testFrame.buildFrame()
+    else:
+        print("data missing")
+        return
     testFrame.enter()
 
 

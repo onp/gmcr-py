@@ -414,6 +414,7 @@ class ConflictModel:
 
         self.useManualPreferenceVectors = False
         self.preferenceErrors = None
+        self.coalitions = None
 
         
     def newCondition(self,condData):
@@ -421,6 +422,9 @@ class ConflictModel:
         
     def newCompoundCondition(self,condData):
         return CompoundCondition(self,condData)
+        
+    def newCoalition(self,coalitionData):
+        return Coalition(self,coalitionData)
 
     def export_rep(self):
         """Generates a representation of the conflict suitable for JSON encoding."""

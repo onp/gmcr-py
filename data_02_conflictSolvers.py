@@ -151,8 +151,8 @@ class RMGenerator:
 
 class LogicalSolver(RMGenerator):
     """Solves the games for equilibria, based on the logical definitions of stability concepts."""
-    def __init__(self,game,coalitions=None):
-        RMGenerator.__init__(self,game,coalitions)
+    def __init__(self,game):
+        RMGenerator.__init__(self,game,game.coalitions)
 
     def chattyHelper(self,co,state):
         """Used in generating narration for the verbose versions of the stability calculations."""
@@ -387,8 +387,8 @@ class LogicalSolver(RMGenerator):
 
 
 class InverseSolver(RMGenerator):
-    def __init__(self,game,vary=None,desiredEquilibria=None,coalitions=None):
-        RMGenerator.__init__(self,game,coalitions)
+    def __init__(self,game,vary=None,desiredEquilibria=None):
+        RMGenerator.__init__(self,game,game.coalitions)
 
         self.desEq = desiredEquilibria
         self.vary  = vary
