@@ -16,12 +16,14 @@ class StatusQuoAndGoals(ttk.Frame):
         self.conflict = conflict
         
         self.statusQuoVar = StringVar()
-        self.goalVars = []
+        self.goalSelectors = []
         self.removeCommands = []
         self.cleanRow = 2
         
         self.listFrame = ttk.Frame(self)
         self.listFrame.grid(row=0,column=0,sticky=(N,S,E,W))
+        self.listFrame.columnconfigure(2,weight=1)
+        self.columnconfigure(0,weight=1)
 
         self.statusQuoLabel = ttk.Label(self.listFrame,text="Status Quo:")
         self.statusQuoLabel.grid(row=0,column=0,columnspan=2,sticky=(N,S,E,W))
@@ -32,6 +34,7 @@ class StatusQuoAndGoals(ttk.Frame):
         self.addGoalButton = ttk.Button(self,text="Add Goal",command = self.addGoal)
         self.addGoalButton.grid(row=1,column=0,sticky=(N,S,E,W))
         
+        self.statusQuoSelector.bind('<<ComboboxSelected>>',self.sqChange)
         self.refresh()
         
     def refresh(self):
@@ -50,27 +53,115 @@ class StatusQuoAndGoals(ttk.Frame):
         selector['values'] = tuple(self.conflict.feasibles.ordered)
         
         def removeGoal(event=None):
+            self.removeCommands.remove(removeGoal)
+            self.goalSelectors.remove(selector)
             label.destroy()
             selector.destroy()
             rmvBtn.destroy()
-            self.removeCommands.remove(removeGoal)
-            self.goalVars.remove(goalVar)
+            self.goalChange()
+            
             
         rmvBtn.configure(command=removeGoal)
         self.removeCommands.append(removeGoal)
-        self.goalVars.append(goalVar)
+        self.goalSelectors.append(selector)
+        
+        selector.bind("<<ComboboxSelected>>",self.goalChange)
         
         rmvBtn.grid(row=self.cleanRow,column=0,sticky=(N,S,E,W))
         label.grid(row=self.cleanRow,column=1,sticky=(N,S,E,W))
         selector.grid(row=self.cleanRow,column=2,sticky=(N,S,E,W))
         self.cleanRow += 1
         
-class reachableTreeViewer(ttk.Frame):
-    def __init__(self,master,conflict):
+    def sqChange(self,event=None):
+        self.event_generate("<<StatusQuoChanged>>")
+        
+    def goalChange(self,event=None):
+        self.event_generate("<<GoalChanged>>")
+        
+class ReachableTreeViewer(ttk.Frame):
+    def __init__(self,master,conflict,solOwner):
         ttk.Frame.__init__(self,master)
         
         self.conflict = conflict
+        self.owner = solOwner
         
+        self.reachableTree = ttk.Treeview(self)
+        self.reachableTree.grid(row=0,column=0,sticky=(N,S,E,W))
+        self.scrollX = ttk.Scrollbar(self, orient=HORIZONTAL,command = self.reachableTree.xview)
+        self.scrollX.grid(row=1,column=0,sticky=(N,S,E,W))
+        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,command = self.reachableTree.yview)
+        self.scrollY.grid(row=0,column=1,sticky=(N,S,E,W))
+        self.reachableTree.configure(xscrollcommand=self.scrollX.set)
+        self.reachableTree.configure(yscrollcommand=self.scrollY.set)
+        
+        self.rowconfigure(0,weight=1)
+        self.columnconfigure(0,weight=1)
+        
+        self.reachableTree.column("#0",stretch=True,minwidth=100,width=120)
+        self.reachableTree.heading("#0",text="State Number")
+        
+        columnNames = ("DM","YN","Decimal","Payoff","UI")
+        self.reachableTree.configure(columns=columnNames)
+        
+        for col in columnNames:
+            self.reachableTree.column(col,stretch=True,minwidth=60,width=80,anchor="center")
+            self.reachableTree.heading(col,text=col)
+        
+        self.reachableTree.tag_configure("Y",background="green")
+        self.buildTree(0)
+        
+    def buildTree(self,statusQuo,depth=5,lastDM=None,parent="",wasUI="N"):
+        sol = self.owner.sol
+        if lastDM is None:
+            for child in self.reachableTree.get_children():
+                self.reachableTree.delete(child)
+            newNode = self.reachableTree.insert(parent,'end',text=str(statusQuo+1))
+        else:
+            vals = (lastDM.name,
+                    self.conflict.feasibles.yn[statusQuo],
+                    self.conflict.feasibles.decimal[statusQuo],
+                    lastDM.payoffs[statusQuo],
+                    wasUI)
+            newNode = self.reachableTree.insert(parent,'end',text=str(statusQuo+1),values=vals,tags=(wasUI,))
+        
+        if depth>0:
+            for co in [dm for dm in sol.coalitions if dm is not lastDM]:
+                for reachable in sol.reachable(co,statusQuo):
+                    ui = "Y" if co.payoffMatrix[statusQuo,reachable]>0 else "N"
+                    self.buildTree(reachable,depth-1,co,newNode,ui)
+                
+            
+class PatternNarrator(ttk.Frame):
+    def __init__(self,master,conflict,solOwner):
+        ttk.Frame.__init__(self,master)
+        
+        self.conflict = conflict
+        self.owner = solOwner
+        
+        self.label = ttk.Label(self,text="Requirements for goals to be met:")
+        self.label.grid(row=0,column=0,sticky=(N,S,E,W))
+        
+        self.textBox = Text(self,wrap="word")
+        self.textBox.grid(row=1,column=0,sticky=(N,S,E,W))
+        self.scrollY = ttk.Scrollbar(self,orient=VERTICAL,command=self.textBox.yview)
+        self.textBox.configure(yscrollcommand=self.scrollY.set)
+        self.scrollY.grid(row=1,column=1,sticky=(N,S,E,W))
+        
+        self.rowconfigure(1,weight=1)
+        self.columnconfigure(0,weight=1)
+        
+        self.updateNarration()
+        
+    def updateNarration(self,event=None):
+        if self.owner.sol.desEq is None:
+            message = "No Desired Equilibrium set."
+        else:
+            message = "Currently only one goal state at a time can be considered. Targeting %s.\n\n"%(self.owner.sol.desEq+1)
+            message += "For Nash Stability:" + self.owner.sol.nashCond()
+            message += "For SEQ Stability:"+ self.owner.sol.seqCond()
+            
+        self.textBox.delete('1.0','end')
+        self.textBox.insert('1.0',message)
         
         
         
