@@ -37,8 +37,9 @@ class OptionFormTable(ttk.Frame):
         self.table.bind("<Configure>",resize)
         
         self.style = ttk.Style()
-        self.style.configure('header.TLabel',background="green")
-        self.style.configure('footer.TLabel',background="green")
+        #self.style.configure('header.TLabel',background="green")
+        self.style.configure('body.TLabel',background="white")
+        #self.style.configure('footer.TLabel',background="green")
         
         self.buildTable()
     

@@ -133,8 +133,10 @@ class OptionFormSolutionTable(ttk.Frame):
         self.table.bind("<Configure>",resize)
         
         self.style = ttk.Style()
-        self.style.configure('header.TLabel',background="green")
-        self.style.configure('payoffs.TLabel',background="green")
+        #self.style.configure('states.TLabel',background="green")
+        self.style.configure('yn.TLabel',background="white")
+        #self.style.configure('payoffs.TLabel',background="green")
+        self.style.configure('stabilities.TLabel',background="white")
         
         self.refresh()
     
@@ -186,9 +188,9 @@ class OptionFormSolutionTable(ttk.Frame):
         
         for row in range(tableData.shape[0]):
             if row<2:
-                tag = "header"
-            elif row<(len(self.conflict.options)+2):
                 tag = "states"
+            elif row<(len(self.conflict.options)+2):
+                tag = "yn"
             elif row<(len(self.conflict.options)+len(self.conflict.decisionMakers)+2):
                 tag = "payoffs"
             else:
