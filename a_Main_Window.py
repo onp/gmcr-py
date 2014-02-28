@@ -13,6 +13,7 @@ from frame_04_preferencePrioritization import PreferencesFrame
 from frame_05_preferenceRanking import PreferenceVectorFrame
 from frame_06_equilibria import ResultFrame
 from frame_07_inverseGMCR import InverseFrame
+from frame_08_stabilityAnalysis import StabilityFrame
 
 class MainAppWindow:
     def __init__(self,file=None):
@@ -70,6 +71,7 @@ class MainAppWindow:
         self.addMod(PreferenceVectorFrame)
         self.addMod(ResultFrame)
         self.addMod(InverseFrame)
+        self.addMod(StabilityFrame)
         
         self.refreshActiveFrames()
 
