@@ -122,8 +122,8 @@ class StabilityFrame(ttk.Frame):
         self.patternNarrator.grid(row=0,column=0,sticky=(N,S,E,W))
 
         # bindings
-        self.statusQuoAndGoals.bind("<<StatusQuoChanged>>",self.statusQuoChange)
-        self.statusQuoAndGoals.bind("<<GoalChanged>>",self.goalChange)
+        self.statusQuoAndGoals.bind("<<StatusQuoChanged>>",self.statusQuoGoalChange)
+        self.statusQuoAndGoals.bind("<<GoalChanged>>",self.statusQuoGoalChange)
             
         self.built = True
         
@@ -150,19 +150,16 @@ class StabilityFrame(ttk.Frame):
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
 
-    def statusQuoChange(self,event=None):
+    def statusQuoGoalChange(self,event=None):
         sq = self.statusQuoAndGoals.statusQuoSelector.current()
-        self.reachableTree.buildTree(sq)
-        self.patternNarrator.updateNarration()
-        
-    def goalChange(self,event=None):
         goals = [sel.current() for sel in self.statusQuoAndGoals.goalSelectors]
         if len(goals)>0:
             self.sol = InverseSolver(self.conflict,None,goals)
             self.sol._mblInit()
         else:
             self.sol = InverseSolver(self.conflict)
-        self.patternNarrator.updateNarration()
+        self.reachableTree.buildTree(sq,watchFor=goals)
+        self.patternNarrator.updateNarration(goalInfo=self.reachableTree.goalInfo())
 
 
 # #################################################################################

@@ -84,6 +84,11 @@ class ReachableTreeViewer(ttk.Frame):
         
         self.conflict = conflict
         self.owner = solOwner
+        self.found = []
+        self.notFound = []
+        self.foundUI = []
+        self.notFoundUI = []
+        self.statusQuo = None
         
         self.reachableTree = ttk.Treeview(self)
         self.reachableTree.grid(row=0,column=0,sticky=(N,S,E,W))
@@ -108,11 +113,16 @@ class ReachableTreeViewer(ttk.Frame):
             self.reachableTree.heading(col,text=col)
         
         self.reachableTree.tag_configure("Y",background="green")
-        self.buildTree(0)
+        self.buildTree(0,watchFor=[])
         
-    def buildTree(self,statusQuo,depth=5,lastDM=None,parent="",wasUI="N"):
+    def buildTree(self,statusQuo,depth=5,lastDM=None,parent="",wasUI="N",onUIpath=True,watchFor=None):
         sol = self.owner.sol
         if lastDM is None:
+            self.statusQuo = statusQuo
+            self.notFound = list(set(watchFor))
+            self.found = []
+            self.notFoundUI = list(set(watchFor))
+            self.foundUI = []
             for child in self.reachableTree.get_children():
                 self.reachableTree.delete(child)
             newNode = self.reachableTree.insert(parent,'end',text=str(statusQuo+1))
@@ -123,12 +133,36 @@ class ReachableTreeViewer(ttk.Frame):
                     lastDM.payoffs[statusQuo],
                     wasUI)
             newNode = self.reachableTree.insert(parent,'end',text=str(statusQuo+1),values=vals,tags=(wasUI,))
+            
+        if statusQuo in self.notFound:
+            self.notFound.remove(statusQuo)
+            self.found.append(statusQuo)
+        if onUIpath:
+            if statusQuo in self.notFoundUI:
+                self.notFoundUI.remove(statusQuo)
+                self.foundUI.append(statusQuo)
         
         if depth>0:
             for co in [dm for dm in sol.coalitions if dm is not lastDM]:
                 for reachable in sol.reachable(co,statusQuo):
                     ui = "Y" if co.payoffMatrix[statusQuo,reachable]>0 else "N"
-                    self.buildTree(reachable,depth-1,co,newNode,ui)
+                    uiPath = onUIpath and (ui=="Y")
+                    self.buildTree(reachable,depth-1,co,newNode,ui,uiPath)
+                    
+    def goalInfo(self,event=None):
+        message = ""
+        if len(self.found)>0:
+            message += "Goal states " +str([x+1 for x in self.found])[1:-1] + " are reachable from %s.\n"%self.statusQuo
+        if len(self.notFound)>0:
+            message += "States " +str([x+1 for x in self.notFound])[1:-1] + " are NOT reachable from %s.\n"%self.statusQuo
+        if message != "":
+            message += "\n"
+        if len(self.foundUI)>0:
+            message += "Goal states " +str([x+1 for x in self.foundUI])[1:-1] + " are reachable from %s solely by UIs.\n"%self.statusQuo
+        if len(self.notFoundUI)>0:
+            message += "States " +str([x+1 for x in self.notFoundUI])[1:-1] + " are NOT reachable from %s solely by UIs.\n"%self.statusQuo
+        message += "\n"
+        return message
                 
             
 class PatternNarrator(ttk.Frame):
@@ -152,11 +186,12 @@ class PatternNarrator(ttk.Frame):
         
         self.updateNarration()
         
-    def updateNarration(self,event=None):
+    def updateNarration(self,event=None,goalInfo=""):
+        message = goalInfo
         if self.owner.sol.desEq is None:
-            message = "No Desired Equilibrium set."
+            message += "No Desired Equilibrium set."
         else:
-            message = "Currently only one goal state at a time can be considered. Targeting %s.\n\n"%(self.owner.sol.desEq+1)
+            message += "Currently only one goal state at a time can be considered. Targeting %s.\n\n"%(self.owner.sol.desEq+1)
             message += "For Nash Stability:" + self.owner.sol.nashCond()
             message += "For SEQ Stability:"+ self.owner.sol.seqCond()
             
