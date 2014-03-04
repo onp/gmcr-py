@@ -55,10 +55,12 @@ class PreferencesFrame(ttk.Frame):
         self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.game.decisionMakers),len(self.game.decisionMakers)))
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value="Select a decision maker from the column at left by clicking its "
-                "'View/Edit' button.  Enter preferred states using the box to the right.  Preferred "
-                "states are shown below the decision makers, from most important at the top, to least "
-                "important at the bottom")
+        self.helpText = StringVar(value=""
+                "Select a decision maker from the column at left by clicking its "
+                "'Edit' button.  Enter preferred conditions using the inputs to "
+                "the right.  Preferred conditions for the selected decision maker "
+                "are shown at the far right, from most important at the top, to "
+                "least important at the bottom.")
 
         #Define frame-specific variables
         self.dm = None
@@ -239,8 +241,10 @@ class PreferencesFrame(ttk.Frame):
 # Code in this section is only run when this module is run by itself. It serves
 # as a test of module functionality.
 
+
 def main():
     from data_01_conflictModel import ConflictModel
+    
     root = Tk()
     root.columnconfigure(0,weight=1)
     root.rowconfigure(0,weight=1)
@@ -253,10 +257,18 @@ def main():
     hSep = ttk.Separator(cFrame,orient=VERTICAL)
     hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
-    testGame = ConflictModel('SyriaIraq.gmcr')
+    conf = ConflictModel()
+    conf.load_from_file("save_files/Garrison.gmcr")
 
-    testFrame = PreferencesFrame(cFrame,testGame)
+    testFrame = PreferencesFrame(cFrame,conf)
+    if testFrame.hasRequiredData():
+        testFrame.buildFrame()
+    else:
+        print("data missing")
+        return
     testFrame.enter()
+
+
 
     root.mainloop()
 
