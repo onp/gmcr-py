@@ -37,9 +37,10 @@ class OptionFormTable(ttk.Frame):
         self.table.bind("<Configure>",resize)
         
         self.style = ttk.Style()
-        #self.style.configure('header.TLabel',background="green")
-        self.style.configure('body.TLabel',background="white")
-        #self.style.configure('footer.TLabel',background="green")
+        self.style.configure('states.TLabel',background="grey80")
+        self.style.configure('yn.TLabel',background="white")
+        self.style.configure('payoffs.TLabel',background="green")
+        self.style.configure('hover.TLabel',background="lightpink")
         
         self.buildTable()
     
@@ -94,14 +95,48 @@ class OptionFormTable(ttk.Frame):
         
         for child in self.table.winfo_children():
             child.destroy()
+            
+        rows = [[] for row in range(tableData.shape[0])]
+        columns = [[] for col in range(tableData.shape[1])]
         
         for row in range(tableData.shape[0]):
             if row<2:
-                tag = "header"
+                tag = "states"
             elif row<(len(self.conflict.options)+2):
-                tag = "body"
+                tag = "yn"
             else:
-                tag = "footer"
+                tag = "payoffs"
             for col in range(tableData.shape[1]):
-                newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
+                if col <2:
+                    newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
+                else:
+                    newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel",width=4)
+
                 newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
+                    
+                def enterCell(event=None,row=row,col=col):
+                    for cell,tag in rows[row]:
+                        cell.configure(style="hover.TLabel")
+                    for cell,tag in columns[col]:
+                        cell.configure(style="hover.TLabel")
+                
+                def exitCell(event=None,row=row,col=col):
+                    for cell,tag in rows[row]:
+                        cell.configure(style=tag+".TLabel")
+                    for cell,tag in columns[col]:
+                        cell.configure(style=tag+".TLabel")
+                
+                if (row < 2) and (col >=2):
+                    columns[col].append([newEntry,tag])
+                    newEntry.bind("<Enter>", enterCell)
+                    newEntry.bind("<Leave>", exitCell)
+                elif (row >= 2) and (col == 1):
+                    rows[row].append([newEntry,tag])
+                    newEntry.bind("<Enter>", enterCell)
+                    newEntry.bind("<Leave>", exitCell)
+                elif (col >= 2) and (row >= 2):
+                    rows[row].append([newEntry,tag])
+                    columns[col].append([newEntry,tag])
+                    newEntry.bind("<Enter>", enterCell)
+                    newEntry.bind("<Leave>", exitCell)
+                
