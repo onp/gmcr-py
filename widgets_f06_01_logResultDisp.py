@@ -133,10 +133,10 @@ class OptionFormSolutionTable(ttk.Frame):
         self.table.bind("<Configure>",resize)
         
         self.style = ttk.Style()
-        #self.style.configure('states.TLabel',background="green")
+        self.style.configure('states.TLabel',background="grey80")
         self.style.configure('yn.TLabel',background="white")
-        #self.style.configure('payoffs.TLabel',background="green")
-        self.style.configure('stabilities.TLabel',background="white")
+        self.style.configure('payoffs.TLabel',background="green")
+        self.style.configure('hover.TLabel',background="lightpink")
         
         self.refresh()
     
@@ -179,12 +179,14 @@ class OptionFormSolutionTable(ttk.Frame):
             tableData[:,currCol] = newCol
             currCol += 1
             
-            
         
         #push to display
         
         for child in self.table.winfo_children():
             child.destroy()
+            
+        rows = [[] for row in range(tableData.shape[0])]
+        columns = [[] for col in range(tableData.shape[1])]
         
         for row in range(tableData.shape[0]):
             if row<2:
@@ -195,9 +197,40 @@ class OptionFormSolutionTable(ttk.Frame):
                 tag = "payoffs"
             else:
                 tag = "stabilities"
+                
             for col in range(tableData.shape[1]):
-                newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
+                if col <2:
+                    newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
+                else:
+                    newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel",width=4)
+
                 newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
+                    
+                def enterCell(event=None,row=row,col=col):
+                    for cell,tag in rows[row]:
+                        cell.configure(style="hover.TLabel")
+                    for cell,tag in columns[col]:
+                        cell.configure(style="hover.TLabel")
+                
+                def exitCell(event=None,row=row,col=col):
+                    for cell,tag in rows[row]:
+                        cell.configure(style=tag+".TLabel")
+                    for cell,tag in columns[col]:
+                        cell.configure(style=tag+".TLabel")
+                
+                if (row < 2) and (col >=2):
+                    columns[col].append([newEntry,tag])
+                    newEntry.bind("<Enter>", enterCell)
+                    newEntry.bind("<Leave>", exitCell)
+                elif (row >= 2) and (col == 1):
+                    rows[row].append([newEntry,tag])
+                    newEntry.bind("<Enter>", enterCell)
+                    newEntry.bind("<Leave>", exitCell)
+                elif (col >= 2) and (row >= 2):
+                    rows[row].append([newEntry,tag])
+                    columns[col].append([newEntry,tag])
+                    newEntry.bind("<Enter>", enterCell)
+                    newEntry.bind("<Leave>", exitCell)
                 
                 
                 
@@ -213,15 +246,15 @@ class LogNarrator(ttk.Frame):
         self.eqTypeVar = StringVar()
         self.useCoalitions = False
         
-        self.dmSel = ttk.Combobox(self,textvariable=self.dmVar,state='readonly')
+        self.dmSel = ttk.Combobox(self,textvariable=self.dmVar,state='readonly',width=15)
         self.dmSel.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
 
-        self.stateSel = ttk.Combobox(self,textvariable=self.stateVar,state='readonly')
+        self.stateSel = ttk.Combobox(self,textvariable=self.stateVar,state='readonly',width=15)
         self.stateSel.grid(column=1,row=0,sticky=(N,S,E,W),padx=3,pady=3)
 
-        self.eqTypeSel = ttk.Combobox(self,textvariable=self.eqTypeVar,state='readonly')
+        self.eqTypeSel = ttk.Combobox(self,textvariable=self.eqTypeVar,state='readonly',width=15)
         self.eqTypeSel['values'] = ('Nash','GMR','SEQ','SIM','SMR')
-        self.eqTypeSel.grid(column=2,row=0,columnspan = 2,sticky=(N,S,E,W),padx=3,pady=3)
+        self.eqTypeSel.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
         
         self.equilibriumNarrator = Text(self, wrap='word')
         self.equilibriumNarrator.grid(column=0,row=1,columnspan=3,sticky=(N,S,E,W))
