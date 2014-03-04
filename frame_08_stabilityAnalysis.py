@@ -54,7 +54,11 @@ class StabilityFrame(ttk.Frame):
         self.infoText = StringVar(value='information here reflects \nthe state of the module')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value="help box for the stability analysis screen.")
+        self.helpText = StringVar(value=""
+        "Selecting coalitions, status quo and goals at the top left will "
+        "generate a reachability tree below the status quo, and detail "
+        "the patterns that preferences must match for the goal state to be "
+        "reached.")
 
         #Define frame-specific variables
         self.sol = InverseSolver(self.conflict)
@@ -104,7 +108,6 @@ class StabilityFrame(ttk.Frame):
         
         self.paneLeft.add(self.paneLeftTop)
         self.paneLeftTop.columnconfigure(1,weight=1)
-        self.paneLeftTop.columnconfigure(2,weight=1)
         self.paneLeftTop.rowconfigure(2,weight=1)
         self.coalitionSelector.grid(row=0,column=0,sticky=(N,S,E,W))
         ttk.Separator(self,orient=HORIZONTAL).grid(row=1,column=0,sticky=(N,S,E,W),pady=3)
