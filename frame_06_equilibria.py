@@ -52,10 +52,12 @@ class ResultFrame(ttk.Frame):
         self.infoText = StringVar(value='information here reflects \nthe state of the module')
 
         #Define variables that will display in the helpFrame
-        self.helpText = StringVar(value="The stability of each state in the conflict is listed in the upper box, "
-                "giving results under a number of different stability criterion. The lower box combined with "
-                "the drop down menus in the centre allow the logic which defines the stability/instability "
-                "of each option to be examined.")
+        self.helpText = StringVar(value=""
+                "The stability of each state in the conflict is shown in the "
+                "table on the left, giving results under a number of different "
+                "stability criterion. The display on the right allows the logic "
+                "which defines the stability or instability of each option to "
+                "be examined.")
 
         #Define frame-specific variables
         self.sol = LogicalSolver(self.conflict)
@@ -99,14 +101,14 @@ class ResultFrame(ttk.Frame):
 
         #configuring frame-specific options
         self.paneMaster.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.paneMaster.add(self.pane1)
+        self.paneMaster.add(self.pane1,width=600,stretch='always')
         self.pane1.rowconfigure(1,weight=1)
         self.pane1.columnconfigure(0,weight=1)
         self.coalitionSelector.grid(row=0,column=0,sticky=(N,S,E,W))
         self.solutionTable.grid(row=1,column=0,sticky=(N,S,E,W))
         self.exporter.grid(row=2,column=0,sticky=(N,S,E,W))
         
-        self.paneMaster.add(self.pane2)
+        self.paneMaster.add(self.pane2,width=250,stretch='always')
         self.pane2.rowconfigure(0,weight=1)
         self.pane2.columnconfigure(0,weight=1)
         self.narrator.grid(row=0,column=0,sticky=(N,S,E,W))
