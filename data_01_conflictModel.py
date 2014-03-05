@@ -389,6 +389,8 @@ class Coalition:
             for opt in dm.options:
                 self.options.append(opt)
                 
+        self.calculatePreferences()
+                
     def __str__(self):
         return self.name
         
@@ -396,11 +398,12 @@ class Coalition:
         return iter(self.members)
         
     def export_rep(self):
-        return {"name":self.name,"members":[conflict.decisionMakers.index(dm) for dm in self.dms]}
+        return {"name":self.name,"members":[conflict.decisionMakers.index(dm) for dm in self.members]}
             
     def calculatePreferences(self):
-        for dm in self.dms:
+        for dm in self.members:
             dm.calculatePreferences()
+        self.payoffs = [", ".join([str(dm.payoffs[state]) for dm in self.members]) for state in self.conflict.feasibles]
         
 
 class ConflictModel:

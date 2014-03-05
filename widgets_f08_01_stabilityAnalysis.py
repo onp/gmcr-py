@@ -152,15 +152,15 @@ class ReachableTreeViewer(ttk.Frame):
     def goalInfo(self,event=None):
         message = ""
         if len(self.found)>0:
-            message += "Goal states " +str([x+1 for x in self.found])[1:-1] + " are reachable from %s.\n"%self.statusQuo
+            message += "Goal states " +str([x+1 for x in self.found])[1:-1] + " are reachable from %s.\n"%(self.statusQuo+1)
         if len(self.notFound)>0:
-            message += "States " +str([x+1 for x in self.notFound])[1:-1] + " are NOT reachable from %s.\n"%self.statusQuo
+            message += "States " +str([x+1 for x in self.notFound])[1:-1] + " are NOT reachable from %s.\n"%(self.statusQuo+1)
         if message != "":
             message += "\n"
         if len(self.foundUI)>0:
-            message += "Goal states " +str([x+1 for x in self.foundUI])[1:-1] + " are reachable from %s solely by UIs.\n"%self.statusQuo
+            message += "Goal states " +str([x+1 for x in self.foundUI])[1:-1] + " are reachable from %s solely by UIs.\n"%(self.statusQuo+1)
         if len(self.notFoundUI)>0:
-            message += "States " +str([x+1 for x in self.notFoundUI])[1:-1] + " are NOT reachable from %s solely by UIs.\n"%self.statusQuo
+            message += "States " +str([x+1 for x in self.notFoundUI])[1:-1] + " are NOT reachable from %s solely by UIs.\n"%(self.statusQuo+1)
         message += "\n"
         return message
                 

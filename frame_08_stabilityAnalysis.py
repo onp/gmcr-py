@@ -73,10 +73,12 @@ class StabilityFrame(ttk.Frame):
         self.paneMaster  = PanedWindow(self,orient=HORIZONTAL,sashwidth=10,sashrelief="raised",sashpad=3,relief="sunken")
         
         self.paneLeft = PanedWindow(self.paneMaster,orient=VERTICAL,sashwidth=10,sashrelief="raised",sashpad=3,relief="sunken")
+        
         self.paneLeftTop = ttk.Frame(self.paneLeft)
         self.coalitionSelector = CoalitionSelector(self.paneLeftTop,self.conflict,self)
         self.statusQuoAndGoals = StatusQuoAndGoals(self.paneLeftTop,self.conflict)
         self.reachableTree = ReachableTreeViewer(self.paneLeftTop,self.conflict,self)
+        
         self.paneLeftBottom = ttk.Frame(self.paneLeft)
         self.optionFormTable = OptionFormTable(self.paneLeftBottom,self.conflict)
         
@@ -127,6 +129,7 @@ class StabilityFrame(ttk.Frame):
         # bindings
         self.statusQuoAndGoals.bind("<<StatusQuoChanged>>",self.statusQuoGoalChange)
         self.statusQuoAndGoals.bind("<<GoalChanged>>",self.statusQuoGoalChange)
+        self.coalitionSelector.bind("<<CoalitionsChanged>>",self.coalitionChange)
             
         self.built = True
         
@@ -154,6 +157,17 @@ class StabilityFrame(ttk.Frame):
         self.helpFrame.grid_remove()
 
     def statusQuoGoalChange(self,event=None):
+        sq = self.statusQuoAndGoals.statusQuoSelector.current()
+        goals = [sel.current() for sel in self.statusQuoAndGoals.goalSelectors]
+        if len(goals)>0:
+            self.sol = InverseSolver(self.conflict,None,goals)
+            self.sol._mblInit()
+        else:
+            self.sol = InverseSolver(self.conflict)
+        self.reachableTree.buildTree(sq,watchFor=goals)
+        self.patternNarrator.updateNarration(goalInfo=self.reachableTree.goalInfo())
+        
+    def coalitionChange(self,event=None):
         sq = self.statusQuoAndGoals.statusQuoSelector.current()
         goals = [sel.current() for sel in self.statusQuoAndGoals.goalSelectors]
         if len(goals)>0:
