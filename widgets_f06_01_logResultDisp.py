@@ -10,6 +10,8 @@ from tkinter import ttk
 import numpy
 from data_01_conflictModel import ConflictModel
 from visualizerLauncher import launchVis
+from distutils.dir_util import copy_tree
+import os
 
 
 class CoalitionSelector(ttk.Frame):
@@ -330,7 +332,9 @@ class Exporter(ttk.Frame):
             self.owner.sol.saveJSON(fileName)
                                         
     def loadVis(self,event=None):
-        self.owner.sol.saveJSON("gmcr-vis/json/conflictData.json")
+        """Exports conflict data to a JSON, and then serves a webpage containing it."""
+        copy_tree('gmcr-vis',os.environ['TEMP'] + '/gmcr-vis',update=True)
+        self.owner.sol.saveJSON(os.environ['TEMP'] + '/gmcr-vis/json/conflictData.json')
         launchVis()
 
 

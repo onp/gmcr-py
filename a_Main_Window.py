@@ -15,6 +15,8 @@ from frame_06_equilibria import ResultFrame
 from frame_07_inverseGMCR import InverseFrame
 from frame_08_stabilityAnalysis import StabilityFrame
 
+from multiprocessing import freeze_support
+
 class MainAppWindow:
     def __init__(self,file=None):
         self.file = file
@@ -181,4 +183,5 @@ class MainAppWindow:
     
 
 if __name__ == '__main__':
+    freeze_support()
     a= MainAppWindow()

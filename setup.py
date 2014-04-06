@@ -1,6 +1,8 @@
 """Script for generation of an .msi install package for GMCR-py.
 
-Call from console with 'python setup.py bdist_msi'.
+Call from console with `python setup.py bdist_msi`
+
+Built versions will appear in the `dist` top directory.
 """
 
 # Copyright:   (c) Oskar Petersons 2013
@@ -8,7 +10,9 @@ Call from console with 'python setup.py bdist_msi'.
 from cx_Freeze import setup, Executable
 
 # Set other directories to be included.
-buildOptions = {'include_files': ['save_files/','icons/']}
+buildOptions = {'include_files': 
+                    ['save_files/','icons/','gmcr-vis/css/','gmcr-vis/js/','gmcr-vis/js-lib/','gmcr-vis/json/','gmcr-vis/favicon.ico','gmcr-vis/index.html'],
+                'silent': True}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
 shortcut_table = [
@@ -61,7 +65,7 @@ executables = [
 
 # Run setup
 setup(name='gmcr-py',
-      version = '0.2.1',
+      version = '0.3',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
                  'bdist_msi': bdist_msi_options},
