@@ -94,7 +94,7 @@ class PreferenceRankingMaster(ttk.Frame):
     def enable(self,event=None):
         for ranking in self.rankings:
             ranking.selectBtn['state'] = 'normal'    
-        self.clearBtn['state'] = 'enabled'
+        self.clearBtn['state'] = 'normal'
             
     def clearSel(self,event=None):
         if self.dmSelIdx is not None:
@@ -136,6 +136,8 @@ class PreferenceStaging(ttk.Frame):
         
         for child in self.listDisp.get_children():
             self.listDisp.delete(child)
+        self.removeConditionBtn['state'] = 'disabled'
+        self.addToPreferencesBtn['state'] = 'disabled'
             
     def selChgCmd(self,*args):
         """Called whenever the selection changes."""
@@ -152,10 +154,19 @@ class PreferenceStaging(ttk.Frame):
 
         for ynd in self.conditionList.name.split(', '):
             self.listDisp.insert('','end',text=ynd)
+            
+        if len(self.conditionList)>0:
+            self.removeConditionBtn['state'] = 'normal'
+            self.addToPreferencesBtn['state'] = 'normal'
         
     def removeCondition(self,event=None):
-        del self.conditionList[self.selIdx]
-        self.listDisp.delete(self.selId)
+        if self.selIdx is not None:
+            del self.conditionList[self.selIdx]
+            self.listDisp.delete(self.selId)
+            
+            if len(self.conditionList) == 0:
+                self.removeConditionBtn['state'] = 'disabled'
+                self.addToPreferencesBtn['state'] = 'disabled'
         
     def addToPreferences(self,event=None):
         self.event_generate('<<PullFromStage>>')
@@ -163,6 +174,10 @@ class PreferenceStaging(ttk.Frame):
     def addCondition(self,condition):
         self.conditionList.append(condition)
         self.listDisp.insert('','end',text=condition.name)
+        
+        if len(self.conditionList)>0:
+            self.removeConditionBtn['state'] = 'normal'
+            self.addToPreferencesBtn['state'] = 'normal'
         
     def disable(self,event=None):
         self.removeConditionBtn['state'] = 'disabled'

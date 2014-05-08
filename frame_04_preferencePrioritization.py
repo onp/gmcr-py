@@ -175,6 +175,7 @@ class PreferencesFrame(ttk.Frame):
             self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
             self.vectors.disable()
             self.editor.disable()
+            self.staging.disable()
             self.preferenceDisp.disable()
         else:
             self.usePrioritizationButton.grid_remove()
@@ -184,8 +185,6 @@ class PreferencesFrame(ttk.Frame):
         self.game.preferenceErrors = None
         self.event_generate("<<breakingChange>>")
         self.vectors.enable()
-        self.editor.enable()
-        self.preferenceDisp.enable()
         self.refresh()
 
     def dmChgHandler(self,event=None):
@@ -198,6 +197,7 @@ class PreferencesFrame(ttk.Frame):
         if self.dm is None:
             self.preferenceDisp.disable()
             self.editor.disable()
+            self.staging.disable()
         else:
             self.preferenceDisp.enable()
             self.editor.enable()
