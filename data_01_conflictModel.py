@@ -408,7 +408,7 @@ class Coalition:
 
 class ConflictModel:
     def __init__(self):
-        """Initializes a new, empty conflict.  If 'file' is given, loads values from 'file'"""
+        """Initializes a new, empty conflict."""
 
         self.options = OptionList()       #list of Option objects
         self.decisionMakers = DecisionMakerList(self)        #list of DecisonMaker objects

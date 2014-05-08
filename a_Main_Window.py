@@ -19,7 +19,7 @@ from multiprocessing import freeze_support
 
 class MainAppWindow:
     def __init__(self,file=None):
-        self.file = file
+        self.file = file # file reference used for saving the game. 
         
         self.root= Tk()
         self.root.columnconfigure(0,weight=1)
@@ -58,11 +58,7 @@ class MainAppWindow:
         self.loadButton.grid(  column=0, row=2, sticky=(E,W))
         self.newButton.grid(   column=0, row=3, sticky=(E,W))
 
-        if self.file is not None:
-            self.activeGame = ConflictModel(file)
-            self.root.wm_title(self.file)
-        else:
-            self.activeGame = ConflictModel()
+        self.activeGame = ConflictModel()
 
         self.contentFrame.currFrame=1
 
@@ -80,6 +76,9 @@ class MainAppWindow:
         self.frameBtnCmds[0](self)
         
         self.root.bind_all("<<breakingChange>>",self.refreshActiveFrames)
+        
+        if self.file is not None:
+            self.loadGame(self.file)
         
         self.root.mainloop()
 
@@ -154,10 +153,11 @@ class MainAppWindow:
             self.saveGame()
 
 
-    def loadGame(self):
+    def loadGame(self,fileName=None):
         """Opens a file dialog that prompts for a save file to open."""
-        fileName = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr")
-                                                             ,("All files", "*.*") ),
+        if not fileName:
+            fileName = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr"),
+                                                                ("All files", "*.*") ),
                                                 parent=self.root)
         if fileName:
             self.file=fileName
@@ -174,9 +174,9 @@ class MainAppWindow:
     def newGame(self):
         """Clears all data in the game, allowing a new game to be entered."""
         print("Initializing new conflict...")
-        self.frameBtnCmds[0](self)
-        self.frameLeave()
+        self.unloadAllFrames()
         self.activeGame.__init__()
+        print(self.activeGame.decisionMakers.names())
         self.refreshActiveFrames()
         self.frameBtnCmds[0](self)
         self.root.wm_title('New GMCR Model')
