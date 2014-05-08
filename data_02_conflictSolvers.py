@@ -8,6 +8,11 @@ import json
 import data_01_conflictModel as model
 from tkinter import filedialog
 
+class Preference:
+    __init__(self,preferred,oneOfSet):
+        self.preferred = preferred
+
+
 class RMGenerator:
     """Reachability matrix class.
     
@@ -196,7 +201,7 @@ class LogicalSolver(RMGenerator):
                     for state2 in otherCOuis:
                         if dm.payoffMatrix[state0,state2]  <= 0:
                             stable = 1
-                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is SEQ sanctioned for focal DM '+ dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check other focal DN UIs for sanctioning... \n\n'
+                            narr += 'A move to '+self.chattyHelper(dm,state1)+' is SEQ sanctioned for focal DM '+ dm.name+' by a move to '+self.chattyHelper(dm,state2)+' by other dms.  Check other focal DM UIs for sanctioning... \n\n'
                             break
 
                     if not stable:
@@ -729,6 +734,55 @@ class InverseSolver(RMGenerator):
                 values.append(tuple(list(prefVec)+[bool(x) for x in eqms]))
         counts = self.equilibriums.sum(axis=1)
         return values,counts
+
+        
+class GoalSeeker(RMGenerator):
+    def __init__(self,game,goals):
+        RMGenerator.__init__(self,game,game.coalitions)
+        self.game = game
+
+
+    def nash(self,state0,stable):
+        """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash."""
+        conditions = [[] for co in self.coalitions]
+        
+        for coIdx,co in enumerate(self.coalitions):
+            if stable:
+                for state1 in self.reachable(co,state0):
+                    conditions[coIdx].append( [co, state0,"moreThan",state1] )
+            else:
+                conditions[coIdx].append( [co, state0, "lessThanOneOf", self.reachable(co,state0)] )
+        
+        return conditions
+
+    def seq(self,state0,stable):
+        """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
+        conditions = [[] for co in self.coalitions]
+        
+        for coIdx,co in enumerate(self.coalitions):
+            if stable:
+                for state1 in self.reachable(co,state0):
+                    cond = [co, state0, "moreThanOr", state1]
+                    for coIdx2,co2 in enumerate(self.coalitions):
+                        if coIdx2 == coIdx:
+                            continue
+                        for state2 in self.reachable(self.coalitions[coIdx2],state1):
+                            cond.append([[co2,state2, "moreThan", state1],[co1,state2,"lessThan",state0]])
+                    conditions[coIdx].append(cond)
+            else:
+                for state1 in self.reachable(co,state0):
+                    cond = [co, state0, "lessThanOneOfOr",state1]
+                    for coIdx2,co2 in enumerate(self.coalitions):
+                        if coIdx2 == coIdx:
+                            continue
+                        for state2 in self.reachable(self.coalitions[coIdx2],state1):
+                            cond.append([[co2,state2,"lessThanOr",state1],[co1,state2,"moreThan",state0]])
+                    conditions[coIdx].append(cond)
+        return conditions
+        
+
+
+        
 
 
 class MatrixCalc(RMGenerator):
