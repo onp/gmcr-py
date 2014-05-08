@@ -9,7 +9,7 @@ import data_01_conflictModel as model
 from tkinter import filedialog
 
 class Preference:
-    __init__(self,preferred,oneOfSet):
+    def __init__(self,preferred,oneOfSet):
         self.preferred = preferred
 
 
