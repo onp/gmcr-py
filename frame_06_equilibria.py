@@ -134,6 +134,8 @@ class ResultFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        self.sol = LogicalSolver(self.conflict)
+        self.sol.findEquilibria()
         self.coalitionSelector.refresh()
         self.solutionTable.refresh()
         self.narrator.refresh()

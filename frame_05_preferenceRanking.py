@@ -96,7 +96,7 @@ class PreferenceVectorFrame(ttk.Frame):
         self.rowconfigure(1,weight=1)
 
         # bindings
-        self.prefEditor.bind("<<PreferenceVectorChange>>",self.rebuildTable)
+        self.prefEditor.bind("<<PreferenceVectorChange>>",self.onPreferenceChange)
     
         self.built = True
         
@@ -128,7 +128,7 @@ class PreferenceVectorFrame(ttk.Frame):
         self.prefEditor.refresh()
         self.stateTable.buildTable()
         
-    def rebuildTable(self,event=None):
+    def onPreferenceChange(self,event=None):
         self.stateTable.buildTable()
 
 
