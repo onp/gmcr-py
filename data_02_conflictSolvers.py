@@ -329,7 +329,7 @@ class LogicalSolver(RMGenerator):
         return smrStab,narr
 
     def findEquilibria(self):
-        """Calculates the equalibrium states that exist within the game for each stability concept."""
+        """Calculates the equilibrium states that exist within the game for each stability concept."""
             #Nash calculation
         nashStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
         for idx,dm in enumerate(self.coalitions):
@@ -744,45 +744,79 @@ class GoalSeeker(RMGenerator):
 
     def nash(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash."""
-        conditions = [[] for co in self.coalitions]
+        conditions = []
         
         for coIdx,co in enumerate(self.coalitions):
             if stable:
                 for state1 in self.reachable(co,state0):
-                    conditions[coIdx].append( [co, state0,"moreThan",state1] )
+                    conditions.append(MoreThanFor(co,state0,state1))
             else:
-                conditions[coIdx].append( [co, state0, "lessThanOneOf", self.reachable(co,state0)] )
+                conditions.append(LessThanOneOf(co,state0,self.reachable(co,state0)))
         
         return conditions
 
     def seq(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
-        conditions = [[] for co in self.coalitions]
+        conditions = []
         
         for coIdx,co in enumerate(self.coalitions):
             if stable:
                 for state1 in self.reachable(co,state0):
-                    cond = [co, state0, "moreThanOr", state1]
+                    isNash = MoreThanFor(co,state0,state1)
+                    isStable = PatternOr(isNash)
+                    
                     for coIdx2,co2 in enumerate(self.coalitions):
                         if coIdx2 == coIdx:
                             continue
                         for state2 in self.reachable(self.coalitions[coIdx2],state1):
-                            cond.append([[co2,state2, "moreThan", state1],[co1,state2,"lessThan",state0]])
-                    conditions[coIdx].append(cond)
+                            isSanctioned = PatternAnd(MoreThanFor(co2,state2, state1),MoreThanFor(co,state0,state2))
+                            isStable.append(isSanctioned)
+                    conditions.append(isStable)
             else:
+                isUnstable = PatternOr()
                 for state1 in self.reachable(co,state0):
-                    cond = [co, state0, "lessThanOneOfOr",state1]
+                    isUI = MoreThanFor(co,state1,state0)
+                    isUnsanctionedUI = PatternAnd(isUI)
+                    isUnstable.append(isUnsanctionedUI)
                     for coIdx2,co2 in enumerate(self.coalitions):
                         if coIdx2 == coIdx:
                             continue
                         for state2 in self.reachable(self.coalitions[coIdx2],state1):
-                            cond.append([[co2,state2,"lessThanOr",state1],[co1,state2,"moreThan",state0]])
-                    conditions[coIdx].append(cond)
+                            notASanction = PatternOr(MoreThanFor(co2,state1,state2),MoreThanFor(co,state2,state0))
+                            isUnsanctionedUI.append()
+                conditions.append(isUnstable)
         return conditions
         
 
 
+class PatternAnd:
+    """All statements must be true."""
+    def __init__(self,*patterns):
+        self.plist = list(patterns)
         
+    def append(self,p):
+        self.plist.append(p)
+
+class PatternOr:
+    """At least one statement must be true."""
+    def __init__(self,*patterns):
+        self.plist = list(patterns)
+        
+    def append(self,p):
+        self.plist.append(p)
+
+class MoreThanFor:
+    """s0 must be more preferred than s1 for co."""
+    def __init__(self,co,s0,s1):
+        self.s1 = s1
+        self.s2 = s2
+
+class LessThanOneOf:
+    """s0 must be less preferred than at least one of the states in li for co."""
+    def __init__(self,co,s0,li):
+        self.s0 = s0
+        self.li = li
+
 
 
 class MatrixCalc(RMGenerator):

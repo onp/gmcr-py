@@ -376,7 +376,7 @@ class FeasibleList:
         return iter(range(len(self.decimal)))
 
 class Coalition:
-    """Combination of two or more decision makers. Has equivalent interfaces."""
+    """Combination of two or more decision makers. Has interfaces equivalent to DMs."""
     def __init__(self,conflict,dms):
         self.members = dms
         self.isCoalition = True
@@ -433,10 +433,12 @@ class ConflictModel:
         """Generates a representation of the conflict suitable for JSON encoding."""
         self.reorderOptionsByDM()
         return {'decisionMakers':self.decisionMakers.export_rep(),
+                'coalitions':self.coalitions.export_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceVectors':self.useManualPreferenceVectors,
-                'program':'gmcr-py'}
+                'program':'gmcr-py',
+                'version':'0.3.1'}
         
     def save_to_file(self,file):
         """Saves the current conflict to the file location given."""
