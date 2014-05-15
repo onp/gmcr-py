@@ -8,7 +8,7 @@ interfaces.
 
 from tkinter import *
 from tkinter import ttk
-from data_02_conflictSolvers import InverseSolver
+from data_02_conflictSolvers import GoalSeeker
 from widgets_f06_01_logResultDisp import CoalitionSelector
 from widgets_f04_03_optionForm import OptionFormTable
 from widgets_f08_01_stabilityAnalysis import *
@@ -61,7 +61,7 @@ class StabilityFrame(ttk.Frame):
         "reached.")
 
         #Define frame-specific variables
-        self.sol = InverseSolver(self.conflict)
+        self.sol = GoalSeeker(self.conflict)
 
         # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
         self.infoLabel  = ttk.Label(self.infoFrame,textvariable = self.infoText)
@@ -158,24 +158,22 @@ class StabilityFrame(ttk.Frame):
 
     def statusQuoGoalChange(self,event=None):
         sq = self.statusQuoAndGoals.statusQuoSelector.current()
-        goals = [sel.current() for sel in self.statusQuoAndGoals.goalSelectors]
+        goals = self.statusQuoAndGoals.getGoals()
         if len(goals)>0:
-            self.sol = InverseSolver(self.conflict,None,goals)
-            self.sol._mblInit()
+            self.sol = GoalSeeker(self.conflict,goals)
         else:
-            self.sol = InverseSolver(self.conflict)
-        self.reachableTree.buildTree(sq,watchFor=goals)
+            self.sol = GoalSeeker(self.conflict)
+        self.reachableTree.buildTree(sq,watchFor=[x[0] for x in goals])
         self.patternNarrator.updateNarration(goalInfo=self.reachableTree.goalInfo())
         
     def coalitionChange(self,event=None):
         sq = self.statusQuoAndGoals.statusQuoSelector.current()
-        goals = [sel.current() for sel in self.statusQuoAndGoals.goalSelectors]
+        goals = self.statusQuoAndGoals.getGoals()
         if len(goals)>0:
-            self.sol = InverseSolver(self.conflict,None,goals)
-            self.sol._mblInit()
+            self.sol = GoalSeeker(self.conflict,goals)
         else:
-            self.sol = InverseSolver(self.conflict)
-        self.reachableTree.buildTree(sq,watchFor=goals)
+            self.sol = GoalSeeker(self.conflict)
+        self.reachableTree.buildTree(sq,watchFor=[x[0] for x in goals])
         self.patternNarrator.updateNarration(goalInfo=self.reachableTree.goalInfo())
 
 

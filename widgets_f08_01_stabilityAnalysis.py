@@ -7,7 +7,6 @@ Loaded by the frame_08_stabilityAnalysis module.
 
 from tkinter import *
 from tkinter import ttk
-from data_02_conflictSolvers import InverseSolver
 
 class StatusQuoAndGoals(ttk.Frame):
     def __init__(self,master,conflict):
@@ -16,7 +15,7 @@ class StatusQuoAndGoals(ttk.Frame):
         self.conflict = conflict
         
         self.statusQuoVar = StringVar()
-        self.goalSelectors = []
+        self.goalGetters = []
         self.removeCommands = []
         self.cleanRow = 2
         
@@ -28,7 +27,7 @@ class StatusQuoAndGoals(ttk.Frame):
         self.statusQuoLabel = ttk.Label(self.listFrame,text="Status Quo:")
         self.statusQuoLabel.grid(row=0,column=0,columnspan=2,sticky=(N,S,E,W))
         self.statusQuoSelector = ttk.Combobox(self.listFrame,textvariable=self.statusQuoVar,state='readonly')
-        self.statusQuoSelector.grid(row=0,column=2,sticky=(N,S,E,W))
+        self.statusQuoSelector.grid(row=0,column=2,columnspan=2,sticky=(N,S,E,W))
         ttk.Separator(self.listFrame,orient=HORIZONTAL).grid(row=1,column=0,columnspan=3,sticky=(N,S,E,W))
         
         self.addGoalButton = ttk.Button(self,text="Add Goal",command = self.addGoal)
@@ -46,30 +45,40 @@ class StatusQuoAndGoals(ttk.Frame):
         
     def addGoal(self,event=None):
         goalVar = StringVar()
+        stabilityVar = StringVar()
         
         rmvBtn = ttk.Button(self.listFrame,text="X",width=5)
         label = ttk.Label(self.listFrame,text="Goal:")
-        selector = ttk.Combobox(self.listFrame,textvariable=goalVar,state='readonly')
-        selector['values'] = tuple(self.conflict.feasibles.ordered)
+        stateSelector = ttk.Combobox(self.listFrame,textvariable=goalVar,state='readonly',width=5)
+        stateSelector['values'] = tuple(self.conflict.feasibles.ordered)
+        desiredStable = ttk.Combobox(self.listFrame,textvariable=stabilityVar,state='readonly',width=10)
+        desiredStable['values'] = tuple(['Stable','Unstable'])
+        
+        def getGoal():
+            return [stateSelector.current(), desiredStable.current()==0]
         
         def removeGoal(event=None):
             self.removeCommands.remove(removeGoal)
-            self.goalSelectors.remove(selector)
+            self.goalGetters.remove(getGoal)
             label.destroy()
-            selector.destroy()
+            stateSelector.destroy()
+            desiredStable.destroy()
             rmvBtn.destroy()
             self.goalChange()
             
             
         rmvBtn.configure(command=removeGoal)
         self.removeCommands.append(removeGoal)
-        self.goalSelectors.append(selector)
+        self.goalGetters.append(getGoal)
         
-        selector.bind("<<ComboboxSelected>>",self.goalChange)
+        stateSelector.bind("<<ComboboxSelected>>",self.goalChange)
+        desiredStable.bind("<<ComboboxSelected>>",self.goalChange)
         
         rmvBtn.grid(row=self.cleanRow,column=0,sticky=(N,S,E,W))
         label.grid(row=self.cleanRow,column=1,sticky=(N,S,E,W))
-        selector.grid(row=self.cleanRow,column=2,sticky=(N,S,E,W))
+        stateSelector.grid(row=self.cleanRow,column=2,sticky=(N,S,E,W))
+        desiredStable.grid(row=self.cleanRow,column=3,sticky=(N,S,E,W))
+        desiredStable.current(1)
         self.cleanRow += 1
         
     def sqChange(self,event=None):
@@ -77,6 +86,12 @@ class StatusQuoAndGoals(ttk.Frame):
         
     def goalChange(self,event=None):
         self.event_generate("<<GoalChanged>>")
+        
+    def getGoals(self,event=None):
+        goals = []
+        for gt in self.goalGetters:
+            goals.append(gt())
+        return goals
         
 class ReachableTreeViewer(ttk.Frame):
     def __init__(self,master,conflict,solOwner):
@@ -188,12 +203,11 @@ class PatternNarrator(ttk.Frame):
         
     def updateNarration(self,event=None,goalInfo=""):
         message = goalInfo
-        if self.owner.sol.desEq is None:
-            message += "No Desired Equilibrium set."
+        if not self.owner.sol.validGoals():
+            message += "No valid goals set."
         else:
-            message += "Currently only one goal state at a time can be considered. Targeting %s.\n\n"%(self.owner.sol.desEq+1)
-            message += "For Nash Stability:" + self.owner.sol.nashCond()
-            message += "For SEQ Stability:"+ self.owner.sol.seqCond()
+            message += "\n" + self.owner.sol.nash().asString()
+            message += "\n" + self.owner.sol.seq().asString()
             
         self.textBox.delete('1.0','end')
         self.textBox.insert('1.0',message)

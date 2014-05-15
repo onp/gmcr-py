@@ -737,14 +737,32 @@ class InverseSolver(RMGenerator):
 
         
 class GoalSeeker(RMGenerator):
-    def __init__(self,game,goals):
+    def __init__(self,game,goals=[]):
         RMGenerator.__init__(self,game,game.coalitions)
         self.game = game
+        self.goals = goals
+        
+    def validGoals(self):
+        if len(self.goals)==0:
+            return False
+        for g in self.goals:
+            if g[0] == -1:
+                return False
+            if g[1] == -1:
+                return False
+        return True
+        
+    def nash(self):
+        requirements = Requirements("Conditions for goals using Nash:", *[self.nashGoal(s0,stable) for s0,stable in self.goals])
+        return requirements
+        
+    def seq(self):
+        requirements = Requirements("Conditions for goals using SEQ:", *[self.seqGoal(s0,stable) for s0,stable in self.goals])
+        return requirements
 
-
-    def nash(self,state0,stable):
+    def nashGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash."""
-        conditions = []
+        conditions = Requirements("For %s to be %s by Nash:"%(state0+1,"stable" if stable else "unstable"))
         
         for coIdx,co in enumerate(self.coalitions):
             if stable:
@@ -755,9 +773,9 @@ class GoalSeeker(RMGenerator):
         
         return conditions
 
-    def seq(self,state0,stable):
+    def seqGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
-        conditions = []
+        conditions = Requirements("For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"))
         
         for coIdx,co in enumerate(self.coalitions):
             if stable:
@@ -783,12 +801,25 @@ class GoalSeeker(RMGenerator):
                             continue
                         for state2 in self.reachable(self.coalitions[coIdx2],state1):
                             notASanction = PatternOr(MoreThanFor(co2,state1,state2),MoreThanFor(co,state2,state0))
-                            isUnsanctionedUI.append()
+                            isUnsanctionedUI.append(notASanction)
                 conditions.append(isUnstable)
         return conditions
         
 
-
+        
+class Requirements:
+    """Holds patterns/conditions and what define."""
+    def __init__(self,statement,*patterns):
+        self.statement = statement
+        self.plist = list(patterns)
+        
+    def append(self,p):
+        self.plist.append(p)
+        
+    def asString(self,indent=""):
+        patterns = [p.asString(indent+"  ") for p in self.plist]
+        return indent+self.statement+"\n"+(indent+"AND\n").join(patterns)
+    
 class PatternAnd:
     """All statements must be true."""
     def __init__(self,*patterns):
@@ -796,6 +827,10 @@ class PatternAnd:
         
     def append(self,p):
         self.plist.append(p)
+        
+    def asString(self,indent=""):
+        patterns = [p.asString(indent+"  ") for p in self.plist]
+        return (indent+"AND\n").join(patterns)
 
 class PatternOr:
     """At least one statement must be true."""
@@ -804,18 +839,30 @@ class PatternOr:
         
     def append(self,p):
         self.plist.append(p)
+        
+    def asString(self,indent=""):
+        patterns = [p.asString(indent+"  ") for p in self.plist]
+        return (indent+"OR\n").join(patterns)
 
 class MoreThanFor:
     """s0 must be more preferred than s1 for co."""
     def __init__(self,co,s0,s1):
+        self.co = co
+        self.s0 = s0
         self.s1 = s1
-        self.s2 = s2
+        
+    def asString(self,indent=""):
+        return indent+"%s must be more preferred than %s for %s\n"%(self.s0+1,self.s1+1,self.co.name)
 
 class LessThanOneOf:
     """s0 must be less preferred than at least one of the states in li for co."""
     def __init__(self,co,s0,li):
+        self.co = co
         self.s0 = s0
         self.li = li
+        
+    def asString(self,indent=""):
+        return indent+"%s must be less preferred than at least one of %s for %s\n"%(self.s0+1,[s1+1 for s1 in self.li],self.co.name)
 
 
 
