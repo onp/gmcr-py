@@ -433,7 +433,7 @@ class ConflictModel:
         """Generates a representation of the conflict suitable for JSON encoding."""
         self.reorderOptionsByDM()
         return {'decisionMakers':self.decisionMakers.export_rep(),
-                'coalitions':self.coalitions.export_rep(),
+                #'coalitions':self.coalitions.export_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceVectors':self.useManualPreferenceVectors,
