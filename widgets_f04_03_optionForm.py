@@ -37,9 +37,10 @@ class OptionFormTable(ttk.Frame):
         self.table.bind("<Configure>",resize)
         
         self.style = ttk.Style()
+        # styles for cells in the Option form table. CHANGE COLOURS HERE.
         self.style.configure('states.TLabel',background="grey80")
         self.style.configure('yn.TLabel',background="white")
-        self.style.configure('payoffs.TLabel',background="green")
+        self.style.configure('payoffs.TLabel',background="grey80")
         self.style.configure('hover.TLabel',background="lightpink")
         
         self.buildTable()
