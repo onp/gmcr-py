@@ -753,16 +753,19 @@ class GoalSeeker(RMGenerator):
         return True
         
     def nash(self):
-        requirements = Requirements("Conditions for goals using Nash:", *[self.nashGoal(s0,stable) for s0,stable in self.goals])
+        requirements = Requirements("Conditions for goals using Nash:","AND", *[self.nashGoal(s0,stable) for s0,stable in self.goals])
         return requirements
         
     def seq(self):
-        requirements = Requirements("Conditions for goals using SEQ:", *[self.seqGoal(s0,stable) for s0,stable in self.goals])
+        requirements = Requirements("Conditions for goals using SEQ:","AND", *[self.seqGoal(s0,stable) for s0,stable in self.goals])
         return requirements
 
     def nashGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash."""
-        conditions = Requirements("For %s to be %s by Nash:"%(state0+1,"stable" if stable else "unstable"))
+        if stable:
+            conditions = Requirements("For %s to be stable by Nash:"%(state0+1),"AND")
+        else:
+            conditions = Requirements("For %s to be unstable by Nash:"%(state0+1),"OR")
         
         for coIdx,co in enumerate(self.coalitions):
             if stable:
@@ -775,7 +778,7 @@ class GoalSeeker(RMGenerator):
 
     def seqGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
-        conditions = Requirements("For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"))
+        conditions = Requirements("For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"),"AND")
         
         for coIdx,co in enumerate(self.coalitions):
             if stable:
@@ -808,17 +811,18 @@ class GoalSeeker(RMGenerator):
 
         
 class Requirements:
-    """Holds patterns/conditions and what define."""
-    def __init__(self,statement,*patterns):
+    """Holds patterns/conditions and a statement of what they define."""
+    def __init__(self,statement,betweenConditions,*patterns):
         self.statement = statement
         self.plist = list(patterns)
+        self.betweenConditions = betweenConditions
         
     def append(self,p):
         self.plist.append(p)
         
     def asString(self,indent=""):
         patterns = [p.asString(indent+"  ") for p in self.plist]
-        return indent+self.statement+"\n"+(indent+"AND\n").join(patterns)
+        return indent+self.statement+"\n"+(indent+self.betweenConditions+"\n").join(patterns)
     
 class PatternAnd:
     """All statements must be true."""
