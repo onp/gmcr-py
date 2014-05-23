@@ -95,11 +95,14 @@ class InverseContent(ttk.Frame):
         self.calcFrame = ttk.Frame(self)
         self.calcFrame.grid(column=0,row=4,columnspan=2,sticky=(N,S,E,W))
         self.calcFrame.columnconfigure(0,weight=1)
+        self.displayPermutations = StringVar(value=0)
+        self.displayPermutationsChk = ttk.Checkbutton(self.calcFrame,text = "Display all Permutations",variable=self.displayPermutations)
+        self.displayPermutationsChk.grid(column=0,row=0,sticky=(N,S,E,W))
         self.calcButton = ttk.Button(self.calcFrame,text='Perform Inverse Calculations',command=self.refreshSolution)
-        self.calcButton.grid(column=1,row=0,sticky=(N,S,E,W))
+        self.calcButton.grid(column=1,row=1,sticky=(N,S,E,W))
         self.permCountVar = StringVar(value='InitialVal')
         self.permCount = ttk.Label(self.calcFrame,textvariable = self.permCountVar)
-        self.permCount.grid(column=0, row=0, sticky=(N,S,E,W))
+        self.permCount.grid(column=0, row=1, sticky=(N,S,E,W))
 
         ttk.Separator(self,orient = HORIZONTAL).grid(column=0, row=5,columnspan=2,sticky=(N,S,E,W),pady=3)
 
@@ -189,8 +192,11 @@ class InverseContent(ttk.Frame):
             self.resDisp.delete(chld)
 
         res,counts = self.sol.filter(filt)
-        for pVeci,pVec in enumerate(res):
-            self.resDisp.insert('','end',iid=str(pVeci),values=pVec)
+        
+        if bool(int(self.displayPermutations.get())):
+            for pVeci,pVec in enumerate(res):
+                self.resDisp.insert('','end',iid=str(pVeci),values=pVec)
+                
         self.nashCountVar.set('%s Nash'%counts[0])
         self.seqCountVar.set('%s SEQ'%counts[1])
         self.gmrCountVar.set('%s GMR'%counts[2])
