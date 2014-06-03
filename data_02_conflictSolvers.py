@@ -772,7 +772,8 @@ class GoalSeeker(RMGenerator):
                 for state1 in self.reachable(co,state0):
                     conditions.append(MoreThanFor(co,state0,state1))
             else:
-                conditions.append(LessThanOneOf(co,state0,self.reachable(co,state0)))
+                if self.reachable(co,state0):
+                    conditions.append(LessThanOneOf(co,state0,self.reachable(co,state0)))
         
         return conditions
 
@@ -805,7 +806,8 @@ class GoalSeeker(RMGenerator):
                         for state2 in self.reachable(self.coalitions[coIdx2],state1):
                             notASanction = PatternOr(MoreThanFor(co2,state1,state2),MoreThanFor(co,state2,state0))
                             isUnsanctionedUI.append(notASanction)
-                conditions.append(isUnstable)
+                if len(isUnstable.plist) > 0:
+                    conditions.append(isUnstable)
         return conditions
         
 
