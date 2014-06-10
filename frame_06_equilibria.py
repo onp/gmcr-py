@@ -25,8 +25,8 @@ class ResultFrame(ttk.Frame):
 
         self.conflict = conflict
 
-        self.buttonLabel= 'Equilibria'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
+        self.buttonLabel= 'Equilibria Results'     #Label used for button to select frame in the main program.
+        self.bigIcon=PhotoImage(file='icons/Equilibria_Results.gif')         #Image used on button to select frame.
         
         self.built = False
 

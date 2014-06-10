@@ -24,7 +24,7 @@ class DMInpFrame(ttk.Frame):
         self.conflict = conflict
 
         self.buttonLabel= 'DMs & Options'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/DMs_OPs.gif')         #Image used on button to select frame.
+        self.bigIcon=PhotoImage(file='icons/DMs_and_Options.gif')         #Image used on button to select frame.
         
         self.built = False
 

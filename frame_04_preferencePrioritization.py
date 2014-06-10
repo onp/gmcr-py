@@ -24,8 +24,8 @@ class PreferencesFrame(ttk.Frame):
         # Load up active game, if any
         self.game = game
 
-        self.buttonLabel= 'Preferences'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Preference.gif')         #Image used on button to select frame.
+        self.buttonLabel= 'Prioritization'     #Label used for button to select frame in the main program.
+        self.bigIcon=PhotoImage(file='icons/Prioritization.gif')         #Image used on button to select frame.
         
         self.built = False
 

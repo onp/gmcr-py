@@ -26,7 +26,7 @@ class InfeasInpFrame(Frame):
         self.game = game
 
         self.buttonLabel= 'Infeasible States'               #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Infeasible.gif')         #Image used on button to select frame.
+        self.bigIcon=PhotoImage(file='icons/Infeasible_States.gif')         #Image used on button to select frame.
 
         self.built = False
 

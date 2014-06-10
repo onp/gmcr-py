@@ -26,8 +26,8 @@ class StabilityFrame(ttk.Frame):
 
         self.conflict = conflict
 
-        self.buttonLabel= 'Stability'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
+        self.buttonLabel= 'Post Analysis'     #Label used for button to select frame in the main program.
+        self.bigIcon=PhotoImage(file='icons/Post_Analysis.gif')         #Image used on button to select frame.
         
         self.built = False
 

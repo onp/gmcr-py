@@ -24,7 +24,7 @@ class InverseFrame(ttk.Frame):
         self.game = game
 
         self.buttonLabel= 'Inverse GMCR'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Equilibria.gif')         #Image used on button to select frame.
+        self.bigIcon=PhotoImage(file='icons/Inverse_GMCR.gif')         #Image used on button to select frame.
         
         self.built = False
 

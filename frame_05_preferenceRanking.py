@@ -25,7 +25,7 @@ class PreferenceVectorFrame(ttk.Frame):
         self.game = game
 
         self.buttonLabel= 'Preference Ranking'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Preference.gif')         #Image used on button to select frame.
+        self.bigIcon=PhotoImage(file='icons/Preference_Ranking.gif')         #Image used on button to select frame.
         
         self.built = False
 
