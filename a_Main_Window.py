@@ -23,7 +23,7 @@ class MainAppWindow:
         
         self.root= Tk()
         self.root.iconbitmap('gmcr.ico')
-        self.root.wm_title('New GMCR Plus Model')
+        self.root.wm_title('New GMCR+ Model')
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
 
@@ -182,7 +182,7 @@ class MainAppWindow:
         print(self.activeGame.decisionMakers.names())
         self.refreshActiveFrames()
         self.frameBtnCmds[0](self)
-        self.root.wm_title('New GMCR Plus Model')
+        self.root.wm_title('New GMCR+ Model')
     
 
 if __name__ == '__main__':

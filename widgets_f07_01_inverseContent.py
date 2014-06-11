@@ -129,23 +129,27 @@ class InverseContent(ttk.Frame):
         self.smrCount  = ttk.Label(self.eqTypeFrame,textvariable=self.smrCountVar).grid(column=3,row=2,sticky=(N,S,E,W))
 
         ttk.Separator(self,orient=VERTICAL).grid(column=2,row=0,rowspan=10,sticky=(N,S,E,W),padx=3)
-
-        self.resDisp = ttk.Treeview(self)
-
-        self.resDisp.grid(column=3,row=0,rowspan=7,sticky=(N,S,E,W))
-
-        self.resDispScrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.resDisp.yview)
-        self.resDisp.configure(yscrollcommand=self.resDispScrl.set)
-        self.resDispScrl.grid(column=4,row=0,rowspan=7,sticky=(N,S,E,W))
+        
         
         self.conditionDisp = Text(self)
         self.conditionDisp.configure(wrap="word")
         self.conditionDisp.configure(state="disabled")
-        self.conditionDisp.grid(column=3,row=7,rowspan=3,sticky=(N,S,E,W))
+        self.conditionDisp.grid(column=3,row=0,rowspan=7,sticky=(N,S,E,W))
         
         self.conditionDispScrl = ttk.Scrollbar(self,orient=VERTICAL,command=self.conditionDisp.yview)
         self.conditionDisp.configure(yscrollcommand=self.conditionDispScrl.set)
-        self.conditionDispScrl.grid(column=4,row=7,rowspan=3,sticky=(N,S,E,W))
+        self.conditionDispScrl.grid(column=4,row=0,rowspan=7,sticky=(N,S,E,W))
+        
+        
+        self.resDisp = ttk.Treeview(self)
+
+        self.resDisp.grid(column=3,row=7,rowspan=3,sticky=(N,S,E,W))
+
+        self.resDispScrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.resDisp.yview)
+        self.resDisp.configure(yscrollcommand=self.resDispScrl.set)
+        self.resDispScrl.grid(column=4,row=7,rowspan=3,sticky=(N,S,E,W))
+        
+
         
         self.varySel.chgVary()
 
