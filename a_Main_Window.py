@@ -22,6 +22,8 @@ class MainAppWindow:
         self.file = file # file reference used for saving the game. 
         
         self.root= Tk()
+        self.root.iconbitmap('gmcr.ico')
+        self.root.wm_title('New GMCR Model')
         self.root.columnconfigure(0,weight=1)
         self.root.rowconfigure(0,weight=1)
 
