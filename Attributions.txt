@@ -1,6 +1,22 @@
 #CC and free attributions
 
-## Software 
+## Software packages
+
+(Python)[https://www.python.org/]
+
+
+(Numpy)[http://www.numpy.org/]
+
+
+(cx_Freeze)[http://cx-freeze.sourceforge.net/]
+
+
+(jquery)[http://jquery.com/]
+
+
+(d3.js)[http://d3js.org/]
+
+
 
 
 ## CC Icons
@@ -20,3 +36,8 @@ from [www.freepik.com](www.freepik.com) via [flaticon.com](www.flaticon.com/free
 
 "Stop" from [www.freepik.com](www.freepik.com) via [flaticon.com](http://www.flaticon.com/free-icon/stop_1718)
 
+
+"Data wave" from [www.freepik.com](www.freepik.com) via [flaticon.com](http://www.flaticon.com/free-icon/data-wave_38860)
+
+
+"Smart rank symbol of eyeglasses with bars graphic" from [www.freepik.com](www.freepik.com) via [flaticon.com](http://www.flaticon.com/free-icon/smart-rank-symbol-of-eyeglasses-with-bars-graphic_36314)
