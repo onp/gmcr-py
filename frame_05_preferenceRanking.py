@@ -25,7 +25,8 @@ class PreferenceVectorFrame(ttk.Frame):
         self.game = game
 
         self.buttonLabel= 'Preference Ranking'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Preference_Ranking.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/Preference_Ranking_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Preference_Ranking_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
 
@@ -116,6 +117,8 @@ class PreferenceVectorFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
@@ -123,6 +126,8 @@ class PreferenceVectorFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
     def refresh(self,*args):
         self.prefEditor.refresh()

@@ -26,7 +26,8 @@ class InfeasInpFrame(Frame):
         self.game = game
 
         self.buttonLabel= 'Infeasible States'               #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Infeasible_States.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/Infeasible_States_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Infeasible_States_OFF.gif')    #Image used on button to select frame, when frame is inactive.
 
         self.built = False
 
@@ -164,6 +165,8 @@ class InfeasInpFrame(Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
         self.optsInp.reloadOpts()
 
     def leave(self):
@@ -171,6 +174,8 @@ class InfeasInpFrame(Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
 
 

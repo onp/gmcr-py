@@ -24,7 +24,9 @@ class DMInpFrame(ttk.Frame):
         self.conflict = conflict
 
         self.buttonLabel= 'DMs & Options'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/DMs_and_Options.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/DMs_and_Options_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/DMs_and_Options_OFF.gif')    #Image used on button to select frame, when frame is inactive.
+        self.button = None
         
         self.built = False
 
@@ -121,6 +123,8 @@ class DMInpFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
 
     def leave(self,event=None):
         """ Removes the main frame, infoFrame and helpFrame from the master,
@@ -128,6 +132,8 @@ class DMInpFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
     def dmChange(self,event=None):
         """Changes the selected decision maker."""

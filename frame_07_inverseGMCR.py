@@ -24,7 +24,8 @@ class InverseFrame(ttk.Frame):
         self.game = game
 
         self.buttonLabel= 'Inverse GMCR'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Inverse_GMCR.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/Inverse_GMCR_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Inverse_GMCR_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
 
@@ -107,8 +108,11 @@ class InverseFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
         self.invDisp.refreshDisplay()
         self.invDisp.refreshSolution()
+        
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
@@ -117,6 +121,8 @@ class InverseFrame(ttk.Frame):
         del self.invDisp.sol
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
 
 

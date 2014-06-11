@@ -25,7 +25,8 @@ class PreferencesFrame(ttk.Frame):
         self.game = game
 
         self.buttonLabel= 'Prioritization'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Prioritization.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/Prioritization_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Prioritization_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
 
@@ -155,6 +156,8 @@ class PreferencesFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
@@ -162,6 +165,8 @@ class PreferencesFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
     def refresh(self,*args):
         for dm in self.game.decisionMakers:

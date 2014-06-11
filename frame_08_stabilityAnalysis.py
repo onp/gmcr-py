@@ -27,7 +27,9 @@ class StabilityFrame(ttk.Frame):
         self.conflict = conflict
 
         self.buttonLabel= 'Post Analysis'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Post_Analysis.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/Post_Analysis_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Post_Analysis_OFF.gif')    #Image used on button to select frame, when frame is inactive.
+
         
         self.built = False
 
@@ -148,6 +150,8 @@ class StabilityFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
@@ -155,6 +159,8 @@ class StabilityFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
     def statusQuoGoalChange(self,event=None):
         sq = self.statusQuoAndGoals.statusQuoSelector.current()

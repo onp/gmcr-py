@@ -23,8 +23,9 @@ class IrrevInpFrame(ttk.Frame):
         self.game = game
 
         self.buttonLabel= 'Irreversible Moves'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Irreversible_Moves.gif')         #Image used on button to select frame.
-
+        self.activeIcon = PhotoImage(file='icons/Irreversible_Moves_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Irreversible_Moves_OFF.gif')    #Image used on button to select frame, when frame is inactive.
+        
         self.built = False
 
 
@@ -102,6 +103,8 @@ class IrrevInpFrame(ttk.Frame):
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
+        if self.button:
+            self.button['image'] = self.activeIcon
         self.irrevEntry.refreshDisplay()
 
     def leave(self,*args):
@@ -110,6 +113,8 @@ class IrrevInpFrame(ttk.Frame):
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
 
 

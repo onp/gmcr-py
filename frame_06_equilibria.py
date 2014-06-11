@@ -26,7 +26,8 @@ class ResultFrame(ttk.Frame):
         self.conflict = conflict
 
         self.buttonLabel= 'Equilibria Results'     #Label used for button to select frame in the main program.
-        self.bigIcon=PhotoImage(file='icons/Equilibria_Results.gif')         #Image used on button to select frame.
+        self.activeIcon = PhotoImage(file='icons/Equilibria_Results_ON.gif')      #Image used on button to select frame, when frame is active.
+        self.inactiveIcon = PhotoImage(file='icons/Equilibria_Results_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
 
@@ -139,14 +140,17 @@ class ResultFrame(ttk.Frame):
         self.coalitionSelector.refresh()
         self.solutionTable.refresh()
         self.narrator.refresh()
+        if self.button:
+            self.button['image'] = self.activeIcon
 
     def leave(self,*args):
         """ Removes the main frame, infoFrame and helpFrame from the master,
         and performs any other update tasks required on exiting the frame."""
         self.grid_remove()
-        del self.logRes.sol
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()
+        if self.button:
+            self.button['image'] = self.inactiveIcon
 
     def coalitionChange(self,event=None):
         self.sol = LogicalSolver(self.conflict)
