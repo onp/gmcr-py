@@ -26,18 +26,9 @@ class RMGenerator:
     Other methods are provided that allow the reachability data to be exported.
     
     """
-    def __init__(self,conflict,coalitions):
+    def __init__(self,conflict):
 
         self.conflict = conflict
-        # if coalitions is None:
-            # self.coalitions = self.conflict.decisionMakers
-        # else:
-            # if type(coalitions) is not list:
-                # raise TypeError("Coalitions must be provided as a list.")
-            # for co in coalitions:
-                # if type(co) not in [model.DecisionMaker,model.Coalition]:
-                    # raise TypeError("List items must be Coalitions or DecisionMakers.")
-            # self.coalitions = coalitions
 
         for co in self.conflict.coalitions:
             co.reachability = numpy.zeros((len(conflict.feasibles),len(conflict.feasibles)),numpy.int_)
@@ -157,7 +148,7 @@ class RMGenerator:
 class LogicalSolver(RMGenerator):
     """Solves the games for equilibria, based on the logical definitions of stability concepts."""
     def __init__(self,conflict):
-        RMGenerator.__init__(self,conflict,conflict.coalitions)
+        RMGenerator.__init__(self,conflict)
 
     def chattyHelper(self,co,state):
         """Used in generating narration for the verbose versions of the stability calculations."""
@@ -393,7 +384,7 @@ class LogicalSolver(RMGenerator):
 
 class InverseSolver(RMGenerator):
     def __init__(self,conflict,vary=None,desiredEquilibria=None):
-        RMGenerator.__init__(self,conflict,conflict.coalitions)
+        RMGenerator.__init__(self,conflict)
         if type(desiredEquilibria) is list:
             self.desEq = desiredEquilibria[0]
         else:
@@ -738,7 +729,7 @@ class InverseSolver(RMGenerator):
         
 class GoalSeeker(RMGenerator):
     def __init__(self,conflict,goals=[]):
-        RMGenerator.__init__(self,conflict,conflict.coalitions)
+        RMGenerator.__init__(self,conflict)
         self.conflict = conflict
         self.goals = goals
         
