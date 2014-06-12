@@ -158,7 +158,7 @@ class ReachableTreeViewer(ttk.Frame):
                 self.foundUI.append(statusQuo)
         
         if depth>0:
-            for co in [dm for dm in sol.coalitions if dm is not lastDM]:
+            for co in [dm for dm in sol.game.coalitions if dm is not lastDM]:
                 for reachable in sol.reachable(co,statusQuo):
                     ui = "Y" if co.payoffMatrix[statusQuo,reachable]>0 else "N"
                     uiPath = onUIpath and (ui=="Y")

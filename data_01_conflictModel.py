@@ -398,12 +398,55 @@ class Coalition:
         return iter(self.members)
         
     def export_rep(self):
-        return {"name":self.name,"members":[conflict.decisionMakers.index(dm) for dm in self.members]}
+        return {"name":self.name,"members":[self.conflict.decisionMakers.index(dm) for dm in self.members]}
             
     def calculatePreferences(self):
         for dm in self.members:
             dm.calculatePreferences()
         self.payoffs = [", ".join([str(dm.payoffs[state]) for dm in self.members]) for state in self.conflict.feasibles]
+        
+        
+        
+class CoalitionList(ObjectList):
+    def __init__(self,conflict):
+        ObjectList.__init__(self)
+        self.conflict = conflict
+
+    def export_rep(self):
+        working = list(self.itemList)
+        for idx,item in working:
+            if isinstance(item,DecisionMaker):
+                working[idx] = self.conflict.decisionMakers.index(item)
+            else:
+                working[idx] = item.export_rep()
+        return working
+
+    def append(self,item):
+        if isinstance(item,Coalition) and item not in self.itemList:
+            self.itemList.append(item)
+        elif isinstance(item,DecisionMaker):
+            self.itemList.append(item)
+        else:
+            raise TypeError("%s is not a Coalition"%item)
+
+    def from_json(self,coData):
+        memberList = [self.conflict.decisionMakers[int(dmIdx)] for dmIdx in coData['members']]
+        newCO = Coalition(self.conflict,memberList)
+        self.append(newCO)
+        
+    def validate(self):
+        dms = list(self.conflict.decisionMakers)
+        print('dm list for validating coalition list')
+        print(dms)
+        for co in self.itemList:
+            if isinstance(co,Coalition):
+                for dm in co:
+                    dms.remove(dm)
+            else:
+                dms.remove(co)
+        if len(dms) == 0:
+            return True
+        return False
         
 
 class ConflictModel:
@@ -417,7 +460,7 @@ class ConflictModel:
 
         self.useManualPreferenceVectors = False
         self.preferenceErrors = None
-        self.coalitions = None
+        self.coalitions = CoalitionList(self)
 
         
     def newCondition(self,condData):
@@ -433,7 +476,7 @@ class ConflictModel:
         """Generates a representation of the conflict suitable for JSON encoding."""
         self.reorderOptionsByDM()
         return {'decisionMakers':self.decisionMakers.export_rep(),
-                #'coalitions':self.coalitions.export_rep(),
+                'coalitions':self.coalitions.export_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceVectors':self.useManualPreferenceVectors,
@@ -462,6 +505,14 @@ class ConflictModel:
             self.decisionMakers.from_json(dmData)
         for infData in d['infeasibles']:
             self.infeasibles.from_json(infData)
+        try:
+            for coData in d['coalitions']:
+                self.coalitions.from_json(coData)
+        except KeyError:
+            for dm in self.decisionMakers:
+                self.coalitions.append(dm)
+        if not self.coalitions.validate():
+            raise Exception('Coalitions failed to validate')
         self.reorderOptionsByDM()
         self.infeasibles.validate()
         self.recalculateFeasibleStates()

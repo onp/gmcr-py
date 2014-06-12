@@ -29,17 +29,17 @@ class RMGenerator:
     def __init__(self,game,coalitions):
 
         self.game = game
-        if coalitions is None:
-            self.coalitions = self.game.decisionMakers
-        else:
-            if type(coalitions) is not list:
-                raise TypeError("Coalitions must be provided as a list.")
-            for co in coalitions:
-                if type(co) not in [model.DecisionMaker,model.Coalition]:
-                    raise TypeError("List items must be Coalitions or DecisionMakers.")
-            self.coalitions = coalitions
+        # if coalitions is None:
+            # self.coalitions = self.game.decisionMakers
+        # else:
+            # if type(coalitions) is not list:
+                # raise TypeError("Coalitions must be provided as a list.")
+            # for co in coalitions:
+                # if type(co) not in [model.DecisionMaker,model.Coalition]:
+                    # raise TypeError("List items must be Coalitions or DecisionMakers.")
+            # self.coalitions = coalitions
 
-        for co in self.coalitions:
+        for co in self.game.coalitions:
             co.reachability = numpy.zeros((len(game.feasibles),len(game.feasibles)),numpy.int_)
             if co.isCoalition:
                 pmTemp = numpy.array([dm.payoffs for dm in co]).transpose()
@@ -51,7 +51,7 @@ class RMGenerator:
 
             # generate a flat list of move values controlled by other DMs
 
-            otherCOsMoves = [option.dec_val for otherCO in self.coalitions if otherCO!=co for option in otherCO.options ]
+            otherCOsMoves = [option.dec_val for otherCO in self.game.coalitions if otherCO!=co for option in otherCO.options ]
             focalCOmoves = [option.dec_val for option in co.options]
 
             # translate the list of moves values for other DMs into a list of base states
@@ -98,8 +98,8 @@ class RMGenerator:
         co: a DecisionMaker or Coalition that was passed to the constructor.
         stateIdx: the index of the state in the game.
         """
-        if co not in self.coalitions:
-            raise ValueError("DM or Coalition was not in this scenario.")
+        if co not in self.game.coalitions:
+            raise ValueError("DM or Coalition does not exist.")
         reachVec = numpy.nonzero(co.reachability[stateIdx,:])[0].tolist()
         return reachVec
 
@@ -113,7 +113,7 @@ class RMGenerator:
             be returned as UIs only if they are reachable from stateIdx and more
             preferred from refState.
         """
-        if co not in self.coalitions:
+        if co not in self.game.coalitions:
             raise ValueError("DM or Coalition was not in this scenario.")
         if refState is None:
             refState = stateIdx
@@ -127,7 +127,7 @@ class RMGenerator:
         """
         gameData = self.game.export_rep()
         
-        gameData["coalitions"] = self.coalitions.export_rep()
+        gameData["coalitions"] = self.game.coalitions.export_rep()
         
         nodes = []
 
@@ -136,7 +136,7 @@ class RMGenerator:
             stateOrd = self.game.feasibles.ordered[stateIdx]
             reachable = []
 
-            for coInd,co in enumerate(self.coalitions):
+            for coInd,co in enumerate(self.game.coalitions):
                 for rchSt in self.reachable(co,stateIdx):
                     reachable.append({'target':rchSt,
                                       'dm': 'dm%s'%coInd,
@@ -191,7 +191,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherCOuis = [x for oCO in self.coalitions if oCO != dm for x in self.UIs(oCO,state1)]     #find all possible UIs available to other players
+                otherCOuis = [x for oCO in self.game.coalitions if oCO != dm for x in self.UIs(oCO,state1)]     #find all possible UIs available to other players
                 if not otherCOuis:
                     seqStab=0
                     narr += self.chattyHelper(dm,state0)+' is unstable by SEQ for focal DM '+dm.name+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n\n'
@@ -224,7 +224,7 @@ class LogicalSolver(RMGenerator):
             narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
-            otherDMuis = [x for oDM in self.coalitions if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
+            otherDMuis = [x for oDM in self.game.coalitions if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
             if not otherDMuis:
                 simStab=0
                 narr += self.chattyHelper(dm,state0)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state0) + '.\n\n'
@@ -263,7 +263,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMums = [x for oDM in self.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.game.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
                 if not otherDMums:
                     gmrStab=0
                     narr += self.chattyHelper(dm,state0)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
@@ -297,7 +297,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMums = [x for oDM in self.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.game.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
 
                 if not otherDMums:
                     smrStab=0
@@ -331,8 +331,8 @@ class LogicalSolver(RMGenerator):
     def findEquilibria(self):
         """Calculates the equilibrium states that exist within the game for each stability concept."""
             #Nash calculation
-        nashStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.coalitions):
+        nashStabilities = numpy.zeros((len(self.game.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.coalitions):
             for state in range(len(self.game.feasibles)):
                 nashStabilities[idx,state]= self.nash(dm,state)[0]
 
@@ -341,8 +341,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SEQ calculation
-        seqStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.coalitions):
+        seqStabilities = numpy.zeros((len(self.game.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.coalitions):
             for state in range(len(self.game.feasibles)):
                 seqStabilities[idx,state]= self.seq(dm,state)[0]
 
@@ -351,8 +351,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SIM calculation
-        simStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.coalitions):
+        simStabilities = numpy.zeros((len(self.game.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.coalitions):
             for state in range(len(self.game.feasibles)):
                 simStabilities[idx,state] = self.sim(dm,state)[0]
 
@@ -364,8 +364,8 @@ class LogicalSolver(RMGenerator):
         self.seqSimEquilibria = numpy.invert(sum(seqSimStabilities,0).astype('bool'))
 
             #GMR calculation
-        gmrStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.coalitions):
+        gmrStabilities = numpy.zeros((len(self.game.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.coalitions):
             for state in range(len(self.game.feasibles)):
                 gmrStabilities[idx,state]=self.gmr(dm,state)[0]
 
@@ -374,8 +374,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SMR calculations
-        smrStabilities = numpy.zeros((len(self.coalitions),len(self.game.feasibles)))
-        for idx,dm in enumerate(self.coalitions):
+        smrStabilities = numpy.zeros((len(self.game.coalitions),len(self.game.feasibles)))
+        for idx,dm in enumerate(self.game.coalitions):
             for state in range(len(self.game.feasibles)):
                 smrStabilities[idx,state]=self.smr(dm,state)[0]
 
@@ -401,7 +401,7 @@ class InverseSolver(RMGenerator):
         self.vary  = vary
         self.game = game
         
-        for idx,co in enumerate(self.coalitions):
+        for idx,co in enumerate(self.game.coalitions):
             co.improvementsInv = numpy.sign(numpy.array(co.payoffMatrix,numpy.float64))
             if self.vary is not None:
                 varyRange = self.vary[idx]
@@ -444,7 +444,7 @@ class InverseSolver(RMGenerator):
     def nashCond(self):
         """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
         output=[""]
-        for dmIdx,dm in enumerate(self.coalitions):
+        for dmIdx,dm in enumerate(self.game.coalitions):
             desEq = self.game.feasibles.ordered[self.desEq]
             mblNash = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             if len(mblNash)>0:
@@ -469,7 +469,7 @@ class InverseSolver(RMGenerator):
     def gmrCond(self):
         """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
         output=[""]
-        for dmIdx,dm in enumerate(self.coalitions):
+        for dmIdx,dm in enumerate(self.game.coalitions):
             desEq = self.game.feasibles.ordered[self.desEq]
             mblGMR = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             mbl2GMR = []
@@ -521,7 +521,7 @@ class InverseSolver(RMGenerator):
     def seqCond(self):
         """Generates a list of the conditions that preferences must satisfy for SEQ stability to exist."""
         output=[""]
-        for dmIdx,dm in enumerate(self.coalitions):
+        for dmIdx,dm in enumerate(self.game.coalitions):
             desEq = self.game.feasibles.ordered[self.desEq]
             mblSEQ = [self.game.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblSEQ)
@@ -603,7 +603,7 @@ class InverseSolver(RMGenerator):
 
     def _mblInit(self):
         """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
-        self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.coalitions]
+        self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.game.coalitions]
         #mustBeLowerNash[dm] contains the states that must be less preferred than the 
         # desired equilibrium 'state0' for 'dm' to have a Nash equilibrium at 'state0'.
 
@@ -614,9 +614,9 @@ class InverseSolver(RMGenerator):
 
         for y,dm in enumerate(self.mustBeLowerNash):      #'dm' contains a list of reachable states for dm from 'state0'
             for z,state1 in enumerate(dm):
-                for dm2 in range(len(self.coalitions)):
+                for dm2 in range(len(self.game.coalitions)):
                     if y != dm2:
-                        self.mustBeLowerGMR[y][z]+= self.reachable(self.coalitions[dm2],state1)
+                        self.mustBeLowerGMR[y][z]+= self.reachable(self.game.coalitions[dm2],state1)
 
         #seq check uses same 'mustBeLower' as GMR, as sanctions are dependent on the UIs available to
         # opponents, and as such cannot be known until the preference vectors are set.
@@ -629,7 +629,7 @@ class InverseSolver(RMGenerator):
 
         for y,dm in enumerate(self.mustBeLowerGMR):
             for z,idx in enumerate(dm): #idx contains a list of
-                self.mustBeLowerSMR[y][z] = [self.reachable(self.coalitions[y],state2) for state2 in idx]
+                self.mustBeLowerSMR[y][z] = [self.reachable(self.game.coalitions[y],state2) for state2 in idx]
 
 
     def findEquilibria(self):
@@ -767,7 +767,7 @@ class GoalSeeker(RMGenerator):
         else:
             conditions = Requirements("For %s to be unstable by Nash:"%(state0+1),"OR")
         
-        for coIdx,co in enumerate(self.coalitions):
+        for coIdx,co in enumerate(self.game.coalitions):
             if stable:
                 for state1 in self.reachable(co,state0):
                     conditions.append(MoreThanFor(co,state0,state1))
@@ -781,13 +781,13 @@ class GoalSeeker(RMGenerator):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
         conditions = Requirements("For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"),"AND")
         
-        for coIdx,co in enumerate(self.coalitions):
+        for coIdx,co in enumerate(self.game.coalitions):
             if stable:
                 for state1 in self.reachable(co,state0):
                     isNash = MoreThanFor(co,state0,state1)
                     isStable = PatternOr(isNash)
                     
-                    for coIdx2,co2 in enumerate(self.coalitions):
+                    for coIdx2,co2 in enumerate(self.game.coalitions):
                         if coIdx2 == coIdx:
                             continue
                         for state2 in self.reachable(self.coalitions[coIdx2],state1):
@@ -800,10 +800,10 @@ class GoalSeeker(RMGenerator):
                     isUI = MoreThanFor(co,state1,state0)
                     isUnsanctionedUI = PatternAnd(isUI)
                     isUnstable.append(isUnsanctionedUI)
-                    for coIdx2,co2 in enumerate(self.coalitions):
+                    for coIdx2,co2 in enumerate(self.game.coalitions):
                         if coIdx2 == coIdx:
                             continue
-                        for state2 in self.reachable(self.coalitions[coIdx2],state1):
+                        for state2 in self.reachable(self.game.coalitions[coIdx2],state1):
                             notASanction = PatternOr(MoreThanFor(co2,state1,state2),MoreThanFor(co,state2,state0))
                             isUnsanctionedUI.append(notASanction)
                 if len(isUnstable.plist) > 0:
