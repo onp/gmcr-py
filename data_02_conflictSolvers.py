@@ -26,24 +26,29 @@ class RMGenerator:
     Other methods are provided that allow the reachability data to be exported.
     
     """
-    def __init__(self,conflict):
+    def __init__(self,conflict,useCoalitions=True):
 
         self.conflict = conflict
+        
+        if useCoalitions:
+            self.effectiveDMs = self.conflict.coalitions
+        else:
+            self.effectiveDMs = self.conflict.decisionMakers
 
-        for co in self.conflict.coalitions:
-            co.reachability = numpy.zeros((len(conflict.feasibles),len(conflict.feasibles)),numpy.int_)
-            if co.isCoalition:
-                pmTemp = numpy.array([dm.payoffs for dm in co]).transpose()
+        for dm in self.effectiveDMs:
+            dm.reachability = numpy.zeros((len(conflict.feasibles),len(conflict.feasibles)),numpy.int_)
+            if dm.isCoalition:
+                pmTemp = numpy.array([dm.payoffs for dm in dm]).transpose()
                 pmTemp = pmTemp[numpy.newaxis,:,:] - pmTemp[:,numpy.newaxis]
-                co.payoffMatrix = (pmTemp>0).all(axis=2)
+                dm.payoffMatrix = (pmTemp>0).all(axis=2)
             else:
-                pmTemp = numpy.array(co.payoffs)
-                co.payoffMatrix = pmTemp[numpy.newaxis,:] - pmTemp[:,numpy.newaxis]
+                pmTemp = numpy.array(dm.payoffs)
+                dm.payoffMatrix = pmTemp[numpy.newaxis,:] - pmTemp[:,numpy.newaxis]
 
             # generate a flat list of move values controlled by other DMs
 
-            otherCOsMoves = [option.dec_val for otherCO in self.conflict.coalitions if otherCO!=co for option in otherCO.options ]
-            focalCOmoves = [option.dec_val for option in co.options]
+            otherCOsMoves = [option.dec_val for otherDM in self.effectiveDMs if otherDM!=dm for option in otherDM.options ]
+            focalCOmoves = [option.dec_val for option in dm.options]
 
             # translate the list of moves values for other DMs into a list of base states
             fixedStates = [0]
@@ -66,7 +71,7 @@ class RMGenerator:
                     for state1 in reachable:
                         s1 = self.conflict.feasibles.toOrdered[state1]-1
                         if s0 != s1:
-                            co.reachability[s0,s1] =  1
+                            dm.reachability[s0,s1] =  1
 
             # Remove irreversible states ######################################################
             for option in conflict.options:
@@ -80,35 +85,35 @@ class RMGenerator:
                                 val1 = state1yn[option.master_index]
                                 if val0 != val1:
                                 #remove irreversible moves from reachability matrix
-                                    co.reachability[idx0,idx1] = 0
+                                    dm.reachability[idx0,idx1] = 0
                                         
 
-    def reachable(self,co,stateIdx):
+    def reachable(self,dm,stateIdx):
         """Returns a list of all states reachable by a decisionMaker or coalition from state.
         
-        co: a DecisionMaker or Coalition that was passed to the constructor.
+        dm: a DecisionMaker or Coalition that was passed to the constructor.
         stateIdx: the index of the state in the conflict.
         """
-        if co not in self.conflict.coalitions:
-            raise ValueError("DM or Coalition does not exist.")
-        reachVec = numpy.nonzero(co.reachability[stateIdx,:])[0].tolist()
+        if dm not in self.effectiveDMs:
+            raise ValueError("DM or Coalition not valid.")
+        reachVec = numpy.nonzero(dm.reachability[stateIdx,:])[0].tolist()
         return reachVec
 
-    def UIs(self,co,stateIdx,refState=None):
+    def UIs(self,dm,stateIdx,refState=None):
         """Returns a list of a unilateral improvements available to dm from state.
         
-        co: a DecisionMaker or Coalition that was passed to the constructor.
+        dm: a DecisionMaker or Coalition that was passed to the constructor.
         stateIdx is the index of the state in the conflict.
         refState (optional) is another state to be used as a baseline for 
             determining whether or not a state is an improvement -- states will
             be returned as UIs only if they are reachable from stateIdx and more
             preferred from refState.
         """
-        if co not in self.conflict.coalitions:
-            raise ValueError("DM or Coalition was not in this scenario.")
+        if dm not in self.effectiveDMs:
+            raise ValueError("DM or Coalition not valid.")
         if refState is None:
             refState = stateIdx
-        UIvec = numpy.nonzero(co.reachability[stateIdx,:] * co.payoffMatrix[refState,:] > 0)[0].tolist()
+        UIvec = numpy.nonzero(dm.reachability[stateIdx,:] * dm.payoffMatrix[refState,:] > 0)[0].tolist()
         return UIvec
 
     def saveJSON(self,file):
@@ -118,8 +123,6 @@ class RMGenerator:
         """
         gameData = self.conflict.export_rep()
         
-        gameData["coalitions"] = self.conflict.coalitions.export_rep()
-        
         nodes = []
 
         for stateIdx,stateDec in enumerate(self.conflict.feasibles.decimal):
@@ -127,11 +130,11 @@ class RMGenerator:
             stateOrd = self.conflict.feasibles.ordered[stateIdx]
             reachable = []
 
-            for coInd,co in enumerate(self.conflict.coalitions):
-                for rchSt in self.reachable(co,stateIdx):
+            for coInd,dm in enumerate(self.effectiveDMs):
+                for rchSt in self.reachable(dm,stateIdx):
                     reachable.append({'target':rchSt,
                                       'dm': 'dm%s'%coInd,
-                                      'payoffChange':int(co.payoffMatrix[stateIdx,rchSt])})
+                                      'payoffChange':int(dm.payoffMatrix[stateIdx,rchSt])})
                          
             nodes.append({'id':stateIdx,
                           'decimal':str(stateDec),
@@ -384,7 +387,7 @@ class LogicalSolver(RMGenerator):
 
 class InverseSolver(RMGenerator):
     def __init__(self,conflict,vary=None,desiredEquilibria=None):
-        RMGenerator.__init__(self,conflict)
+        RMGenerator.__init__(self,conflict,useCoalitions=False)
         if type(desiredEquilibria) is list:
             self.desEq = desiredEquilibria[0]
         else:
@@ -392,14 +395,13 @@ class InverseSolver(RMGenerator):
         self.vary  = vary
         self.conflict = conflict
         
-        for idx,co in enumerate(self.conflict.coalitions):
-            co.improvementsInv = numpy.sign(numpy.array(co.payoffMatrix,numpy.float64))
+        for idx,dm in enumerate(self.conflict.decisionMakers):
+            dm.improvementsInv = numpy.sign(numpy.array(dm.payoffMatrix,numpy.float64))
             if self.vary is not None:
                 varyRange = self.vary[idx]
                 variedStates = []
-                # TODO: below needs to be adjusted for coalitions
                 if varyRange != [0,0]:
-                    varyRange = co.preferenceVector[varyRange[0]:varyRange[1]]
+                    varyRange = dm.preferenceVector[varyRange[0]:varyRange[1]]
                     for sl in varyRange:
                         if type(sl) is list:
                             variedStates.extend([state-1 for state in sl])
@@ -409,7 +411,7 @@ class InverseSolver(RMGenerator):
                 for s0 in variedStates:
                     for s1 in variedStates:
                         if s0 != s1:
-                            co.improvementsInv[s0,s1] = numpy.nan
+                            dm.improvementsInv[s0,s1] = numpy.nan
 
         #dm.improvementsInv[s0,s1] indicates whether a state s0 is more preferred (+1), 
         # less preferred(-1), equally preferred(0), or has an unspecified relation (nan) to 
@@ -435,7 +437,7 @@ class InverseSolver(RMGenerator):
     def nashCond(self):
         """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
         output=[""]
-        for dmIdx,dm in enumerate(self.conflict.coalitions):
+        for dmIdx,dm in enumerate(self.conflict.decisionMakers):
             desEq = self.conflict.feasibles.ordered[self.desEq]
             mblNash = [self.conflict.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             if len(mblNash)>0:
@@ -460,7 +462,7 @@ class InverseSolver(RMGenerator):
     def gmrCond(self):
         """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
         output=[""]
-        for dmIdx,dm in enumerate(self.conflict.coalitions):
+        for dmIdx,dm in enumerate(self.conflict.decisionMakers):
             desEq = self.conflict.feasibles.ordered[self.desEq]
             mblGMR = [self.conflict.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             mbl2GMR = []
@@ -512,7 +514,7 @@ class InverseSolver(RMGenerator):
     def seqCond(self):
         """Generates a list of the conditions that preferences must satisfy for SEQ stability to exist."""
         output=[""]
-        for dmIdx,dm in enumerate(self.conflict.coalitions):
+        for dmIdx,dm in enumerate(self.conflict.decisionMakers):
             desEq = self.conflict.feasibles.ordered[self.desEq]
             mblSEQ = [self.conflict.feasibles.ordered[state] for state in self.mustBeLowerNash[dmIdx]]
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblSEQ)
@@ -594,7 +596,7 @@ class InverseSolver(RMGenerator):
 
     def _mblInit(self):
         """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
-        self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.conflict.coalitions]
+        self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.conflict.decisionMakers]
         #mustBeLowerNash[dm] contains the states that must be less preferred than the 
         # desired equilibrium 'state0' for 'dm' to have a Nash equilibrium at 'state0'.
 
@@ -605,9 +607,9 @@ class InverseSolver(RMGenerator):
 
         for y,dm in enumerate(self.mustBeLowerNash):      #'dm' contains a list of reachable states for dm from 'state0'
             for z,state1 in enumerate(dm):
-                for dm2 in range(len(self.conflict.coalitions)):
+                for dm2 in range(len(self.conflict.decisionMakers)):
                     if y != dm2:
-                        self.mustBeLowerGMR[y][z]+= self.reachable(self.conflict.coalitions[dm2],state1)
+                        self.mustBeLowerGMR[y][z]+= self.reachable(self.conflict.decisionMakers[dm2],state1)
 
         #seq check uses same 'mustBeLower' as GMR, as sanctions are dependent on the UIs available to
         # opponents, and as such cannot be known until the preference vectors are set.
@@ -620,7 +622,7 @@ class InverseSolver(RMGenerator):
 
         for y,dm in enumerate(self.mustBeLowerGMR):
             for z,idx in enumerate(dm): #idx contains a list of
-                self.mustBeLowerSMR[y][z] = [self.reachable(self.conflict.coalitions[y],state2) for state2 in idx]
+                self.mustBeLowerSMR[y][z] = [self.reachable(self.conflict.decisionMakers[y],state2) for state2 in idx]
 
 
     def findEquilibria(self):

@@ -40,16 +40,8 @@ class CoalitionSelector(ttk.Frame):
         if self.conflict.coalitions is None:
             self.coalitionVar.set(str([i+1 for i in range(len(self.conflict.decisionMakers))])[1:-1])
         else:
-            coalitionsIdx =[]
-            for co in self.conflict.coalitions:
-                if not co.isCoalition:
-                    coalitionsIdx.append(self.conflict.decisionMakers.index(co)+1)
-                else:
-                    coDMidxs = []
-                    for dm in co.members:
-                        coDMidxs.append(self.conflict.decisionMakers.index(dm)+1)
-                    coalitionsIdx.append(coDMidxs)
-            self.coalitionVar.set(str(coalitionsIdx)[1:-1])
+            coalitionsRep = self.conflict.coalitions.disp_rep()
+            self.coalitionVar.set(str(coalitionsRep)[1:-1])
         self.statusVar.set("Input OK.")
             
     def onChange(self,newCoalitions):
@@ -96,10 +88,11 @@ class CoalitionSelector(ttk.Frame):
                 return True
         if len(seen) == numDMs:
             self.statusVar.set("Input OK.")
-            if areCoalitions:
-                self.conflict.coalitions = newCos
-            else:
-                self.conflict.coalitions = None
+            self.conflict.coalitions.itemList = []
+            for co in newCos:
+                self.conflict.coalitions.append(co)
+            if not self.conflict.coalitions.validate():
+                raise Exception("Coalitions failed to validate")
             self.event_generate("<<CoalitionsChanged>>")
         else:
             self.statusVar.set("Missing DMs"%([x+1 for x in range(numDMs) if x+1 not in seen]))

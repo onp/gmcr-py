@@ -16,10 +16,10 @@ class Option:
         return self.name
         
     def addRef(self):
-        self.refs+=1
+        self.refs += 1
         
     def remRef(self):
-        self.refs -=1
+        self.refs -= 1
         
     def export_rep(self):
         return {'name':str(self.name),
@@ -398,7 +398,16 @@ class Coalition:
         return iter(self.members)
         
     def export_rep(self):
-        return {"name":self.name,"members":[self.conflict.decisionMakers.index(dm) for dm in self.members]}
+        if len(self.members) > 1:
+            return [self.conflict.decisionMakers.index(dm) for dm in self.members]
+        else:
+            return self.conflict.decisionMakers.index(self.members[0])
+        
+    def disp_rep(self):
+        if len(self.members) > 1:
+            return [self.conflict.decisionMakers.index(dm)+1 for dm in self.members]
+        else:
+            return self.conflict.decisionMakers.index(self.members[0])+1
             
     def calculatePreferences(self):
         for dm in self.members:
@@ -414,11 +423,21 @@ class CoalitionList(ObjectList):
 
     def export_rep(self):
         working = list(self.itemList)
-        for idx,item in working:
+        print(working)
+        for idx,item in enumerate(working):
             if isinstance(item,DecisionMaker):
                 working[idx] = self.conflict.decisionMakers.index(item)
             else:
                 working[idx] = item.export_rep()
+        return working
+        
+    def disp_rep(self):
+        working = list(self.itemList)
+        for idx,item in enumerate(working):
+            if isinstance(item,DecisionMaker):
+                working[idx] = self.conflict.decisionMakers.index(item)+1
+            else:
+                working[idx] = item.disp_rep()
         return working
 
     def append(self,item):
@@ -430,14 +449,15 @@ class CoalitionList(ObjectList):
             raise TypeError("%s is not a Coalition"%item)
 
     def from_json(self,coData):
-        memberList = [self.conflict.decisionMakers[int(dmIdx)] for dmIdx in coData['members']]
+        if isinstance(coData,int):
+            memberList = [self.conflict.decisionMakers[int(coData)]]
+        elif isinstance(coData,list):
+            memberList = [self.conflict.decisionMakers[int(dmIdx)] for dmIdx in coData]
         newCO = Coalition(self.conflict,memberList)
         self.append(newCO)
         
     def validate(self):
         dms = list(self.conflict.decisionMakers)
-        print('dm list for validating coalition list')
-        print(dms)
         for co in self.itemList:
             if isinstance(co,Coalition):
                 for dm in co:
@@ -505,6 +525,11 @@ class ConflictModel:
             self.decisionMakers.from_json(dmData)
         for infData in d['infeasibles']:
             self.infeasibles.from_json(infData)
+        self.reorderOptionsByDM()
+        self.infeasibles.validate()
+        self.recalculateFeasibleStates()
+        for dm in self.decisionMakers:
+            dm.calculatePreferences()
         try:
             for coData in d['coalitions']:
                 self.coalitions.from_json(coData)
@@ -513,11 +538,6 @@ class ConflictModel:
                 self.coalitions.append(dm)
         if not self.coalitions.validate():
             raise Exception('Coalitions failed to validate')
-        self.reorderOptionsByDM()
-        self.infeasibles.validate()
-        self.recalculateFeasibleStates()
-        for dm in self.decisionMakers:
-            dm.calculatePreferences()
 
 
     def load_from_file(self,file):
