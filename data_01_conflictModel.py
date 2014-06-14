@@ -44,6 +44,9 @@ class DecisionMaker:
         if self.conflict.useManualPreferenceVectors:
             rep['preferenceVector'] = self.preferenceVector
         return rep
+        
+    def full_rep(self):
+        return self.export_rep()
 
     def addOption(self,option):
         if option not in self.options:
@@ -409,6 +412,12 @@ class Coalition:
         else:
             return self.conflict.decisionMakers.index(self.members[0])+1
             
+    def full_rep(self):
+        rep  = {}
+        rep['name'] = str(self.name)
+        rep['options'] = self.options.export_rep()
+        return rep
+            
     def calculatePreferences(self):
         for dm in self.members:
             dm.calculatePreferences()
@@ -423,13 +432,15 @@ class CoalitionList(ObjectList):
 
     def export_rep(self):
         working = list(self.itemList)
-        print(working)
         for idx,item in enumerate(working):
             if isinstance(item,DecisionMaker):
                 working[idx] = self.conflict.decisionMakers.index(item)
             else:
                 working[idx] = item.export_rep()
         return working
+        
+    def full_rep(self):
+        return [x.full_rep() for x in self.itemList]
         
     def disp_rep(self):
         working = list(self.itemList)
@@ -497,6 +508,7 @@ class ConflictModel:
         self.reorderOptionsByDM()
         return {'decisionMakers':self.decisionMakers.export_rep(),
                 'coalitions':self.coalitions.export_rep(),
+                'coalitionsFull': self.coalitions.full_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceVectors':self.useManualPreferenceVectors,
