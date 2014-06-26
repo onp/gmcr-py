@@ -513,7 +513,7 @@ class ConflictModel:
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceVectors':self.useManualPreferenceVectors,
                 'program':'gmcr-py',
-                'version':'0.3.1'}
+                'version':'0.3.3'}
         
     def save_to_file(self,file):
         """Saves the current conflict to the file location given."""
