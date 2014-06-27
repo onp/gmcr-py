@@ -31,6 +31,9 @@ class RMGenerator:
         self.conflict = conflict
         
         if useCoalitions:
+            if len(self.conflict.coalitions) == 0:
+                for dm in self.conflict.decisionMakers:
+                    self.conflict.coalitions.append(dm)
             self.effectiveDMs = self.conflict.coalitions
         else:
             self.effectiveDMs = self.conflict.decisionMakers
@@ -185,7 +188,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherCOuis = [x for oCO in self.conflict.coalitions if oCO != dm for x in self.UIs(oCO,state1)]     #find all possible UIs available to other players
+                otherCOuis = [x for oCO in self.effectiveDMs if oCO != dm for x in self.UIs(oCO,state1)]     #find all possible UIs available to other players
                 if not otherCOuis:
                     seqStab=0
                     narr += self.chattyHelper(dm,state0)+' is unstable by SEQ for focal DM '+dm.name+', since their opponents have no UIs from '+self.chattyHelper(dm,state1) + '\n\n'
@@ -218,7 +221,7 @@ class LogicalSolver(RMGenerator):
             narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
-            otherDMuis = [x for oDM in self.conflict.coalitions if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
+            otherDMuis = [x for oDM in self.effectiveDMs if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
             if not otherDMuis:
                 simStab=0
                 narr += self.chattyHelper(dm,state0)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state0) + '.\n\n'
@@ -257,7 +260,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMums = [x for oDM in self.conflict.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.effectiveDMs if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
                 if not otherDMums:
                     gmrStab=0
                     narr += self.chattyHelper(dm,state0)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
@@ -291,7 +294,7 @@ class LogicalSolver(RMGenerator):
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             for state1 in ui:             #for each potential move...
-                otherDMums = [x for oDM in self.conflict.coalitions if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
+                otherDMums = [x for oDM in self.effectiveDMs if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
 
                 if not otherDMums:
                     smrStab=0
@@ -325,8 +328,8 @@ class LogicalSolver(RMGenerator):
     def findEquilibria(self):
         """Calculates the equilibrium states that exist within the conflict for each stability concept."""
             #Nash calculation
-        nashStabilities = numpy.zeros((len(self.conflict.coalitions),len(self.conflict.feasibles)))
-        for idx,dm in enumerate(self.conflict.coalitions):
+        nashStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
+        for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 nashStabilities[idx,state]= self.nash(dm,state)[0]
 
@@ -335,8 +338,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SEQ calculation
-        seqStabilities = numpy.zeros((len(self.conflict.coalitions),len(self.conflict.feasibles)))
-        for idx,dm in enumerate(self.conflict.coalitions):
+        seqStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
+        for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 seqStabilities[idx,state]= self.seq(dm,state)[0]
 
@@ -345,8 +348,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SIM calculation
-        simStabilities = numpy.zeros((len(self.conflict.coalitions),len(self.conflict.feasibles)))
-        for idx,dm in enumerate(self.conflict.coalitions):
+        simStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
+        for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 simStabilities[idx,state] = self.sim(dm,state)[0]
 
@@ -358,8 +361,8 @@ class LogicalSolver(RMGenerator):
         self.seqSimEquilibria = numpy.invert(sum(seqSimStabilities,0).astype('bool'))
 
             #GMR calculation
-        gmrStabilities = numpy.zeros((len(self.conflict.coalitions),len(self.conflict.feasibles)))
-        for idx,dm in enumerate(self.conflict.coalitions):
+        gmrStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
+        for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 gmrStabilities[idx,state]=self.gmr(dm,state)[0]
 
@@ -368,8 +371,8 @@ class LogicalSolver(RMGenerator):
 
 
             #SMR calculations
-        smrStabilities = numpy.zeros((len(self.conflict.coalitions),len(self.conflict.feasibles)))
-        for idx,dm in enumerate(self.conflict.coalitions):
+        smrStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
+        for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 smrStabilities[idx,state]=self.smr(dm,state)[0]
 
@@ -760,7 +763,7 @@ class GoalSeeker(RMGenerator):
         else:
             conditions = Requirements("For %s to be unstable by Nash:"%(state0+1),"OR")
         
-        for coIdx,co in enumerate(self.conflict.coalitions):
+        for coIdx,co in enumerate(self.effectiveDMs):
             if stable:
                 for state1 in self.reachable(co,state0):
                     conditions.append(MoreThanFor(co,state0,state1))
@@ -774,16 +777,16 @@ class GoalSeeker(RMGenerator):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
         conditions = Requirements("For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"),"AND")
         
-        for coIdx,co in enumerate(self.conflict.coalitions):
+        for coIdx,co in enumerate(self.effectiveDMs):
             if stable:
                 for state1 in self.reachable(co,state0):
                     isNash = MoreThanFor(co,state0,state1)
                     isStable = PatternOr(isNash)
                     
-                    for coIdx2,co2 in enumerate(self.conflict.coalitions):
+                    for coIdx2,co2 in enumerate(self.effectiveDMs):
                         if coIdx2 == coIdx:
                             continue
-                        for state2 in self.reachable(self.coalitions[coIdx2],state1):
+                        for state2 in self.reachable(self.effectiveDMs[coIdx2],state1):
                             isSanctioned = PatternAnd(MoreThanFor(co2,state2, state1),MoreThanFor(co,state0,state2))
                             isStable.append(isSanctioned)
                     conditions.append(isStable)
@@ -793,10 +796,10 @@ class GoalSeeker(RMGenerator):
                     isUI = MoreThanFor(co,state1,state0)
                     isUnsanctionedUI = PatternAnd(isUI)
                     isUnstable.append(isUnsanctionedUI)
-                    for coIdx2,co2 in enumerate(self.conflict.coalitions):
+                    for coIdx2,co2 in enumerate(self.effectiveDMs):
                         if coIdx2 == coIdx:
                             continue
-                        for state2 in self.reachable(self.conflict.coalitions[coIdx2],state1):
+                        for state2 in self.reachable(self.effectiveDMs[coIdx2],state1):
                             notASanction = PatternOr(MoreThanFor(co2,state1,state2),MoreThanFor(co,state2,state0))
                             isUnsanctionedUI.append(notASanction)
                 if len(isUnstable.plist) > 0:
