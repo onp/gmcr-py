@@ -53,7 +53,7 @@ class PreferenceVectorFrame(ttk.Frame):
             dm.calculatePreferences()
             
         #Define variables that will display in the infoFrame
-        self.infoText = StringVar(value='No Message')
+        self.infoText = StringVar(value='')
 
         #Define variables that will display in the helpFrame
         self.helpText = StringVar(value="Use this screen to manually make small adjustments to "

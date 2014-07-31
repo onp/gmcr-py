@@ -53,7 +53,7 @@ class StabilityFrame(ttk.Frame):
             return
             
         #Define variables that will display in the infoFrame
-        self.infoText = StringVar(value='information here reflects \nthe state of the module')
+        self.infoText = StringVar(value="")
 
         #Define variables that will display in the helpFrame
         self.helpText = StringVar(value=""

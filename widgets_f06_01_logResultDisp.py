@@ -226,8 +226,19 @@ class OptionFormSolutionTable(ttk.Frame):
                     columns[col].append([newEntry,tag])
                     newEntry.bind("<Enter>", enterCell)
                     newEntry.bind("<Leave>", exitCell)
-                
-                
+        
+        def filt(a=None):
+            pass
+        
+        for row in range(2,2+len(self.conflict.options)):
+            newFilter = ttk.Button(self.table,text='-',command=filt)
+            newFilter.grid(row=row,column=tableData.shape[1])
+
+        for row in range(2+len(self.conflict.options)+len(self.conflict.decisionMakers),tableData.shape[0]):
+            newFilter = ttk.Button(self.table,text='-',command=filt)
+            newFilter.grid(row=row,column=tableData.shape[1])
+
+        
                 
 class LogNarrator(ttk.Frame):
     def __init__(self,master,conflict,solOwner):
