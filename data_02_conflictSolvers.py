@@ -819,7 +819,7 @@ class Requirements:
         self.plist.append(p)
         
     def asString(self,indent=""):
-        patterns = [p.asString(indent+"  ") for p in self.plist]
+        patterns = [p.asString(indent+" |") for p in self.plist]
         return indent+self.statement+"\n"+(indent+self.betweenConditions+"\n").join(patterns)
     
 class PatternAnd:
@@ -831,7 +831,7 @@ class PatternAnd:
         self.plist.append(p)
         
     def asString(self,indent=""):
-        patterns = [p.asString(indent+"  ") for p in self.plist]
+        patterns = [p.asString(indent+" |") for p in self.plist]
         return (indent+"AND\n").join(patterns)
 
 class PatternOr:
@@ -843,7 +843,7 @@ class PatternOr:
         self.plist.append(p)
         
     def asString(self,indent=""):
-        patterns = [p.asString(indent+"  ") for p in self.plist]
+        patterns = [p.asString(indent+" |") for p in self.plist]
         return (indent+"OR\n").join(patterns)
 
 class MoreThanFor:
