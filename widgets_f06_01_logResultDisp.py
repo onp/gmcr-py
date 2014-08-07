@@ -196,13 +196,13 @@ class OptionFormSolutionTable(ttk.Frame):
             for col in range(tableData.shape[1]):
                 if col <2:
                     newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
+                    newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
                 else:
                     if (tag == "stabilities") and (tableData[row,col] == "N"):
                         newEntry = ttk.Label(self.table,text="",style=tag+".TLabel",width=4)
                     else:
                         newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel",width=4)
-
-                newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
+                    newEntry.grid(row=row,column=col+1,sticky=(N,S,E,W))
                     
                 def enterCell(event=None,row=row,col=col):
                     for cell,tag in rows[row]:
@@ -268,11 +268,14 @@ class OptionFormSolutionTable(ttk.Frame):
         
         for row in range(2,2+len(self.conflict.options)):
             nfb = filtMaker(row)
-            nfb.grid(row=row,column=tableData.shape[1])
+            nfb.grid(row=row,column=2,sticky=(N,S,E,W))
 
         for row in range(2+len(self.conflict.options)+len(self.conflict.decisionMakers),tableData.shape[0]):
             nfb = filtMaker(row)
-            nfb.grid(row=row,column=tableData.shape[1])
+            nfb.grid(row=row,column=2,sticky=(N,S,E,W))
+            
+        filterLabel = ttk.Label(self.table,text="Filter",anchor='center')
+        filterLabel.grid(row=1,column=2,sticky=(N,S,E,W))
 
         
                 
