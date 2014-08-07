@@ -170,7 +170,7 @@ class OptionFormSolutionTable(ttk.Frame):
             newCol = [feasibles.ordered[state],feasibles.decimal[state]]+list(feasibles.yn[state])
             for dm in self.conflict.decisionMakers:
                 newCol.append(dm.payoffs[state])
-            newCol += [("Y" if stability else "") for stability in self.owner.sol.allEquilibria[:,state]]
+            newCol += [("Y" if stability else "N") for stability in self.owner.sol.allEquilibria[:,state]]
             tableData[:,currCol] = newCol
             currCol += 1
             
@@ -197,7 +197,10 @@ class OptionFormSolutionTable(ttk.Frame):
                 if col <2:
                     newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
                 else:
-                    newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel",width=4)
+                    if (tag == "stabilities") and (tableData[row,col] == "N"):
+                        newEntry = ttk.Label(self.table,text="",style=tag+".TLabel",width=4)
+                    else:
+                        newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel",width=4)
 
                 newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
                     
@@ -226,17 +229,50 @@ class OptionFormSolutionTable(ttk.Frame):
                     columns[col].append([newEntry,tag])
                     newEntry.bind("<Enter>", enterCell)
                     newEntry.bind("<Leave>", exitCell)
+
+
+
+        valRotation = {"-":"Y","Y":"N","N":"-"}
         
-        def filt(a=None):
-            pass
+        filterVals = numpy.zeros(rowCount,dtype="<U20")
+        
+        def filterStates():        
+            for col in range(2,tableData.shape[1]):
+                yMatch = numpy.greater_equal(tableData[:,col]=="Y",filterVals=="Y")
+                nMatch = numpy.greater_equal(tableData[:,col]=="N",filterVals=="N")
+                if numpy.all(numpy.logical_and(yMatch,nMatch)):
+                    for cell,tag in columns[col]:
+                        cell.grid()
+                else:
+                    for cell,tag in columns[col]:
+                        cell.grid_remove()
+                
+        
+        
+        def filtMaker(row):
+            newFilterVal = StringVar()
+            newFilterVal.set("-")
+            filterVals[row] = "-"
+            
+            def rotateVal(e=None):
+                newVal = valRotation[newFilterVal.get()]
+                newFilterVal.set(newVal)
+                filterVals[row] = newVal
+                filterStates()
+            
+            newFilterBtn = ttk.Button(self.table,textvariable=newFilterVal,command=rotateVal,width=5)
+            
+            return newFilterBtn
+
+
         
         for row in range(2,2+len(self.conflict.options)):
-            newFilter = ttk.Button(self.table,text='-',command=filt)
-            newFilter.grid(row=row,column=tableData.shape[1])
+            nfb = filtMaker(row)
+            nfb.grid(row=row,column=tableData.shape[1])
 
         for row in range(2+len(self.conflict.options)+len(self.conflict.decisionMakers),tableData.shape[0]):
-            newFilter = ttk.Button(self.table,text='-',command=filt)
-            newFilter.grid(row=row,column=tableData.shape[1])
+            nfb = filtMaker(row)
+            nfb.grid(row=row,column=tableData.shape[1])
 
         
                 
