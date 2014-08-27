@@ -478,7 +478,6 @@ class CoalitionList(ObjectList):
                     dms.remove(dm)
             else:
                 dms.remove(co)
-                print("removed ", co.name)
         if len(dms) == 0:
             return True
         return False

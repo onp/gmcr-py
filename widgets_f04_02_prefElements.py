@@ -22,7 +22,10 @@ class PreferenceRanking(ttk.Frame):
         self.dmLabel = Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
         
-        self.prefRankText = StringVar(value=str(dm.preferenceVector))
+        if len(game.feasibles)<1000:
+            self.prefRankText = StringVar(value=str(dm.preferenceVector))
+        else:
+            self.prefRankText = StringVar(value="Too Many States")
         self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
         self.prefRank.grid(row=1,column=0,sticky=(N,S,E,W))
         

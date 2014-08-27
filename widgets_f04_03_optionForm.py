@@ -46,6 +46,12 @@ class OptionFormTable(ttk.Frame):
         self.buildTable()
     
     def buildTable(self,focusDM=None):
+        if len(self.conflict.feasibles)>1000:
+            note = ttk.Label(self.table,text="More than 1000 states. No table will be drawn")
+            note.grid(row=1,column=1,sticky=(N,S,E,W))
+            return
+            
+            
         if focusDM is not None:
             rowCount = len(self.conflict.options)+3
         else:
