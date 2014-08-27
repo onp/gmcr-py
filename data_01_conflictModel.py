@@ -236,6 +236,9 @@ class DecisionMakerList(ObjectList):
     def __init__(self,conflict):
         ObjectList.__init__(self)
         self.conflict = conflict
+        
+    def __str__(self):
+        return str([dm.name for dm in self])
 
     def export_rep(self):
         return [x.export_rep() for x in self.itemList]
@@ -475,6 +478,7 @@ class CoalitionList(ObjectList):
                     dms.remove(dm)
             else:
                 dms.remove(co)
+                print("removed ", co.name)
         if len(dms) == 0:
             return True
         return False
@@ -549,7 +553,14 @@ class ConflictModel:
             for dm in self.decisionMakers:
                 self.coalitions.append(dm)
         if not self.coalitions.validate():
-            raise Exception('Coalitions failed to validate')
+            print('Coalitions failed to validate, reseting')
+            self.coalitions = CoalitionList(self)
+            for dm in self.decisionMakers:
+                self.coalitions.append(dm)
+            if not self.coalitions.validate():
+                raise Exception("Coalitions Failure")
+                
+            
 
 
     def load_from_file(self,file):

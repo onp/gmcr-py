@@ -152,6 +152,8 @@ class PreferencesFrame(ttk.Frame):
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,
         and performs any other update tasks required on loading the frame."""
+        if not self.built:
+            self.buildFrame()
         self.refresh()
         self.grid()
         self.infoFrame.grid()

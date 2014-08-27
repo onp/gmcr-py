@@ -74,8 +74,6 @@ class MainAppWindow:
         self.addMod(StabilityFrame)
         
         self.refreshActiveFrames()
-
-        self.frameBtnCmds[0](self)
         
         self.root.bind_all("<<breakingChange>>",self.refreshActiveFrames)
         
@@ -109,12 +107,14 @@ class MainAppWindow:
         self.activeGame.options.set_indexes()
         self.activeGame.recalculateFeasibleStates()
         for idx,frame in enumerate(self.frameList):
+            frame.built = False
             if frame.hasRequiredData():
-                frame.buildFrame()
                 self.frameBtnList[idx].config(state = "normal")
             else:
                 frame.clearFrame()
                 self.frameBtnList[idx].config(state = "disabled")
+
+        self.frameBtnCmds[0](self)
                 
     def unloadAllFrames(self,event=None):
         for idx,frame in enumerate(self.frameList):
@@ -171,7 +171,6 @@ class MainAppWindow:
             self.root.wm_title(fileName)
             self.activeGame.load_from_file(fileName)
             self.refreshActiveFrames()
-            self.frameBtnCmds[0](self)
         
 
     def newGame(self):
@@ -182,7 +181,6 @@ class MainAppWindow:
         self.file = None
         print(self.activeGame.decisionMakers.names())
         self.refreshActiveFrames()
-        self.frameBtnCmds[0](self)
         self.root.wm_title('New GMCR+ Model')
     
 

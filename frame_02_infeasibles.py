@@ -161,6 +161,8 @@ class InfeasInpFrame(Frame):
 
     def enter(self):
         """Run when entering the Infeasible States screen."""
+        if not self.built:
+            self.buildFrame()
         self.refreshWidgets()
         self.grid()
         self.infoFrame.grid()
