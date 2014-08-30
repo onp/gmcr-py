@@ -4,6 +4,7 @@
 
 import itertools
 import traceback
+import numpy
 
 bitFlip = {'N':'Y','Y':'N'}
 
@@ -158,7 +159,7 @@ def validatePreferenceVector(prefVec,feasibles):
     
 def mapPrefVec2Payoffs(preferenceVector,feasibles):
     """Map the preference vectors provided into payoff values for each state."""             
-    payoffs =[0]*len(feasibles)     #Make a clean payoffs vector   
+    payoffs = numpy.zeros(len(feasibles),numpy.int_)     #Make a clean payoffs vector   
 
     #use position in preference vector to give a payoff value.
     for idx,state in enumerate(preferenceVector):
@@ -181,16 +182,16 @@ def prefPriorities2payoffs(preferences,feasibles):
     are sequential.
     """
     #generate initial payoffs
-    payoffsRaw = [0]*len(feasibles)
+    payoffsRaw = numpy.zeros(len(feasibles),numpy.int_)
     for preference in preferences:
         for state in feasibles.decimal:
             if preference.test(state):
                 payoffsRaw[feasibles.toOrdered[state]-1] += preference.weight
 
     #reduce magnitude of payoffs - do not do this if weights had special meaning.
-    uniquePayoffs = sorted(set(payoffsRaw))
+    uniquePayoffs = numpy.unique(payoffsRaw)
     preferenceVector = []
-    payoffs = list(payoffsRaw)  #creates a copy
+    payoffs = payoffsRaw.copy()  #creates a copy
 
     for idx,value in enumerate(uniquePayoffs):
         for jdx,pay in enumerate(payoffsRaw):
