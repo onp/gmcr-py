@@ -2,6 +2,7 @@ import unittest
 import data_01_conflictModel
 import data_02_conflictSolvers
 import data_03_gmcrUtilities as util
+import data_04_spSolvers
 import numpy
 
 files = [ "Garrison",
@@ -90,6 +91,14 @@ class TestSolvers(unittest.TestCase):
         for file in files:
             self.conf.load_from_file("save_files/"+file+".gmcr")
             solver = data_02_conflictSolvers.LogicalSolver(self.conf)
+            solver.findEquilibria()
+            expected = numpy.loadtxt("test_data/"+file+"_logSol.txt")
+            numpy.testing.assert_array_equal(expected,solver.allEquilibria,"Incorrect logical solution for "+file)
+            
+    def test_splogSol(self):
+        for file in files:
+            self.conf.load_from_file("save_files/"+file+".gmcr")
+            solver = data_04_spSolvers.LogicalSolver(self.conf)
             solver.findEquilibria()
             expected = numpy.loadtxt("test_data/"+file+"_logSol.txt")
             numpy.testing.assert_array_equal(expected,solver.allEquilibria,"Incorrect logical solution for "+file)
