@@ -23,4 +23,5 @@ t1 = time.perf_counter()
 sol = slv.LogicalSolver(conf)
 sol.findEquilibria()
 t2 = time.perf_counter()
+
 print(t2-t1)

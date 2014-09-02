@@ -120,7 +120,7 @@ class PreferencesFrame(ttk.Frame):
         self.paneTop.columnconfigure(2,weight=0)
         self.paneTop.columnconfigure(4,weight=1)       
         self.paneTop.columnconfigure(6,weight=1)
-        self.paneTop.rowconfigure(2,weight=1)
+        self.paneTop.rowconfigure(1,weight=1)
         
         self.paneMaster.add(self.paneBottom)
         self.optionTable.grid(column=0,row=0,sticky=(N,S,E,W))
