@@ -148,8 +148,6 @@ class InfeasInpFrame(Frame):
         """Remove a set of Mutually Exclusive States from the game."""
         mutEx = self.optsInp.getStates()
         mutEx = gmcrUtil.mutuallyExclusive(mutEx)
-        print(mutEx)
-        print(mutEx[0])
         for infeas in mutEx:
             self.game.infeasibles.append(list(infeas))
         self.refreshWidgets()

@@ -32,6 +32,7 @@ class DecisionMaker:
         self.conflict = conflict
         self.options = OptionList(conflict.options)
         self.preferences = ConditionList(conflict)
+        self.lastCalculatedPreferences = None
 
     def __str__(self):
         return self.name
@@ -63,7 +64,8 @@ class DecisionMaker:
     def calculatePreferences(self):
         if self.conflict.useManualPreferenceVectors:
             self.payoffs = gmcrUtil.mapPrefVec2Payoffs(self.preferenceVector,self.conflict.feasibles)
-        else:
+        elif self.preferences.export_rep() != self.lastCalculatedPreferences:
+            self.lastCalculatedPreferences = self.preferences.export_rep()
             self.preferences.validate()
             self.weightPreferences()
             result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)

@@ -68,7 +68,6 @@ class IrrevInpFrame(ttk.Frame):
         self.grid(column=0,row=0,rowspan=5,sticky=(N,S,E,W))
         self.grid_remove()
         self.columnconfigure(0,weight=1)
-        self.rowconfigure(1,weight=1)
 
         #configuring infoFrame & infoFrame widgets
         self.infoFrame.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
@@ -82,6 +81,8 @@ class IrrevInpFrame(ttk.Frame):
 
         #configuring frame-specific options
         self.irrevEntry.grid(column=0,row=0,sticky=(N,S,E,W))
+        
+        self.rowconfigure(0, weight=1)
 
         # bindings
             #None

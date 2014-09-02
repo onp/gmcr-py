@@ -70,9 +70,17 @@ class RadiobuttonEntry(Frame):
         ttk.Frame.__init__(self,master)
 
         self.game = game
+        
+        self.rbeCanvas = Canvas(self)
+        self.rdBtnFrame = ttk.Frame(self.rbeCanvas)
+        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,command = self.rbeCanvas.yview)
 
-        self.rdBtnFrame = ttk.Frame(self)
-        self.rdBtnFrame.grid(column=0,row=0,columnspan=2,sticky=(N,S,E,W))
+        self.rbeCanvas.grid(column=0,row=0,columnspan=2,sticky=(N,S,E,W))
+        self.scrollY.grid(column=2,row=0,sticky=(N,S,E,W))
+        self.rbeCanvas.configure(yscrollcommand=self.scrollY.set)
+        self.canvWindow = self.rbeCanvas.create_window((0,0),window=self.rdBtnFrame,anchor='nw')
+        
+        self.rowconfigure(0, weight=1)
 
         self.entryText = StringVar(value='')
 
@@ -91,6 +99,9 @@ class RadiobuttonEntry(Frame):
         self.mutExBtn.grid(column=0,row=4,columnspan=2,sticky=(N,S,E,W))
 
         self.reloadOpts()
+        
+    def resize(self,event=None):
+        self.rbeCanvas.configure(scrollregion=self.rbeCanvas.bbox("all"))
 
     def generateAdd(self,*args):
         self.event_generate('<<AddInfeas>>')
@@ -99,10 +110,12 @@ class RadiobuttonEntry(Frame):
         self.event_generate('<<AddMutEx>>')
 
     def reloadOpts(self):
+        self.rbeCanvas.delete(self.canvWindow)
         self.rdBtnFrame.destroy()
-        self.rdBtnFrame = ttk.Frame(self)
-        self.rdBtnFrame.grid(column=0,row=0,columnspan=2,sticky=(N,S,E,W))
+        self.rdBtnFrame = ttk.Frame(self.rbeCanvas)
+        self.canvWindow = self.rbeCanvas.create_window((0,0),window=self.rdBtnFrame,anchor='nw')
         self.rdBtnFrame.bind('<<RdBtnChg>>', self.rdBtnChgCmd)
+        self.rdBtnFrame.bind("<Configure>",self.resize)
 
         self.rdBtnSrs = []
         self.stringVarList=[]
