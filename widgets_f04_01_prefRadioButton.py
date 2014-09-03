@@ -9,6 +9,7 @@ Nearly a clone of widgets_f02_01_radioButtonEntry.
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
+import re
 
 
 class RadiobuttonSeries(ttk.Labelframe):
@@ -94,21 +95,40 @@ class RadiobuttonEntry(Frame):
 
         vcmd = self.register(self.onValidate)
         self.entryBx = ttk.Entry(self,textvariable=self.entryText,validate="key",validatecommand=(vcmd,'%S','%P'))
-        self.entryBx.grid(column=0,row=1,columnspan=2,sticky=(N,S,E,W))
+        self.entryBx.grid(column=0,row=1,sticky=(N,S,E,W))
         self.entryBx.bind('<Return>',self.generateAdd)
 
         self.warnText = StringVar(value='')
+        self.warnLab = ttk.Label(self,textvariable=self.warnText,width=18)
+        self.warnLab.grid(column=1,row=1,sticky=(N,S,E,W))
+        
+        self.codeText = StringVar(value='')
+        
+        vcmd2 = self.register(self.onValidate2)
+        self.codeBx = ttk.Entry(self,textvariable=self.codeText,validate="key",validatecommand=(vcmd2,'%S','%P'))
+        self.codeBx.grid(column=0,row=2,sticky=(N,S,E,W))
+        self.codeBx.bind('<Return>',self.generateAdd)
+        
+        self.warnText2 = StringVar(value='')
+        self.warnLab2 = ttk.Label(self,textvariable=self.warnText2)
+        self.warnLab2.grid(column=1,row=2,sticky=(N,S,E,W))
 
         self.addBtn  = ttk.Button(self,text='Add as Prefered State',command = self.generateAdd)
         self.stageBtn = ttk.Button(self,text='Add to Staging',command = self.generateStage)
-        self.warnLab = ttk.Label(self,textvariable=self.warnText)
-        self.warnLab.grid(column=0,row=2,sticky=(N,S,E,W))
-        self.addBtn.grid(column=0,row=3,columnspan=2,sticky=(N,S,E,W))
-        self.stageBtn.grid(column=0,row=4,columnspan=2,sticky=(N,S,E,W))
+
+        self.addBtn.grid(column=0,row=4,columnspan=2,sticky=(N,S,E,W))
+        self.stageBtn.grid(column=0,row=5,columnspan=2,sticky=(N,S,E,W))
         
         self.isDisabled = False
+        
+        self.columnconfigure(0,weight=1)
 
         self.reloadOpts()
+        
+        self.validChars = re.compile(r'^[-\d, ]*$')
+        self.states = re.compile(r'^$')
+        
+    
         
     def resize(self,event=None):
         self.rbeCanvas.configure(scrollregion=self.rbeCanvas.bbox("all"))
@@ -145,6 +165,7 @@ class RadiobuttonEntry(Frame):
     def disable(self,event=None):
         self.isDisabled = True
         self.entryBx['state'] = 'disabled'
+        self.codeBx['state'] = 'disabled'
         self.addBtn['state'] = 'disabled'
         self.stageBtn['state'] = 'disabled'
         for srs in self.rdBtnSrs:
@@ -153,6 +174,7 @@ class RadiobuttonEntry(Frame):
     def enable(self,event=None):
         self.isDisabled = False
         self.entryBx['state'] = 'normal'
+        self.codeBx['state'] = 'normal'
         self.addBtn['state'] = 'normal'
         self.stageBtn['state'] = 'normal'
         for srs in self.rdBtnSrs:
@@ -182,14 +204,34 @@ class RadiobuttonEntry(Frame):
                 self.warnText.set('Entry too short')
                 return True
             if len(res) == len(self.stringVarList):
-                self.setStates(res)
+                self.setStates(res.upper())
                 self.warnText.set('')
                 return True
         return False
 
+    def onValidate2(self,chg,res):
+        if self.validChars.match(res):
+            self.warnText2.set('')
+            return True
+        self.warnText2.set('Invalid')
+        return False
+        
     def rdBtnChgCmd(self,*args):
         val = ''.join([x.get() for x in self.stringVarList])
         self.entryText.set(val)
+        self.warnText.set('')
+        
+        val = [[i+1,x.get()] for i,x in enumerate(self.stringVarList) if (x.get() != "-")]
+        outVar = []
+        for i,x in val:
+            if x == "N":
+                outVar.append("-"+str(i))
+            else:
+                outVar.append(str(i))
+        
+        self.codeText.set(", ".join(outVar))
+        
+        self.warnText2.set('')
 
 
 
