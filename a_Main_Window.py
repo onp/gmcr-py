@@ -62,7 +62,7 @@ class MainAppWindow:
 
         self.activeGame = ConflictModel()
 
-        self.contentFrame.currFrame=1
+        self.contentFrame.currFrame=None
 
         self.addMod(DMInpFrame)
         self.addMod(InfeasInpFrame)
@@ -113,8 +113,14 @@ class MainAppWindow:
             else:
                 frame.clearFrame()
                 self.frameBtnList[idx].config(state = "disabled")
-
-        self.frameBtnCmds[0](self)
+        
+        try:
+            if self.contentFrame.currFrame.hasRequiredData():
+                self.contentFrame.currFrame.enter()
+            else:
+                self.frameBtnCmds[0](self)
+        except AttributeError:
+            self.frameBtnCmds[0](self)
                 
     def unloadAllFrames(self,event=None):
         for idx,frame in enumerate(self.frameList):
