@@ -125,8 +125,11 @@ class RadiobuttonEntry(Frame):
 
         self.reloadOpts()
         
-        self.validChars = re.compile(r'^[-\d, ]*$')
-        self.states = re.compile(r'^$')
+        self.regexValidChars = re.compile(r'^[-\d, fi]*$')
+        self.regexStatesIf = re.compile(r'^ *(-)?(\d+) *iff? *(-)?(\d+) *$')
+        self.regexStates = re.compile(r' *(-)?(\d+) *')
+        
+        self.hasValidIf = False
         
     
         
@@ -210,11 +213,70 @@ class RadiobuttonEntry(Frame):
         return False
 
     def onValidate2(self,chg,res):
-        if self.validChars.match(res):
-            self.warnText2.set('')
+        if self.regexValidChars.match(res):
+            if "if" in res:
+                m = self.regexStatesIf.match(res)
+                if m:
+                    self.warnText2.set('')
+                    self.handleIf(res,m.groups())
+                else:
+                    self.warnText2.set('Invalid')
+            else:
+                states = res.split(',')
+                sts2 = []
+                print('states:')
+                for st in states:
+                    m = self.regexStates.match(st)
+                    if m:
+                        sts2.append(m.groups())
+                    else:
+                        self.warnText2.set('Invalid')
+                        return True
+                self.warnText2.set('')
+                setTo = '-'*len(self.stringVarList)
+                for neg,st in sts2:
+                    if int(st)>len(self.stringVarList):
+                        self.warnText2.set(st+' is too large')
+                        return True
+                    if setTo[int(st)-1] != "-":
+                        self.warnText2.set("Too many "+st+"s")
+                        return True
+                    print(neg,st)
+                    if neg:
+                        setTo = setTo[:(int(st)-1)]+'N'+setTo[int(st):]
+                    else:
+                        setTo = setTo[:(int(st)-1)]+'Y'+setTo[int(st):]
+                self.setStates(setTo)
+            
             return True
         self.warnText2.set('Invalid')
         return False
+        
+    def handleIf(self,string,states):
+        # q if p ( equivalent to 'If p, then q' )
+        print(states)
+        if int(states[1])>len(self.stringVarList):
+            self.warnText2.set(states[1]+' is too large')
+            return True
+        elif int(states[3])>len(self.stringVarList):
+            self.warnText2.set(states[3]+' is too large')
+            return True
+        elif states[1] == states[3]:
+            self.warnText2.set("duplicate")
+            return True
+        
+        q  = [int(states[1]-1),"N" if states[0] else "Y")
+        nq = [int(states[1]-1),"Y" if states[0] else "N")   # not q
+        p = [int(states[3]-1),"N" if states[2] else "Y")
+        np = [int(states[3]-1),"Y" if states[2] else "N")   # not p
+        
+        newCondition = None
+
+        if "iff" in string:
+            newCondition = self.game.newCompoundCondition([[p,q],[np,nq]])
+        else:
+            newCondition = self.game.newCompoundCondition([[p,q],[np,q],[np,nq]])
+        
         
     def rdBtnChgCmd(self,*args):
         val = ''.join([x.get() for x in self.stringVarList])
