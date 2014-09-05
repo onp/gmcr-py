@@ -144,6 +144,9 @@ class CompoundCondition:
     def __getitem__(self,key):
         return self.conditions[key]
         
+    def __iter__(self):
+        return iter(self.conditions)
+        
     def updateName(self):
         self.name = str(sorted(self.ynd()))[1:-1].replace("'",'')
         

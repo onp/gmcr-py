@@ -217,9 +217,14 @@ class PreferencesFrame(ttk.Frame):
         
     def stagePref(self,event=None):
         """Stages a condition."""
-        condData = self.editor.getStates()
-        newCond = self.game.newCondition(condData)
-        self.staging.addCondition(newCond)
+        if self.editor.hasValidIf:
+            for cond in self.editor.ifCond:
+                self.staging.addCondition(cond)
+        else:
+            condData = self.editor.getStates()
+            newCond = self.game.newCondition(condData)
+            self.staging.addCondition(newCond)
+        
         self.editor.setStates('clear')
 
     def pullFromStage(self,event=None):

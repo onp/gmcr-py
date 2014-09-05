@@ -194,8 +194,12 @@ class RadiobuttonEntry(Frame):
         for x,y in enumerate(dashOne):
             self.stringVarList[x].set(y)
         self.entryText.set(dashOne)
+        self.hasValidIf = False
 
     def getStates(self):
+        if self.hasValidIf:
+            return self.ifCond
+        
         states = []
         for srs in self.rdBtnSrs:
             states.extend(srs.getStates())
@@ -224,7 +228,6 @@ class RadiobuttonEntry(Frame):
             else:
                 states = res.split(',')
                 sts2 = []
-                print('states:')
                 for st in states:
                     m = self.regexStates.match(st)
                     if m:
@@ -241,7 +244,6 @@ class RadiobuttonEntry(Frame):
                     if setTo[int(st)-1] != "-":
                         self.warnText2.set("Too many "+st+"s")
                         return True
-                    print(neg,st)
                     if neg:
                         setTo = setTo[:(int(st)-1)]+'N'+setTo[int(st):]
                     else:
@@ -254,7 +256,6 @@ class RadiobuttonEntry(Frame):
         
     def handleIf(self,string,states):
         # q if p ( equivalent to 'If p, then q' )
-        print(states)
         if int(states[1])>len(self.stringVarList):
             self.warnText2.set(states[1]+' is too large')
             return True
@@ -265,10 +266,10 @@ class RadiobuttonEntry(Frame):
             self.warnText2.set("duplicate")
             return True
         
-        q  = [int(states[1]-1),"N" if states[0] else "Y")
-        nq = [int(states[1]-1),"Y" if states[0] else "N")   # not q
-        p = [int(states[3]-1),"N" if states[2] else "Y")
-        np = [int(states[3]-1),"Y" if states[2] else "N")   # not p
+        q  = [self.game.options[int(states[1])-1],"N" if states[0] else "Y"]
+        nq = [self.game.options[int(states[1])-1],"Y" if states[0] else "N"]   # not q
+        p = [self.game.options[int(states[3])-1],"N" if states[2] else "Y"]
+        np = [self.game.options[int(states[3])-1],"Y" if states[2] else "N"]   # not p
         
         newCondition = None
 
@@ -276,6 +277,10 @@ class RadiobuttonEntry(Frame):
             newCondition = self.game.newCompoundCondition([[p,q],[np,nq]])
         else:
             newCondition = self.game.newCompoundCondition([[p,q],[np,q],[np,nq]])
+            
+        self.setStates(' '*len(self.stringVarList))
+        self.hasValidIf = True
+        self.ifCond = newCondition
         
         
     def rdBtnChgCmd(self,*args):
