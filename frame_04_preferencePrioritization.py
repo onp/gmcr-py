@@ -78,8 +78,9 @@ class PreferencesFrame(ttk.Frame):
         self.paneTop = ttk.Frame(self.paneMaster)
         self.vectors = PreferenceRankingMaster(self.paneTop,self.game)
         self.editor = RadiobuttonEntry(self.paneTop,self.game)
-        self.staging = PreferenceStaging(self.paneTop,self.game)
-        self.preferenceDisp = PreferenceListDisplay(self.paneTop,self.game)
+        self.paneTopRightMaster = PanedWindow(self.paneTop,orient=HORIZONTAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
+        self.staging = PreferenceStaging(self.paneTopRightMaster,self.game)
+        self.preferenceDisp = PreferenceListDisplay(self.paneTopRightMaster,self.game)
         
         self.paneBottom = ttk.Frame(self.paneMaster)
         self.optionTable = OptionFormTable(self.paneBottom,self.game)
@@ -108,19 +109,20 @@ class PreferencesFrame(ttk.Frame):
 
         #configuring frame-specific options
         self.paneMaster.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.paneMaster.add(self.paneTop)
+        self.paneMaster.add(self.paneTop,minsize=200)
         self.vectors.grid(column=0,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=1,row=1,sticky=(N,S,E,W),padx=3)
         self.editor.grid(column=2,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,sticky=(N,S,E,W),padx=3)
-        self.staging.grid(column=4,row=1,sticky=(N,S,E,W))
-        ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=5,row=1,sticky=(N,S,E,W),padx=3)
-        self.preferenceDisp.grid(column=6,row=1,sticky=(N,S,E,W))
+        self.paneTopRightMaster.grid(column=4,row=1,sticky=(N,S,E,W))
         self.paneTop.columnconfigure(0,weight=1)
         self.paneTop.columnconfigure(2,weight=0)
-        self.paneTop.columnconfigure(4,weight=1)       
-        self.paneTop.columnconfigure(6,weight=1)
+        self.paneTop.columnconfigure(4,weight=1)
         self.paneTop.rowconfigure(1,weight=1)
+        
+
+        self.paneTopRightMaster.add(self.staging)
+        self.paneTopRightMaster.add(self.preferenceDisp)
         
         self.paneMaster.add(self.paneBottom)
         self.optionTable.grid(column=0,row=0,sticky=(N,S,E,W))
