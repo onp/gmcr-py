@@ -106,6 +106,9 @@ class OptionFormSolutionTable(ttk.Frame):
         self.conflict = conflict
         self.owner = solOwner
         
+        self.sortDM = None
+        self.sortDirection = None
+        
         #widgets
         self.tableCanvas = Canvas(self)
         self.table = ttk.Frame(self.tableCanvas)
@@ -173,6 +176,14 @@ class OptionFormSolutionTable(ttk.Frame):
             newCol += [("Y" if stability else "N") for stability in self.owner.sol.allEquilibria[:,state]]
             tableData[:,currCol] = newCol
             currCol += 1
+            
+        #sorting
+        if self.sortDM is not None:
+            sortIndex = numpy.array(tableData[self.sortDM,2:],int).argsort()+2
+            if self.sortDirection == "ascending":
+                tableData[:,2:] = tableData[:,sortIndex]
+            else:
+                tableData[:,2:] = tableData[:,sortIndex[::-1]]
             
         
         #push to display
@@ -264,7 +275,29 @@ class OptionFormSolutionTable(ttk.Frame):
             
             return newFilterBtn
 
-
+        def sortMaker(row):
+            buttonText = '-'
+            if self.sortDM == row:
+                if self.sortDirection == "descending":
+                    buttonText = ">"
+                else:
+                    buttonText = "<"
+                    
+            def sortByDMPrefs(e=None):
+                if self.sortDM != row:
+                    self.sortDM = row
+                    self.sortDirection = 'descending'
+                elif self.sortDirection == 'descending':
+                    self.sortDirection = 'ascending'
+                elif self.sortDirection == 'ascending':
+                    self.sortDM = None
+                    self.sortDirection = None
+                self.refresh()
+            
+            newSortButton = ttk.Button(self.table,text=buttonText,command=sortByDMPrefs,width=5)
+            
+            return newSortButton
+                    
         
         for row in range(2,2+len(self.conflict.options)):
             nfb = filtMaker(row)
@@ -273,6 +306,11 @@ class OptionFormSolutionTable(ttk.Frame):
         for row in range(2+len(self.conflict.options)+len(self.conflict.decisionMakers),tableData.shape[0]):
             nfb = filtMaker(row)
             nfb.grid(row=row,column=2,sticky=(N,S,E,W))
+            
+        for row in range(2+len(self.conflict.options),2+len(self.conflict.options)+len(self.conflict.decisionMakers)):
+            nsb = sortMaker(row)
+            nsb.grid(row=row,column=2,sticky=(N,S,E,W))
+            
             
         filterLabel = ttk.Label(self.table,text="Filter",anchor='center')
         filterLabel.grid(row=1,column=2,sticky=(N,S,E,W))
