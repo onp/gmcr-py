@@ -120,6 +120,8 @@ class PreferencesFrame(ttk.Frame):
         self.paneTop.columnconfigure(4,weight=1)
         self.paneTop.rowconfigure(1,weight=1)
         
+        self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
+        
 
         self.paneTopRightMaster.add(self.staging)
         self.paneTopRightMaster.add(self.preferenceDisp)
@@ -180,8 +182,11 @@ class PreferencesFrame(ttk.Frame):
         self.preferenceDisp.refresh()
         self.optionTable.buildTable(self.dm)
         
+        self.checkIfUsingVectors()
+        
+    def checkIfUsingVectors(self,event=None):
         if self.game.useManualPreferenceVectors:
-            self.usePrioritizationButton.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
+            self.usePrioritizationButton.grid()
             self.vectors.disable()
             self.editor.disable()
             self.staging.disable()

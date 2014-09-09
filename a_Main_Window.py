@@ -103,6 +103,7 @@ class MainAppWindow:
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
 
     def refreshActiveFrames(self,event=None):
+        self.unloadAllFrames()
         self.activeGame.reorderOptionsByDM()
         self.activeGame.options.set_indexes()
         self.activeGame.recalculateFeasibleStates()
