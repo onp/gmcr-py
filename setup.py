@@ -18,7 +18,7 @@ buildOptions = {'include_files':
 shortcut_table = [
     ("DesktopShortcut",        # Shortcut
      "DesktopFolder",          # Directory_
-     "gmcr-py",                # Name
+     "gmcr+",                  # Name
      "TARGETDIR",              # Component_
      "[TARGETDIR]gmcr.exe",    # Target
      None,                     # Arguments
@@ -31,7 +31,7 @@ shortcut_table = [
      ),
     ("StartMenuShortcut",      # Shortcut
      "ProgramMenuFolder",      # Directory_
-     "gmcr-py",                # Name
+     "gmcr+",                  # Name
      "TARGETDIR",              # Component_
      "[TARGETDIR]gmcr.exe",    # Target
      None,                     # Arguments
@@ -59,12 +59,12 @@ executables = [
                 appendScriptToExe=True,
                 appendScriptToLibrary=False,
                 icon='gmcr.ico',
-                shortcutName='gmcr-py',
+                shortcutName='gmcr+',
                 shortcutDir='ProgramMenuFolder')
 ]
 
 # Run setup
-setup(name='gmcr-py',
+setup(name='gmcr+',
       version = '0.3.5',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
