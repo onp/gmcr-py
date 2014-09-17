@@ -62,7 +62,7 @@ class DMselector(ttk.Frame):
         self.dmListDisp.selection_clear(idx)
         self.dmListDisp.selection_set(idx2)
         self.selChgCmd()
-        self.event_generate("<<breakingChange>>")
+        self.event_generate("<<checkData>>")
 
     def upCmd(self,event=None):
         """Moves the selected element up one space in the list"""
@@ -82,8 +82,7 @@ class DMselector(ttk.Frame):
         if idx != len(self.dms):        #check that a valid entry is selected
             del self.dms[idx]
             self.refresh()
-            self.event_generate("<<breakingChange>>")
-            self.reselect()
+            self.event_generate("<<checkData>>")
 
     def selChgCmd(self,*args):
         """Called when the selection changes."""
@@ -180,7 +179,7 @@ class DMeditor(ttk.Frame):
         def deleteOption(event=None):
             self.dm.options.remove(opt)
             self.loadDM(self.dm)
-            self.event_generate('<<breakingChange>>')
+            self.event_generate('<<checkData>>')
 
         newOptionVar = StringVar(value=opt.name)
         self.optionVars.append(newOptionVar)
@@ -195,6 +194,6 @@ class DMeditor(ttk.Frame):
     def newOption(self):
         self.dm.options.append('New Option')
         self.loadDM(self.dm)
-        self.event_generate('<<breakingChange>>')
+        self.event_generate('<<checkData>>')
         self.optionEditors[-1].focus()
         self.optionEditors[-1].select_range(0,END)

@@ -76,6 +76,7 @@ class MainAppWindow:
         self.refreshActiveFrames()
         
         self.root.bind_all("<<breakingChange>>",self.refreshActiveFrames)
+        self.root.bind_all("<<checkData>>",self.checkFramesHaveData)
         
         if self.file is not None:
             self.loadGame(self.file)
@@ -101,19 +102,36 @@ class MainAppWindow:
         self.frameBtnList.append(newButton)
         newFrame.button = newButton
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
-
-    def refreshActiveFrames(self,event=None):
-        self.unloadAllFrames()
+        
+    def checkFramesHaveData(self,event=None):
         self.activeGame.reorderOptionsByDM()
         self.activeGame.options.set_indexes()
+        self.activeGame.infeasibles.validate()
         self.activeGame.recalculateFeasibleStates()
+        
+        for dm in self.activeGame.decisionMakers:
+            dm.preferenceVector = None
+            dm.calculatePreferences()
+        
         for idx,frame in enumerate(self.frameList):
-            frame.built = False
             if frame.hasRequiredData():
                 self.frameBtnList[idx].config(state = "normal")
             else:
                 frame.clearFrame()
                 self.frameBtnList[idx].config(state = "disabled")
+            if frame != self.contentFrame.currFrame:
+                frame.built = False
+
+    def refreshActiveFrames(self,event=None):
+        self.unloadAllFrames()
+        self.checkFramesHaveData()
+        
+        self.activeGame.breakingChange()
+        
+        try:
+            self.contentFrame.currFrame.built = False
+        except AttributeError:
+            pass
         
         try:
             if self.contentFrame.currFrame.hasRequiredData():
