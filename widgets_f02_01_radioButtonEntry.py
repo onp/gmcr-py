@@ -102,6 +102,7 @@ class RadiobuttonEntry(Frame):
         
     def resize(self,event=None):
         self.rbeCanvas.configure(scrollregion=self.rbeCanvas.bbox("all"))
+        self.rbeCanvas["width"] = self.rbeCanvas.bbox("all")[2]
 
     def generateAdd(self,*args):
         self.event_generate('<<AddInfeas>>')
