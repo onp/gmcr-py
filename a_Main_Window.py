@@ -60,7 +60,7 @@ class MainAppWindow:
         self.loadButton.grid(  column=0, row=2, sticky=(E,W))
         self.newButton.grid(   column=0, row=3, sticky=(E,W))
 
-        self.activeGame = ConflictModel()
+        self.activeConflict = ConflictModel()
 
         self.contentFrame.currFrame=None
 
@@ -85,7 +85,7 @@ class MainAppWindow:
 
     def addMod(self,newMod):
         """ Adds a new input frame and Module to the Game """
-        newFrame = newMod(self.contentFrame,self.activeGame)
+        newFrame = newMod(self.contentFrame,self.activeConflict)
         fNum = len(self.frameList)
         self.frameList.append(newFrame)
 
@@ -104,12 +104,12 @@ class MainAppWindow:
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
         
     def checkFramesHaveData(self,event=None):
-        self.activeGame.reorderOptionsByDM()
-        self.activeGame.options.set_indexes()
-        self.activeGame.infeasibles.validate()
-        self.activeGame.recalculateFeasibleStates()
+        self.activeConflict.reorderOptionsByDM()
+        self.activeConflict.options.set_indexes()
+        self.activeConflict.infeasibles.validate()
+        self.activeConflict.recalculateFeasibleStates()
         
-        for dm in self.activeGame.decisionMakers:
+        for dm in self.activeConflict.decisionMakers:
             dm.preferenceVector = None
             dm.calculatePreferences()
         
@@ -126,7 +126,7 @@ class MainAppWindow:
         self.unloadAllFrames()
         self.checkFramesHaveData()
         
-        self.activeGame.breakingChange()
+        self.activeConflict.breakingChange()
         
         try:
             self.contentFrame.currFrame.built = False
@@ -165,7 +165,7 @@ class MainAppWindow:
         except AttributeError:
             pass
         self.contentFrame.currFrame.enter()
-        self.activeGame.save_to_file(self.file)
+        self.activeConflict.save_to_file(self.file)
         print('Saved')
 
     def saveAs(self):
@@ -194,7 +194,7 @@ class MainAppWindow:
             self.unloadAllFrames()
             print('loading: %s'%(fileName))
             self.root.wm_title(fileName)
-            self.activeGame.load_from_file(fileName)
+            self.activeConflict.load_from_file(fileName)
             self.refreshActiveFrames()
         
 
@@ -202,9 +202,9 @@ class MainAppWindow:
         """Clears all data in the game, allowing a new game to be entered."""
         print("Initializing new conflict...")
         self.unloadAllFrames()
-        self.activeGame.__init__()
+        self.activeConflict.__init__()
         self.file = None
-        print(self.activeGame.decisionMakers.names())
+        print(self.activeConflict.decisionMakers.names())
         self.refreshActiveFrames()
         self.root.wm_title('New GMCR+ Model')
     
