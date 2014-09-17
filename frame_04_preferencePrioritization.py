@@ -115,7 +115,7 @@ class PreferencesFrame(ttk.Frame):
         self.editor.grid(column=2,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,sticky=(N,S,E,W),padx=3)
         self.paneTopRightMaster.grid(column=4,row=1,sticky=(N,S,E,W))
-        self.paneTop.columnconfigure(0,weight=1)
+        self.paneTop.columnconfigure(0,weight=0)
         self.paneTop.columnconfigure(2,weight=0)
         self.paneTop.columnconfigure(4,weight=1)
         self.paneTop.rowconfigure(1,weight=1)
