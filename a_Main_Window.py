@@ -10,7 +10,7 @@ from frame_01_decisionMakers import DMInpFrame
 from frame_02_infeasibles import InfeasInpFrame
 from frame_03_irreversibles import IrrevInpFrame
 from frame_04_preferencePrioritization import PreferencesFrame
-from frame_05_preferenceRanking import PreferenceVectorFrame
+from frame_05_preferenceRanking import PreferenceRankingFrame
 from frame_06_equilibria import ResultFrame
 from frame_07_inverseGMCR import InverseFrame
 from frame_08_stabilityAnalysis import StabilityFrame
@@ -68,7 +68,7 @@ class MainAppWindow:
         self.addMod(InfeasInpFrame)
         self.addMod(IrrevInpFrame)
         self.addMod(PreferencesFrame)
-        self.addMod(PreferenceVectorFrame)
+        self.addMod(PreferenceRankingFrame)
         self.addMod(ResultFrame)
         self.addMod(InverseFrame)
         self.addMod(StabilityFrame)
@@ -104,13 +104,13 @@ class MainAppWindow:
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
         
     def checkFramesHaveData(self,event=None):
+        print("check data")
         self.activeConflict.reorderOptionsByDM()
         self.activeConflict.options.set_indexes()
         self.activeConflict.infeasibles.validate()
         self.activeConflict.recalculateFeasibleStates()
         
         for dm in self.activeConflict.decisionMakers:
-            dm.preferenceVector = None
             dm.calculatePreferences()
         
         for idx,frame in enumerate(self.frameList):
@@ -125,8 +125,6 @@ class MainAppWindow:
     def refreshActiveFrames(self,event=None):
         self.unloadAllFrames()
         self.checkFramesHaveData()
-        
-        self.activeConflict.breakingChange()
         
         try:
             self.contentFrame.currFrame.built = False
@@ -204,7 +202,6 @@ class MainAppWindow:
         self.unloadAllFrames()
         self.activeConflict.__init__()
         self.file = None
-        print(self.activeConflict.decisionMakers.names())
         self.refreshActiveFrames()
         self.root.wm_title('New GMCR+ Model')
     

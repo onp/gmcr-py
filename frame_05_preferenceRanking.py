@@ -9,11 +9,11 @@ interfaces.
 from tkinter import *
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
-from widgets_f05_01_PrefRank import PVecEditMaster
+from widgets_f05_01_PrefRank import PRankEditMaster
 from widgets_f04_03_optionForm import OptionFormTable
 import data_03_gmcrUtilities as gmcrUtil
 
-class PreferenceVectorFrame(ttk.Frame):
+class PreferenceRankingFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
     def __init__(self,master,game):
         ttk.Frame.__init__(self,master)
@@ -57,7 +57,7 @@ class PreferenceVectorFrame(ttk.Frame):
 
         #Define variables that will display in the helpFrame
         self.helpText = StringVar(value="Use this screen to manually make small adjustments to "
-                "preference vectors.  Any Changes made on this screen override preference "
+                "preference rankings.  Any Changes made on this screen override preference "
                 "prioritization inputs. Preference priorities will not be lost, in case you "
                 "wish to revert to them later.")
 
@@ -71,7 +71,7 @@ class PreferenceVectorFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.prefEditor = PVecEditMaster(self,self.game)
+        self.prefEditor = PRankEditMaster(self,self.game)
         self.stateTable = OptionFormTable(self,self.game)
 
         # ########  preliminary gridding and option configuration
@@ -97,7 +97,7 @@ class PreferenceVectorFrame(ttk.Frame):
         self.rowconfigure(1,weight=1)
 
         # bindings
-        self.prefEditor.bind("<<PreferenceVectorChange>>",self.onPreferenceChange)
+        self.prefEditor.bind("<<PreferenceRankingChange>>",self.onPreferenceChange)
     
         self.built = True
         

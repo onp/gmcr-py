@@ -130,11 +130,11 @@ def orderedNumbers(decimalList):
         toDecimal[i]=x
     return toOrdered,toDecimal
     
-def validatePreferenceVector(prefVec,feasibles):
-    """Check that the preference vector given is valid."""
+def validatePreferenceRanking(prefRank,feasibles):
+    """Check that the preference ranking given is valid."""
     
     alreadySeen = []
-    for state in prefVec:
+    for state in prefRank:
         if state in feasibles.ordered:
             if state in alreadySeen:
                 return "State %s cannot appear more than once."%(state)
@@ -157,12 +157,12 @@ def validatePreferenceVector(prefVec,feasibles):
             
     return None
     
-def mapPrefVec2Payoffs(preferenceVector,feasibles):
-    """Map the preference vectors provided into payoff values for each state."""             
-    payoffs = numpy.zeros(len(feasibles),numpy.int_)     #Make a clean payoffs vector   
+def mapPrefRank2Payoffs(preferenceRanking,feasibles):
+    """Map the preference rankings provided into payoff values for each state."""             
+    payoffs = numpy.zeros(len(feasibles),numpy.int_)     #Make a clean payoffs array   
 
-    #use position in preference vector to give a payoff value.
-    for idx,state in enumerate(preferenceVector):
+    #use position in preference ranking to give a payoff value.
+    for idx,state in enumerate(preferenceRanking):
         try:
             for subState in state:
                 payoffs[subState-1] = len(feasibles) - idx
@@ -171,7 +171,7 @@ def mapPrefVec2Payoffs(preferenceVector,feasibles):
 
     if 0 in payoffs:
         state = feasibles.ordered[payoffs.index(0)]
-        raise Exception("Feasible state '%s' for DM was not included in the preference vector" %(state))
+        raise Exception("Feasible state '%s' for DM was not included in the preference ranking" %(state))
         
     return payoffs
 
@@ -190,7 +190,7 @@ def prefPriorities2payoffs(preferences,feasibles):
 
     #reduce magnitude of payoffs - do not do this if weights had special meaning.
     uniquePayoffs = numpy.unique(payoffsRaw)
-    preferenceVector = []
+    preferenceRanking = []
     payoffs = payoffsRaw.copy()  #creates a copy
 
     for idx,value in enumerate(uniquePayoffs):
@@ -199,10 +199,10 @@ def prefPriorities2payoffs(preferences,feasibles):
                 payoffs[jdx] = idx+1
         stateSet = [idx+1 for idx,pay in enumerate(payoffsRaw) if pay==value]
         if len(stateSet) > 1:
-            preferenceVector.append(stateSet)
+            preferenceRanking.append(stateSet)
         else:
-            preferenceVector.append(stateSet[0])
+            preferenceRanking.append(stateSet[0])
 
-    preferenceVector.reverse()      #necessary to put most preferred states at beginning instead of end
+    preferenceRanking.reverse()      #necessary to put most preferred states at beginning instead of end
     
-    return payoffs, preferenceVector
+    return payoffs, preferenceRanking

@@ -42,8 +42,8 @@ class DecisionMaker:
         rep['name'] = str(self.name)
         rep['options'] = self.options.export_rep()
         rep['preferences'] = self.preferences.export_rep()
-        if self.conflict.useManualPreferenceVectors:
-            rep['preferenceVector'] = self.preferenceVector
+        if self.conflict.useManualPreferenceRanking:
+            rep['preferenceRanking'] = self.preferenceRanking
         return rep
         
     def full_rep(self):
@@ -62,15 +62,16 @@ class DecisionMaker:
             pref.weight = 2**(len(self.preferences)-idx-1)
             
     def calculatePreferences(self):
-        if self.conflict.useManualPreferenceVectors:
-            self.payoffs = gmcrUtil.mapPrefVec2Payoffs(self.preferenceVector,self.conflict.feasibles)
+        if self.conflict.useManualPreferenceRanking:
+            self.payoffs = gmcrUtil.mapPrefRank2Payoffs(self.preferenceRanking,self.conflict.feasibles)
         elif self.preferences.export_rep() != self.lastCalculatedPreferences:
             self.lastCalculatedPreferences = self.preferences.export_rep()
             self.preferences.validate()
             self.weightPreferences()
             result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)
+            print('actaully calcd',result[1])
             self.payoffs = result[0]
-            self.preferenceVector = result[1]
+            self.preferenceRanking = result[1]
 
 
 class Condition:
@@ -260,8 +261,11 @@ class DecisionMakerList(ObjectList):
             newDM.options.append(self.conflict.options[int(optIdx)])
         for preference in dmData['preferences']:
             newDM.preferences.from_json(preference)
-        if self.conflict.useManualPreferenceVectors:
-            newDM.preferenceVector = dmData['preferenceVector']
+        if self.conflict.useManualPreferenceRanking:
+            try:
+                newDM.preferenceRanking = dmData['preferenceRanking']
+            except KeyError:
+                newDM.preferenceRanking = dmData['preferenceVector']        # for compatibility with old save files 
         self.append(newDM)
 
 class OptionList(ObjectList):
@@ -497,7 +501,7 @@ class ConflictModel:
         self.infeasibles  = ConditionList(self)       #list of Condition objects
         self.feasibles = FeasibleList()
 
-        self.useManualPreferenceVectors = False
+        self.useManualPreferenceRanking = False
         self.preferenceErrors = None
         self.coalitions = CoalitionList(self)
 
@@ -519,7 +523,7 @@ class ConflictModel:
                 'coalitionsFull': self.coalitions.full_rep(),
                 'options':self.options.export_rep(),
                 'infeasibles':self.infeasibles.export_rep(),
-                'useManualPreferenceVectors':self.useManualPreferenceVectors,
+                'useManualPreferenceRanking':self.useManualPreferenceRanking,
                 'program':'gmcr-py',
                 'version':'0.3.5'}
         
@@ -538,7 +542,10 @@ class ConflictModel:
 
     def json_import(self,d):
         """Imports values into the conflict from JSON data d"""
-        self.useManualPreferenceVectors = d['useManualPreferenceVectors']
+        try:
+            self.useManualPreferenceRanking = d['useManualPreferenceRanking']
+        except KeyError:
+            self.useManualPreferenceRanking = d['useManualPreferenceVectors']   # old save file compatibility
         for optData in d['options']:
             self.options.from_json(optData)
         for dmData in d['decisionMakers']:
@@ -563,7 +570,6 @@ class ConflictModel:
                 self.coalitions.append(dm)
             if not self.coalitions.validate():
                 raise Exception("Coalitions Failure")
-                
             
 
 
@@ -603,10 +609,10 @@ class ConflictModel:
         self.options.set_indexes()
                 
     def breakingChange(self):
-        self.useManualPreferenceVectors = False
+        print('breaking change')
+        self.useManualPreferenceRanking = False
         self.reorderOptionsByDM()
         self.infeasibles.validate()
         self.recalculateFeasibleStates()
         for dm in self.decisionMakers:
-            dm.preferenceVector = None
             dm.calculatePreferences()

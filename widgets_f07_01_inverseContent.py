@@ -29,19 +29,19 @@ class VaryRangeSelector(ttk.Frame):
             startVar = StringVar()
             endVar   = StringVar()
             dispVar  = StringVar(value='No range selected. Using original ranking.')
-            ttk.Label(dmFrame,text='Original ranking: '+ str(dm.preferenceVector)).grid(column=0,row=1,columnspan=4,sticky=(N,S,E,W))
+            ttk.Label(dmFrame,text='Original ranking: '+ str(dm.preferenceRanking)).grid(column=0,row=1,columnspan=4,sticky=(N,S,E,W))
             ttk.Label(dmFrame,textvariable=dispVar).grid(column=0,row=2,columnspan=4,sticky=(N,S,E,W))
 
             ttk.Label(dmFrame,text='Vary from:').grid(column=0,row=0)
             startSel = ttk.Combobox(dmFrame,textvariable=startVar,state='readonly')
-            startSel['values'] = tuple(dm.preferenceVector)
+            startSel['values'] = tuple(dm.preferenceRanking)
             startSel.current(0)
             startSel.grid(column=1,row=0)
             startSel.bind('<<ComboboxSelected>>',self.chgVary)
 
             ttk.Label(dmFrame,text='  to:').grid(column=2,row=0)
             endSel = ttk.Combobox(dmFrame,textvariable=endVar,state='readonly')
-            endSel['values'] = tuple(dm.preferenceVector)
+            endSel['values'] = tuple(dm.preferenceRanking)
             endSel.current(0)
             endSel.grid(column=3,row=0)
             endSel.bind('<<ComboboxSelected>>',self.chgVary)
@@ -53,11 +53,11 @@ class VaryRangeSelector(ttk.Frame):
         self.vary=[[0,0] for dm in self.game.decisionMakers]
         for dmIdx,rangeForDM in enumerate(self.varyVar):
             dm = self.game.decisionMakers[dmIdx]
-            v1 = dm.preferenceVector.index(eval(rangeForDM[0].get()))
-            v2 = dm.preferenceVector.index(eval(rangeForDM[1].get()))+1
+            v1 = dm.preferenceRanking.index(eval(rangeForDM[0].get()))
+            v2 = dm.preferenceRanking.index(eval(rangeForDM[1].get()))+1
             if (v2-v1)>1:
                 self.vary[dmIdx] = [v1,v2]
-                varyRange = dm.preferenceVector[v1:v2]
+                varyRange = dm.preferenceRanking[v1:v2]
                 self.varyDispVar[dmIdx].set('Varying on this range: '+str(varyRange))
             else:
                 if(v1>v2):
@@ -198,8 +198,8 @@ class InverseContent(ttk.Frame):
         res,counts = self.sol.filter(filt)
         
         if bool(int(self.displayPermutations.get())):
-            for pVeci,pVec in enumerate(res):
-                self.resDisp.insert('','end',iid=str(pVeci),values=pVec)
+            for pRanki,pRank in enumerate(res):
+                self.resDisp.insert('','end',iid=str(pRanki),values=pRank)
                 
         self.nashCountVar.set('%s Nash'%counts[0])
         self.seqCountVar.set('%s SEQ'%counts[1])

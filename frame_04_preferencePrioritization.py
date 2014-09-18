@@ -76,7 +76,7 @@ class PreferencesFrame(ttk.Frame):
         self.paneMaster = PanedWindow(self,orient=VERTICAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
         
         self.paneTop = ttk.Frame(self.paneMaster)
-        self.vectors = PreferenceRankingMaster(self.paneTop,self.game)
+        self.rankings = PreferenceRankingMaster(self.paneTop,self.game)
         self.editor = RadiobuttonEntry(self.paneTop,self.game)
         self.paneTopRightMaster = PanedWindow(self.paneTop,orient=HORIZONTAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
         self.staging = PreferenceStaging(self.paneTopRightMaster,self.game)
@@ -86,7 +86,7 @@ class PreferencesFrame(ttk.Frame):
         self.optionTable = OptionFormTable(self.paneBottom,self.game)
         
         self.usePrioritizationButton = ttk.Button(self,
-                text = "Use preference prioritization. Any manually set preference vectors will be lost.",
+                text = "Use preference prioritization. Any manually set preference rankings will be lost.",
                 command = self.usePrioritization)
 
         # ########  preliminary gridding and option configuration
@@ -110,7 +110,7 @@ class PreferencesFrame(ttk.Frame):
         #configuring frame-specific options
         self.paneMaster.grid(column=0,row=1,sticky=(N,S,E,W))
         self.paneMaster.add(self.paneTop,minsize=200)
-        self.vectors.grid(column=0,row=1,sticky=(N,S,E,W))
+        self.rankings.grid(column=0,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=1,row=1,sticky=(N,S,E,W),padx=3)
         self.editor.grid(column=2,row=1,sticky=(N,S,E,W))
         ttk.Separator(self.paneTop,orient=VERTICAL).grid(column=3,row=1,sticky=(N,S,E,W),padx=3)
@@ -132,7 +132,7 @@ class PreferencesFrame(ttk.Frame):
         self.paneBottom.rowconfigure(0,weight=1)
 
         # bindings
-        self.vectors.bind('<<DMchg>>',self.dmChgHandler)
+        self.rankings.bind('<<DMchg>>',self.dmChgHandler)
         self.editor.bind('<<AddPref>>',self.addPref)
         self.editor.bind('<<StagePref>>',self.stagePref)
         self.staging.bind('<<SelCond>>', self.selCondChg)
@@ -178,16 +178,16 @@ class PreferencesFrame(ttk.Frame):
         for dm in self.game.decisionMakers:
             dm.calculatePreferences()
         self.editor.reloadOpts()
-        self.vectors.refresh()
+        self.rankings.refresh()
         self.preferenceDisp.refresh()
         self.optionTable.buildTable(self.dm)
         
-        self.checkIfUsingVectors()
+        self.checkIfUsingRankings()
         
-    def checkIfUsingVectors(self,event=None):
-        if self.game.useManualPreferenceVectors:
+    def checkIfUsingRankings(self,event=None):
+        if self.game.useManualPreferenceRanking:
             self.usePrioritizationButton.grid()
-            self.vectors.disable()
+            self.rankings.disable()
             self.editor.disable()
             self.staging.disable()
             self.preferenceDisp.disable()
@@ -195,15 +195,15 @@ class PreferencesFrame(ttk.Frame):
             self.usePrioritizationButton.grid_remove()
             
     def usePrioritization(self):
-        self.game.useManualPreferenceVectors = False
+        self.game.useManualPreferenceRanking = False
         self.game.preferenceErrors = None
         self.event_generate("<<breakingChange>>")
-        self.vectors.enable()
+        self.rankings.enable()
         self.refresh()
 
     def dmChgHandler(self,event=None):
         """Bound to <<DMchg>>."""
-        self.dm = self.vectors.dm
+        self.dm = self.rankings.dm
         self.preferenceDisp.changeDM(self.dm)
         self.optionTable.buildTable(self.dm)
         self.staging.clear()

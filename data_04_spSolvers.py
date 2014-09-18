@@ -430,7 +430,7 @@ class InverseSolver(RMGenerator):
                 varyRange = self.vary[idx]
                 variedStates = []
                 if varyRange != [0,0]:
-                    varyRange = dm.preferenceVector[varyRange[0]:varyRange[1]]
+                    varyRange = dm.preferenceRanking[varyRange[0]:varyRange[1]]
                     for sl in varyRange:
                         if type(sl) is list:
                             variedStates.extend([state-1 for state in sl])
@@ -455,10 +455,10 @@ class InverseSolver(RMGenerator):
             for x in itertools.permutations(full[vary[0]:vary[1]]):
                 yield full[:vary[0]]+list(x)+full[vary[1]:]
 
-    def prefPermGen(self,prefVecs,vary):
-        """Returns all possible permutations of the group of preference vectors
+    def prefPermGen(self,prefRanks,vary):
+        """Returns all possible permutations of the group of preference rankings
         'pref' when the spans defined in 'vary' are allowed to move for each DM."""
-        b=[self._decPerm(y,vary[x]) for x,y in enumerate(prefVecs)]
+        b=[self._decPerm(y,vary[x]) for x,y in enumerate(prefRanks)]
         c=itertools.product(*b)
         for y in c:
             yield y
@@ -641,7 +641,7 @@ class InverseSolver(RMGenerator):
                         self.mustBeLowerGMR[y][z]+= self.reachable(self.conflict.decisionMakers[dm2],state1)
 
         #seq check uses same 'mustBeLower' as GMR, as sanctions are dependent on the UIs available to
-        # opponents, and as such cannot be known until the preference vectors are set.
+        # opponents, and as such cannot be known until the preference rankings are set.
 
         self.mustBeLowerSMR = [[[[] for idx in state1] for state1 in dm] for dm in self.mustBeLowerGMR]
         #mustBeLowerSMR[dm][idx][idx2] contains the states that 'dm' could countermove to
@@ -655,15 +655,15 @@ class InverseSolver(RMGenerator):
 
 
     def findEquilibria(self):
-        """Generates a list of all requested preference vectors, then checks if they meet equilibrium requirements."""
+        """Generates a list of all requested preference rankings, then checks if they meet equilibrium requirements."""
         self._mblInit()
-        self.preferenceVectors = list(self.prefPermGen([dm.preferenceVector for dm in self.conflict.decisionMakers],self.vary))
-        self.nash  = numpy.ones((len(self.preferenceVectors),len(self.conflict.decisionMakers))).astype('bool')
-        self.gmr   = numpy.zeros((len(self.preferenceVectors),len(self.conflict.decisionMakers))).astype('bool')
-        self.seq   = numpy.zeros((len(self.preferenceVectors),len(self.conflict.decisionMakers))).astype('bool')
-        self.smr   = numpy.zeros((len(self.preferenceVectors),len(self.conflict.decisionMakers))).astype('bool')
+        self.preferenceRankings = list(self.prefPermGen([dm.preferenceRanking for dm in self.conflict.decisionMakers],self.vary))
+        self.nash  = numpy.ones((len(self.preferenceRanking),len(self.conflict.decisionMakers))).astype('bool')
+        self.gmr   = numpy.zeros((len(self.preferenceRanking),len(self.conflict.decisionMakers))).astype('bool')
+        self.seq   = numpy.zeros((len(self.preferenceRanking),len(self.conflict.decisionMakers))).astype('bool')
+        self.smr   = numpy.zeros((len(self.preferenceRanking),len(self.conflict.decisionMakers))).astype('bool')
 
-        for prefsIdx,prefsX in enumerate(self.preferenceVectors):
+        for prefsIdx,prefsX in enumerate(self.preferenceRanking):
             payoffs =[[0]*len(self.conflict.feasibles) for x in range(len(self.conflict.decisionMakers))]
 
             for dm in range(len(self.conflict.decisionMakers)):
@@ -750,10 +750,10 @@ class InverseSolver(RMGenerator):
 
     def filter(self,filt):
         values = []
-        for pVeci,prefVec in enumerate(self.preferenceVectors):
-            eqms = self.equilibriums[:,pVeci]
+        for pRanki,prefRank in enumerate(self.preferenceRanking):
+            eqms = self.equilibriums[:,pRanki]
             if numpy.greater_equal(eqms,filt).all():
-                values.append(tuple(list(prefVec)+[bool(x) for x in eqms]))
+                values.append(tuple(list(prefRank)+[bool(x) for x in eqms]))
         counts = self.equilibriums.sum(axis=1)
         return values,counts
 

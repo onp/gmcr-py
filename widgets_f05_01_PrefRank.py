@@ -24,33 +24,33 @@ class RankingEditor(ttk.Frame):
         self.dmLabel = ttk.Label(self,textvariable=self.dmText,width=20)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
         
-        self.prefVecVar = StringVar(value=str(dm.preferenceVector))
-        self.prefVecEntry = ttk.Entry(self,textvariable=self.prefVecVar)
-        self.prefVecEntry.grid(row=0,column=1,sticky=(N,S,E,W))
+        self.prefRankVar = StringVar(value=str(dm.preferenceRanking))
+        self.prefRankEntry = ttk.Entry(self,textvariable=self.prefRankVar)
+        self.prefRankEntry.grid(row=0,column=1,sticky=(N,S,E,W))
         
         self.errorDetails = None
         
-        self.prefVecEntry.bind("<FocusOut>",self.onFocusOut)
+        self.prefRankEntry.bind("<FocusOut>",self.onFocusOut)
         
     def onFocusOut(self,event):
-        prefVec = eval(self.prefVecVar.get())
-        self.errorDetails = gmcrUtil.validatePreferenceVector(prefVec,self.game.feasibles)
+        prefRank = eval(self.prefRankVar.get())
+        self.errorDetails = gmcrUtil.validatePreferenceRanking(prefRank,self.game.feasibles)
         if self.errorDetails:
             self.errorDetails += "  See DM %s's preference ranking."%(self.dm.name)
             self.master.event_generate("<<errorChange>>")
             return
-        self.dm.preferenceVector = prefVec
+        self.dm.preferenceRanking = prefRank
         self.dm.calculatePreferences()
         self.master.event_generate("<<errorChange>>")
         
     def enableWidget(self):
-        self.prefVecEntry['state'] = 'normal'
+        self.prefRankEntry['state'] = 'normal'
         
     def disableWidget(self):
-        self.prefVecEntry['state'] = 'disabled'
+        self.prefRankEntry['state'] = 'disabled'
         
         
-class PVecEditMaster(ttk.Frame):
+class PRankEditMaster(ttk.Frame):
     """Contains a RankingEditor for each DM, plus an error box."""
         
     def __init__(self,master,game):
@@ -80,19 +80,19 @@ class PVecEditMaster(ttk.Frame):
         for child in self.editorFrame.winfo_children():
             child.destroy()
 
-        self.vectorEditors = []
+        self.rankingEditors = []
 
         for idx,dm in enumerate(self.game.decisionMakers):
             newEditor = RankingEditor(self.editorFrame,self.game,dm)
-            self.vectorEditors.append(newEditor)
+            self.rankingEditors.append(newEditor)
             newEditor.grid(row=idx,column=0,sticky=(N,S,E,W))
         
         self.updateErrors()
         
-        if not self.game.useManualPreferenceVectors:
+        if not self.game.useManualPreferenceRanking:
             self.activateButton['text'] = "Press to enable manual preference ranking changes"
             self.activateButton['state'] = 'normal'
-            for editor in self.vectorEditors:
+            for editor in self.rankingEditors:
                 editor.disableWidget()
         else:
             self.activateButton['text'] = "Preference rankings entered below will be used in analysis."
@@ -102,12 +102,12 @@ class PVecEditMaster(ttk.Frame):
         """Switches on manual editing of the preference rankings."""
         self.activateButton['text'] = "Preference rankings entered below will be used in analysis."
         self.activateButton['state'] = 'disabled'
-        for editor in self.vectorEditors:
+        for editor in self.rankingEditors:
             editor.enableWidget()
-        self.game.useManualPreferenceVectors = True
+        self.game.useManualPreferenceRanking = True
 
     def updateErrors(self,event=None):
-        messages = [editor.errorDetails for editor in self.vectorEditors if editor.errorDetails]
+        messages = [editor.errorDetails for editor in self.rankingEditors if editor.errorDetails]
         self.game.preferenceErrors = len(messages)
         
 
@@ -120,6 +120,6 @@ class PVecEditMaster(ttk.Frame):
         else:
             self.errorDisplay.insert('1.0',"No Errors.  Preference rankings are valid.")
             self.errorDisplay['foreground'] = 'black'
-            self.event_generate("<<PreferenceVectorChange>>")
+            self.event_generate("<<PreferenceRankingChange>>")
         self.errorDisplay['state'] = 'disabled'
 
