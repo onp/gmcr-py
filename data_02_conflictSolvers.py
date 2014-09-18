@@ -124,7 +124,7 @@ class RMGenerator:
 
         Includes the full normal save file, plus reachability data and payoffs.
         """
-        gameData = self.conflict.export_rep()
+        conflictData = self.conflict.export_rep()
         
         nodes = []
 
@@ -145,14 +145,14 @@ class RMGenerator:
                           'state':str(stateYN),
                           'reachable':reachable})
                           
-        gameData["nodes"] = nodes
+        conflictData["nodes"] = nodes
                                                 
         with open(file,'w') as jsonfile:
-            json.dump(gameData,jsonfile)
+            json.dump(conflictData,jsonfile)
 
 
 class LogicalSolver(RMGenerator):
-    """Solves the games for equilibria, based on the logical definitions of stability concepts."""
+    """Solves the conflicts for equilibria, based on the logical definitions of stability concepts."""
     def __init__(self,conflict):
         RMGenerator.__init__(self,conflict)
 

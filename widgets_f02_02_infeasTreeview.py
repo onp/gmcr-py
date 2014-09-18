@@ -10,10 +10,10 @@ from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 
 class TreeInfeas(ttk.Frame):
-    def __init__(self,master,game=None,*args):
+    def __init__(self,master,conflict=None,*args):
         ttk.Frame.__init__(self,master,padding=(5))
 
-        self.game = game
+        self.conflict = conflict
 
         self.tDisp = ttk.Treeview(self, columns=('state','stDes','stRem'))
         self.scrl       = ttk.Scrollbar(self, orient=VERTICAL,command = self.tDisp.yview)
@@ -50,9 +50,9 @@ class TreeInfeas(ttk.Frame):
         chldn = self.tDisp.get_children()
         for chld in chldn:
             self.tDisp.delete(chld)
-        if len(self.game.infeasibles)>0:
-            self.game.recalculateFeasibleStates()
-        for infeas in self.game.infeasibles:
+        if len(self.conflict.infeasibles)>0:
+            self.conflict.recalculateFeasibleStates()
+        for infeas in self.conflict.infeasibles:
             key = infeas.name
             self.tDisp.insert('','end',key,text=key)
             self.tDisp.set(key,'state',key)
@@ -70,8 +70,8 @@ class TreeInfeas(ttk.Frame):
         """Called whenever an item is moved upwards."""
         idx = self.tDisp.selIdx
         if idx !=0:
-            self.game.infeasibles.moveCondition(idx,idx-1)
-            self.game.recalculateFeasibleStates()
+            self.conflict.infeasibles.moveCondition(idx,idx-1)
+            self.conflict.recalculateFeasibleStates()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
@@ -79,9 +79,9 @@ class TreeInfeas(ttk.Frame):
     def downCmd(self,*args):
         """Called whenever an item is moved downwards."""
         idx = self.tDisp.selIdx
-        if idx != len(self.game.infeasibles)-1:
-            self.game.infeasibles.moveCondition(idx,idx+1)
-            self.game.recalculateFeasibleStates()
+        if idx != len(self.conflict.infeasibles)-1:
+            self.conflict.infeasibles.moveCondition(idx,idx+1)
+            self.conflict.recalculateFeasibleStates()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
@@ -89,14 +89,14 @@ class TreeInfeas(ttk.Frame):
     def delCmd(self,*args):
         """Called when an item is deleted."""
         idx = self.tDisp.selIdx
-        self.game.infeasibles.removeCondition(idx)
-        self.game.recalculateFeasibleStates()
+        self.conflict.infeasibles.removeCondition(idx)
+        self.conflict.recalculateFeasibleStates()
         self.event_generate('<<ValueChange>>')
-        if len(self.game.infeasibles)>0:
+        if len(self.conflict.infeasibles)>0:
             try:
-                self.tDisp.selection_set(self.game.infeasibles[idx].name)
+                self.tDisp.selection_set(self.conflict.infeasibles[idx].name)
             except IndexError:
-                self.tDisp.selection_set(self.game.infeasibles[idx-1].name)
+                self.tDisp.selection_set(self.conflict.infeasibles[idx-1].name)
 
 
 def main():

@@ -66,10 +66,10 @@ class RadiobuttonSeries(ttk.Labelframe):
 
 class RadiobuttonEntry(Frame):
     """State entry for the entire conflict, as a set of RadioButtonSeries elements."""
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
 
-        self.game = game
+        self.conflict = conflict
         
         self.rbeCanvas = Canvas(self)
         self.rdBtnFrame = ttk.Frame(self.rbeCanvas)
@@ -121,7 +121,7 @@ class RadiobuttonEntry(Frame):
         self.rdBtnSrs = []
         self.stringVarList=[]
 
-        for x,dm in enumerate(self.game.decisionMakers):
+        for x,dm in enumerate(self.conflict.decisionMakers):
             a = RadiobuttonSeries(self.rdBtnFrame,dm)
             self.rdBtnSrs.append(a)
             a.setOpts(dm.options)

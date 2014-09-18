@@ -19,7 +19,7 @@ from multiprocessing import freeze_support
 
 class MainAppWindow:
     def __init__(self,file=None):
-        self.file = file # file reference used for saving the game. 
+        self.file = file # file reference used for saving the conflict. 
         
         self.root= Tk()
         self.root.iconbitmap('gmcr.ico')
@@ -50,10 +50,10 @@ class MainAppWindow:
         self.contentFrame.columnconfigure(0,weight=1)
         self.contentFrame.rowconfigure(1,weight=1)
 
-        self.saveButton   = ttk.Button(self.fileFrame,text='Save Game'   ,command=self.saveGame, width=20)
-        self.saveAsButton = ttk.Button(self.fileFrame,text='Save Game As',command=self.saveAs,   width=20)
-        self.loadButton   = ttk.Button(self.fileFrame,text='Load Game'   ,command=self.loadGame, width=20)
-        self.newButton    = ttk.Button(self.fileFrame,text='New Game'    ,command=self.newGame,  width=20)
+        self.saveButton   = ttk.Button(self.fileFrame,text='Save Conflict'   ,command=self.saveConflict, width=20)
+        self.saveAsButton = ttk.Button(self.fileFrame,text='Save Conflict As',command=self.saveAs,   width=20)
+        self.loadButton   = ttk.Button(self.fileFrame,text='Load Conflict'   ,command=self.loadConflict, width=20)
+        self.newButton    = ttk.Button(self.fileFrame,text='New Conflict'    ,command=self.newConflict,  width=20)
 
         self.saveButton.grid(  column=0, row=0, sticky=(E,W))
         self.saveAsButton.grid(column=0, row=1, sticky=(E,W))
@@ -79,12 +79,12 @@ class MainAppWindow:
         self.root.bind_all("<<checkData>>",self.checkFramesHaveData)
         
         if self.file is not None:
-            self.loadGame(self.file)
+            self.loadConflict(self.file)
         
         self.root.mainloop()
 
     def addMod(self,newMod):
-        """ Adds a new input frame and Module to the Game """
+        """ Adds a new input frame and Module to the Conflict """
         newFrame = newMod(self.contentFrame,self.activeConflict)
         fNum = len(self.frameList)
         self.frameList.append(newFrame)
@@ -153,7 +153,7 @@ class MainAppWindow:
         except AttributeError:
             pass
 
-    def saveGame(self):
+    def saveConflict(self):
         """Saves all information to the currently active file."""
         if not self.file:
             self.saveAs()
@@ -167,7 +167,7 @@ class MainAppWindow:
         print('Saved')
 
     def saveAs(self):
-        """Opens a file dialog that prompts for name and location for saving the game."""
+        """Opens a file dialog that prompts for name and location for saving the conflict."""
         print('running saveAs')
         fileName = filedialog.asksaveasfilename(defaultextension= '.gmcr',
                                                 filetypes = (("GMCRo Save Files", "*.gmcr")
@@ -176,10 +176,10 @@ class MainAppWindow:
         if fileName:
             self.file = fileName
             self.root.wm_title(self.file)
-            self.saveGame()
+            self.saveConflict()
 
 
-    def loadGame(self,fileName=None):
+    def loadConflict(self,fileName=None):
         """Opens a file dialog that prompts for a save file to open."""
         if not fileName:
             fileName = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr"),
@@ -196,8 +196,8 @@ class MainAppWindow:
             self.refreshActiveFrames()
         
 
-    def newGame(self):
-        """Clears all data in the game, allowing a new game to be entered."""
+    def newConflict(self):
+        """Clears all data in the conflict, allowing a new conflict to be entered."""
         print("Initializing new conflict...")
         self.unloadAllFrames()
         self.activeConflict.__init__()

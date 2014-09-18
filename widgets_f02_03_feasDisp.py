@@ -1,6 +1,6 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Widget for displaying all of the feasible states left in the game.
+"""Widget for displaying all of the feasible states left in the conflict.
 
 Loaded by the frame_02_infeasibles module.
 """
@@ -11,12 +11,12 @@ from data_01_conflictModel import ConflictModel
 
 
 class FeasDisp(ttk.Frame):
-    def __init__(self,master=None,game=None,*args):
+    def __init__(self,master=None,conflict=None,*args):
         ttk.Frame.__init__(self,master,padding=5)
         self.columnconfigure(1,weight=1)
         self.rowconfigure(2,weight=1)
 
-        self.game = game
+        self.conflict = conflict
 
         self.dispFormat = StringVar(value='pattern')
         self.dispList = StringVar()
@@ -54,11 +54,11 @@ class FeasDisp(ttk.Frame):
     def refreshList(self):
         fmt = self.fmts[self.dispFormat.get()]
         if fmt == "YN-":
-            feas = self.game.feasibles.dash
+            feas = self.conflict.feasibles.dash
         if fmt == "YN":
-            feas = self.game.feasibles.yn
+            feas = self.conflict.feasibles.yn
         if fmt == "ord_dec":
-            feas = self.game.feasibles.ordDec
+            feas = self.conflict.feasibles.ordDec
         self.dispList.set(tuple(feas))
 
 

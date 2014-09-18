@@ -16,14 +16,14 @@ import data_03_gmcrUtilities as gmcrUtil
 
 class InfeasInpFrame(Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
-        # Connect to active game module
-        self.game = game
+        # Connect to active conflict module
+        self.conflict = conflict
 
         self.buttonLabel= 'Infeasible States'               #Label used for button to select frame in the main program.
         self.activeIcon = PhotoImage(file='icons/Infeasible_States_ON.gif')      #Image used on button to select frame, when frame is active.
@@ -36,9 +36,9 @@ class InfeasInpFrame(Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
+        if len(self.conflict.decisionMakers) < 1:
             return False
-        if len(self.game.options) < 1:
+        if len(self.conflict.options) < 1:
             return False
         else:
             return True
@@ -53,7 +53,7 @@ class InfeasInpFrame(Frame):
 
         #Define variables that will display in the helpFrame
         self.helpText = StringVar(value="Enter infeasible states using the box at left. Removing as infeasible "
-                "state will remove all states that match the pattern from the game. Removing as mutually "
+                "state will remove all states that match the pattern from the conflict. Removing as mutually "
                 "exclusive will remove all states where ANY TWO OR MORE of the specified options occur together.")
 
         #Define frame-specific variables
@@ -72,9 +72,9 @@ class InfeasInpFrame(Frame):
         self.hSep = ttk.Separator(self,orient=VERTICAL)
         self.infeasFrame = ttk.Panedwindow(self,orient=HORIZONTAL)
 
-        self.optsInp    = RadiobuttonEntry(self.optsFrame,self.game)
-        self.infeasDisp = TreeInfeas(self.infeasFrame,self.game)
-        self.feasList   = FeasDisp(self.infeasFrame,self.game)
+        self.optsInp    = RadiobuttonEntry(self.optsFrame,self.conflict)
+        self.infeasDisp = TreeInfeas(self.infeasFrame,self.conflict)
+        self.feasList   = FeasDisp(self.infeasFrame,self.conflict)
         self.infeasFrame.add(self.infeasDisp)
         self.infeasFrame.add(self.feasList)
 
@@ -133,28 +133,28 @@ class InfeasInpFrame(Frame):
         """Refresh information in the widgets.  Triggered when information changes."""
         self.infeasDisp.refreshView()
         self.feasList.refreshList()
-        self.originalStatesText.set('Original States: %s' %(2**len(self.game.options)))
-        self.feasStatesText.set('Feasible States: %s'%(len(self.game.feasibles)))
-        self.removedStatesText.set('States Removed: %s'%(2**len(self.game.options) - len(self.game.feasibles)))
+        self.originalStatesText.set('Original States: %s' %(2**len(self.conflict.options)))
+        self.feasStatesText.set('Feasible States: %s'%(len(self.conflict.feasibles)))
+        self.removedStatesText.set('States Removed: %s'%(2**len(self.conflict.options) - len(self.conflict.feasibles)))
 
     def addInfeas(self,*args):
-        """Remove an infeasible state from the game."""
+        """Remove an infeasible state from the conflict."""
         infeas = self.optsInp.getStates()
-        self.game.infeasibles.append(infeas)
-        self.game.recalculateFeasibleStates()
+        self.conflict.infeasibles.append(infeas)
+        self.conflict.recalculateFeasibleStates()
         self.refreshWidgets()
 
     def addMutEx(self,*args):
-        """Remove a set of Mutually Exclusive States from the game."""
+        """Remove a set of Mutually Exclusive States from the conflict."""
         mutEx = self.optsInp.getStates()
         mutEx = gmcrUtil.mutuallyExclusive(mutEx)
         for infeas in mutEx:
-            self.game.infeasibles.append(list(infeas))
+            self.conflict.infeasibles.append(list(infeas))
         self.refreshWidgets()
 
     def selChg(self,event):
         """Triggered when the selection changes in the treeview."""
-        state = self.game.infeasibles[event.x].name
+        state = self.conflict.infeasibles[event.x].name
         self.optsInp.setStates(state)
 
     def enter(self):

@@ -1,6 +1,6 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Widgets for editing the reversibility of options in the game.
+"""Widgets for editing the reversibility of options in the conflict.
 
 Loaded by the frame_03_irreversibles module.
 """
@@ -51,11 +51,11 @@ class ToggleButton(ttk.Labelframe):
 
 
 class IrreversibleSetter(Frame):
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
 
         self.opts= []
-        self.game = game
+        self.conflict = conflict
         
         self.canv = Canvas(self)
 
@@ -79,7 +79,7 @@ class IrreversibleSetter(Frame):
         self.opts=[]
         for chld in self.mainFrame.winfo_children():
             chld.destroy()
-        for dmIdx,dm in enumerate(self.game.decisionMakers):
+        for dmIdx,dm in enumerate(self.conflict.decisionMakers):
             currframe = ttk.LabelFrame(self.mainFrame,text=dm.name)
             currframe.grid(column=0,row=dmIdx,sticky=(N,S,E,W))
             currframe.columnconfigure(0,weight=1)

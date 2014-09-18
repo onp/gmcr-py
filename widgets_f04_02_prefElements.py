@@ -11,10 +11,10 @@ import data_03_gmcrUtilities as gmcrUtil
 
 class PreferenceRanking(ttk.Frame):
     """Displays the state ranking for a single DM, and allows that DM to be selected."""
-    def __init__(self,master,game,dm,idx):
+    def __init__(self,master,conflict,dm,idx):
         ttk.Frame.__init__(self,master,borderwidth=2)
 
-        self.game = game
+        self.conflict = conflict
         self.dm = dm
         self.dmIdx = idx
         
@@ -22,7 +22,7 @@ class PreferenceRanking(ttk.Frame):
         self.dmLabel = Label(self,textvariable=self.dmText)
         self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
         
-        if len(game.feasibles)<1000:
+        if len(conflict.feasibles)<1000:
             self.prefRankText = StringVar(value=str(dm.preferenceRanking))
         else:
             self.prefRankText = StringVar(value="Too Many States")
@@ -35,7 +35,7 @@ class PreferenceRanking(ttk.Frame):
         self.columnconfigure(0,weight=1)
 
     def update(self,*args):
-        self.prefRankText.set('still not implemented') #str(self.game.prefRank(self.dmIdx)))
+        self.prefRankText.set('still not implemented') #str(self.conflict.prefRank(self.dmIdx)))
 
     def selectCmd(self,*args):
         self.event_generate('<<DMselect>>',x=self.dmIdx)
@@ -50,9 +50,9 @@ class PreferenceRanking(ttk.Frame):
 
 class PreferenceRankingMaster(ttk.Frame):
     """Displays a PreferenceRanking widget for each DM."""
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
-        self.game = game
+        self.conflict = conflict
         self.cframe = ttk.Frame(self)
         self.columnconfigure(0,weight=1)
         self.cframe.columnconfigure(0,weight=1)
@@ -73,7 +73,7 @@ class PreferenceRankingMaster(ttk.Frame):
             self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = event.x
         self.rankings[self.dmSelIdx].select()
-        self.dm = self.game.decisionMakers[event.x]
+        self.dm = self.conflict.decisionMakers[event.x]
         self.event_generate('<<DMchg>>')
 
     def refresh(self):
@@ -82,8 +82,8 @@ class PreferenceRankingMaster(ttk.Frame):
         self.cframe.grid(row=0,column=0,sticky=(N,S,E,W))
         self.cframe.columnconfigure(0,weight=1)
         self.rankings = []
-        for idx,dm in enumerate(self.game.decisionMakers):
-            self.rankings.append(PreferenceRanking(self.cframe,self.game,dm,idx))
+        for idx,dm in enumerate(self.conflict.decisionMakers):
+            self.rankings.append(PreferenceRanking(self.cframe,self.conflict,dm,idx))
             self.rankings[-1].grid(row=idx,column=0,padx=3,pady=3,sticky=(N,S,E,W))
             self.rankings[-1].bind('<<DMselect>>',self.chgDM)
         if self.dmSelIdx is not None:
@@ -108,10 +108,10 @@ class PreferenceRankingMaster(ttk.Frame):
         
 class PreferenceStaging(ttk.Frame):
     """Displays the conditions that make up a compound condition."""
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
 
-        self.game = game
+        self.conflict = conflict
         
         self.label = ttk.Label(self,text="Staging")
         self.listDisp = ttk.Treeview(self)
@@ -133,7 +133,7 @@ class PreferenceStaging(ttk.Frame):
         self.clear()
         
     def clear(self):
-        self.conditionList = self.game.newCompoundCondition([])
+        self.conditionList = self.conflict.newCompoundCondition([])
         self.selId  = None
         self.selIdx = None
         
@@ -194,17 +194,17 @@ class PreferenceStaging(ttk.Frame):
         
 class PreferenceListDisplay(ttk.Frame):
     """Displays the preference statements for the selected DM."""
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
 
-        self.game = game
+        self.conflict = conflict
         self.label = ttk.Label(self,text="Preferences")
         self.disp = ttk.Treeview(self, columns=('state','weight'))
         self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
         self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )
         self.downBtn = ttk.Button(self,width=10,text='Down',   command = self.downCmd)
         self.delBtn  = ttk.Button(self,width=10,text='Delete', command = self.delCmd)
-        self.dm = self.game.decisionMakers[0]
+        self.dm = self.conflict.decisionMakers[0]
         self.selIdx = None
         self.selId = None
 

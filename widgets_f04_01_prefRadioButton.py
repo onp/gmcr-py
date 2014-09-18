@@ -75,10 +75,10 @@ class RadiobuttonSeries(ttk.Labelframe):
 
 class RadiobuttonEntry(Frame):
     """State entry for the entire conflict, as a set of RadioButtonSeries elements."""
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
 
-        self.game = game
+        self.conflict = conflict
         
         self.rbeCanvas = Canvas(self)
         self.rdBtnFrame = ttk.Frame(self.rbeCanvas)
@@ -154,7 +154,7 @@ class RadiobuttonEntry(Frame):
         self.rdBtnSrs = []
         self.stringVarList=[]
 
-        for x,dm in enumerate(self.game.decisionMakers):
+        for x,dm in enumerate(self.conflict.decisionMakers):
             a = RadiobuttonSeries(self.rdBtnFrame,dm)
             self.rdBtnSrs.append(a)
             a.setOpts(dm.options)
@@ -267,17 +267,17 @@ class RadiobuttonEntry(Frame):
             self.warnText2.set("duplicate")
             return True
         
-        q  = [self.game.options[int(states[1])-1],"N" if states[0] else "Y"]
-        nq = [self.game.options[int(states[1])-1],"Y" if states[0] else "N"]   # not q
-        p = [self.game.options[int(states[3])-1],"N" if states[2] else "Y"]
-        np = [self.game.options[int(states[3])-1],"Y" if states[2] else "N"]   # not p
+        q  = [self.conflict.options[int(states[1])-1],"N" if states[0] else "Y"]
+        nq = [self.conflict.options[int(states[1])-1],"Y" if states[0] else "N"]   # not q
+        p = [self.conflict.options[int(states[3])-1],"N" if states[2] else "Y"]
+        np = [self.conflict.options[int(states[3])-1],"Y" if states[2] else "N"]   # not p
         
         newCondition = None
 
         if "iff" in string:
-            newCondition = self.game.newCompoundCondition([[p,q],[np,nq]])
+            newCondition = self.conflict.newCompoundCondition([[p,q],[np,nq]])
         else:
-            newCondition = self.game.newCompoundCondition([[p,q],[np,q],[np,nq]])
+            newCondition = self.conflict.newCompoundCondition([[p,q],[np,q],[np,nq]])
             
         self.setStates(' '*len(self.stringVarList))
         self.hasValidIf = True

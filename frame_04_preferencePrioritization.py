@@ -15,14 +15,14 @@ import data_03_gmcrUtilities as gmcrUtil
 
 class PreferencesFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         
-        # Load up active game, if any
-        self.game = game
+        # Load up active conflict, if any
+        self.conflict = conflict
 
         self.buttonLabel= 'Prioritization'     #Label used for button to select frame in the main program.
         self.activeIcon = PhotoImage(file='icons/Prioritization_ON.gif')      #Image used on button to select frame, when frame is active.
@@ -34,11 +34,11 @@ class PreferencesFrame(ttk.Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
+        if len(self.conflict.decisionMakers) < 1:
             return False
-        if len(self.game.options) < 1:
+        if len(self.conflict.options) < 1:
             return False
-        if len(self.game.feasibles) < 1:
+        if len(self.conflict.feasibles) < 1:
             return False
         else:
             return True
@@ -49,11 +49,11 @@ class PreferencesFrame(ttk.Frame):
             return
         
         #calculate initial preferences
-        for dm in self.game.decisionMakers:
+        for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
             
         #Define variables that will display in the infoFrame
-        self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.game.decisionMakers),len(self.game.decisionMakers)))
+        self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.conflict.decisionMakers),len(self.conflict.decisionMakers)))
 
         #Define variables that will display in the helpFrame
         self.helpText = StringVar(value=""
@@ -76,14 +76,14 @@ class PreferencesFrame(ttk.Frame):
         self.paneMaster = PanedWindow(self,orient=VERTICAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
         
         self.paneTop = ttk.Frame(self.paneMaster)
-        self.rankings = PreferenceRankingMaster(self.paneTop,self.game)
-        self.editor = RadiobuttonEntry(self.paneTop,self.game)
+        self.rankings = PreferenceRankingMaster(self.paneTop,self.conflict)
+        self.editor = RadiobuttonEntry(self.paneTop,self.conflict)
         self.paneTopRightMaster = PanedWindow(self.paneTop,orient=HORIZONTAL,sashwidth=5,sashrelief="raised",sashpad=2,relief="sunken")
-        self.staging = PreferenceStaging(self.paneTopRightMaster,self.game)
-        self.preferenceDisp = PreferenceListDisplay(self.paneTopRightMaster,self.game)
+        self.staging = PreferenceStaging(self.paneTopRightMaster,self.conflict)
+        self.preferenceDisp = PreferenceListDisplay(self.paneTopRightMaster,self.conflict)
         
         self.paneBottom = ttk.Frame(self.paneMaster)
-        self.optionTable = OptionFormTable(self.paneBottom,self.game)
+        self.optionTable = OptionFormTable(self.paneBottom,self.conflict)
         
         self.usePrioritizationButton = ttk.Button(self,
                 text = "Use preference prioritization. Any manually set preference rankings will be lost.",
@@ -175,7 +175,7 @@ class PreferencesFrame(ttk.Frame):
             self.button['image'] = self.inactiveIcon
 
     def refresh(self,*args):
-        for dm in self.game.decisionMakers:
+        for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
         self.editor.reloadOpts()
         self.rankings.refresh()
@@ -185,7 +185,7 @@ class PreferencesFrame(ttk.Frame):
         self.checkIfUsingRankings()
         
     def checkIfUsingRankings(self,event=None):
-        if self.game.useManualPreferenceRanking:
+        if self.conflict.useManualPreferenceRanking:
             self.usePrioritizationButton.grid()
             self.rankings.disable()
             self.editor.disable()
@@ -195,8 +195,8 @@ class PreferencesFrame(ttk.Frame):
             self.usePrioritizationButton.grid_remove()
             
     def usePrioritization(self):
-        self.game.useManualPreferenceRanking = False
-        self.game.preferenceErrors = None
+        self.conflict.useManualPreferenceRanking = False
+        self.conflict.preferenceErrors = None
         self.event_generate("<<breakingChange>>")
         self.rankings.enable()
         self.refresh()
@@ -229,7 +229,7 @@ class PreferencesFrame(ttk.Frame):
                 self.staging.addCondition(cond)
         else:
             condData = self.editor.getStates()
-            newCond = self.game.newCondition(condData)
+            newCond = self.conflict.newCondition(condData)
             self.staging.addCondition(newCond)
         
         self.editor.setStates('clear')

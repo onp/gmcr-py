@@ -14,13 +14,13 @@ from widgets_f03_01_irreversibleToggles import IrreversibleSetter
 
 class IrrevInpFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
-        self.game = game
+        self.conflict = conflict
 
         self.buttonLabel= 'Irreversible Moves'     #Label used for button to select frame in the main program.
         self.activeIcon = PhotoImage(file='icons/Irreversible_Moves_ON.gif')      #Image used on button to select frame, when frame is active.
@@ -32,9 +32,9 @@ class IrrevInpFrame(ttk.Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
+        if len(self.conflict.decisionMakers) < 1:
             return False
-        if len(self.game.options) < 1:
+        if len(self.conflict.options) < 1:
             return False
         else:
             return True
@@ -59,7 +59,7 @@ class IrrevInpFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child therof as master)
-        self.irrevEntry = IrreversibleSetter(self,self.game)
+        self.irrevEntry = IrreversibleSetter(self,self.conflict)
 
 
         # ########  preliminary gridding and option configuration
@@ -146,9 +146,9 @@ def main():
     hSep = ttk.Separator(cFrame,orient=VERTICAL)
     hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
-    testGame = ConflictModel('Prisoners.gmcr')
+    testConflict = ConflictModel('Prisoners.gmcr')
 
-    testFrame = IrrevInpFrame(cFrame,testGame)
+    testFrame = IrrevInpFrame(cFrame,testConflict)
     testFrame.enter()
 
 

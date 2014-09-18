@@ -15,13 +15,13 @@ from widgets_f07_01_inverseContent import InverseContent
 
 class InverseFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
-        self.game = game
+        self.conflict = conflict
 
         self.buttonLabel= 'Inverse GMCR'     #Label used for button to select frame in the main program.
         self.activeIcon = PhotoImage(file='icons/Inverse_GMCR_ON.gif')      #Image used on button to select frame, when frame is active.
@@ -33,13 +33,13 @@ class InverseFrame(ttk.Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
+        if len(self.conflict.decisionMakers) < 1:
             return False
-        if len(self.game.options) < 1:
+        if len(self.conflict.options) < 1:
             return False
-        if len(self.game.feasibles) < 1:
+        if len(self.conflict.feasibles) < 1:
             return False
-        if self.game.preferenceErrors:
+        if self.conflict.preferenceErrors:
             return False
         else:
             return True
@@ -64,7 +64,7 @@ class InverseFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.invDisp = InverseContent(self,self.game)
+        self.invDisp = InverseContent(self,self.conflict)
 
 
         # ########  preliminary gridding and option configuration
@@ -151,9 +151,9 @@ def main():
     hSep = ttk.Separator(cFrame,orient=VERTICAL)
     hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
-    testGame = ConflictModel('pris.gmcr')
+    testConflict = ConflictModel('pris.gmcr')
 
-    testFrame = InverseFrame(cFrame,testGame)
+    testFrame = InverseFrame(cFrame,testConflict)
     testFrame.enter()
 
 

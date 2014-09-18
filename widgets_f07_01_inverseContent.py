@@ -13,16 +13,16 @@ import numpy as np
 from math import factorial
 
 class VaryRangeSelector(ttk.Frame):
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
 
-        self.game = game
-        self.vary=[[0,0] for dm in self.game.decisionMakers]
+        self.conflict = conflict
+        self.vary=[[0,0] for dm in self.conflict.decisionMakers]
 
         self.varyVar = []
         self.varyDispVar = []
 
-        for dmIdx,dm in enumerate(self.game.decisionMakers):
+        for dmIdx,dm in enumerate(self.conflict.decisionMakers):
             dmFrame  = ttk.Labelframe(self,text=dm.name)
             dmFrame.grid(column=0,row=dmIdx)
 
@@ -50,9 +50,9 @@ class VaryRangeSelector(ttk.Frame):
             self.varyDispVar.append(dispVar)
 
     def chgVary(self,*args):
-        self.vary=[[0,0] for dm in self.game.decisionMakers]
+        self.vary=[[0,0] for dm in self.conflict.decisionMakers]
         for dmIdx,rangeForDM in enumerate(self.varyVar):
-            dm = self.game.decisionMakers[dmIdx]
+            dm = self.conflict.decisionMakers[dmIdx]
             v1 = dm.preferenceRanking.index(eval(rangeForDM[0].get()))
             v2 = dm.preferenceRanking.index(eval(rangeForDM[1].get()))+1
             if (v2-v1)>1:
@@ -68,14 +68,14 @@ class VaryRangeSelector(ttk.Frame):
 
 
 class InverseContent(ttk.Frame):
-    def __init__(self,master,game,*args):
+    def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
         self.columnconfigure(3,weight=1)
         self.rowconfigure(7,weight=1)
 
-        self.game = game
+        self.conflict = conflict
         self.desiredEquilibria = 0
-        self.vary = [[0,0] for dm in self.game.decisionMakers]
+        self.vary = [[0,0] for dm in self.conflict.decisionMakers]
 
         self.desEqLab = ttk.Label(self,text='Desired Equilibrium State')
         self.desEqLab.grid(row=0,column=0,sticky=(N,S,E,W))
@@ -87,7 +87,7 @@ class InverseContent(ttk.Frame):
 
         ttk.Separator(self,orient=HORIZONTAL).grid(column=0,row=1,columnspan=2,sticky=(N,S,E,W),pady=3)
 
-        self.varySel = VaryRangeSelector(self,self.game)
+        self.varySel = VaryRangeSelector(self,self.conflict)
         self.varySel.grid(column=0,row=2,columnspan=2,sticky=(N,S,E,W))
 
         ttk.Separator(self,orient=HORIZONTAL).grid(column=0,row=3,columnspan=2,sticky=(N,S,E,W),pady=3)
@@ -158,19 +158,19 @@ class InverseContent(ttk.Frame):
         self.refreshSolution()
 
     def refreshDisplay(self):
-        headings = tuple([dm.name for dm in self.game.decisionMakers]+['Nash','SEQ','GMR','SMR'])
+        headings = tuple([dm.name for dm in self.conflict.decisionMakers]+['Nash','SEQ','GMR','SMR'])
         self.resDisp['columns'] = headings
         for h in headings:
             self.resDisp.column(h,width=80,anchor='center',stretch=1)
             self.resDisp.heading(h,text=h)
         self.resDisp['show'] = 'headings'
 
-        self.desEqSel['values'] = tuple(self.game.feasibles.ordered)
+        self.desEqSel['values'] = tuple(self.conflict.feasibles.ordered)
         self.desEqSel.current(0)
         self.setDesiredEquilibrium()
         self.varySel.grid_forget()
         del self.varySel
-        self.varySel = VaryRangeSelector(self,self.game)
+        self.varySel = VaryRangeSelector(self,self.conflict)
         self.varySel.grid(column=0,row=2,columnspan=2,sticky=(N,S,E,W))
         self.varyChange()
         self.varySel.bind('<<VaryRangeChanged>>',self.varyChange)
@@ -186,7 +186,7 @@ class InverseContent(ttk.Frame):
         self.permCountVar.set("%s Permutations"%totalPermutations)
 
     def refreshSolution(self,*args):
-        self.sol = InverseSolver(self.game,self.vary,self.desiredEquilibria)
+        self.sol = InverseSolver(self.conflict,self.vary,self.desiredEquilibria)
         self.sol.findEquilibria()
         self.filter()
 

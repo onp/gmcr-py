@@ -15,14 +15,14 @@ import data_03_gmcrUtilities as gmcrUtil
 
 class PreferenceRankingFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
-    def __init__(self,master,game):
+    def __init__(self,master,conflict):
         ttk.Frame.__init__(self,master)
         
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         
-        # Load up active game, if any
-        self.game = game
+        # Load up active conflict, if any
+        self.conflict = conflict
 
         self.buttonLabel= 'Preference Ranking'     #Label used for button to select frame in the main program.
         self.activeIcon = PhotoImage(file='icons/Preference_Ranking_ON.gif')      #Image used on button to select frame, when frame is active.
@@ -34,11 +34,11 @@ class PreferenceRankingFrame(ttk.Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        if len(self.game.decisionMakers) < 1:
+        if len(self.conflict.decisionMakers) < 1:
             return False
-        if len(self.game.options) < 1:
+        if len(self.conflict.options) < 1:
             return False
-        if len(self.game.feasibles) < 1:
+        if len(self.conflict.feasibles) < 1:
             return False
         else:
             return True
@@ -49,7 +49,7 @@ class PreferenceRankingFrame(ttk.Frame):
             return
         
         #calculate initial preferences
-        for dm in self.game.decisionMakers:
+        for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
             
         #Define variables that will display in the infoFrame
@@ -71,8 +71,8 @@ class PreferenceRankingFrame(ttk.Frame):
         self.helpLabel = ttk.Label(self.helpFrame,textvariable=self.helpText, wraplength=150)
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
-        self.prefEditor = PRankEditMaster(self,self.game)
-        self.stateTable = OptionFormTable(self,self.game)
+        self.prefEditor = PRankEditMaster(self,self.conflict)
+        self.stateTable = OptionFormTable(self,self.conflict)
 
         # ########  preliminary gridding and option configuration
 
@@ -160,9 +160,9 @@ def main():
     hSep = ttk.Separator(cFrame,orient=VERTICAL)
     hSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
 
-    testGame = ConflictModel('SyriaIraq.gmcr')
+    testConflict = ConflictModel('SyriaIraq.gmcr')
 
-    testFrame = PreferencesFrame(cFrame,testGame)
+    testFrame = PreferencesFrame(cFrame,testConflict)
     testFrame.enter()
 
     root.mainloop()

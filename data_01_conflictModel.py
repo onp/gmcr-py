@@ -69,7 +69,6 @@ class DecisionMaker:
             self.preferences.validate()
             self.weightPreferences()
             result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)
-            print('actaully calcd',result[1])
             self.payoffs = result[0]
             self.preferenceRanking = result[1]
 
@@ -114,7 +113,7 @@ class Condition:
         return True
         
     def isValid(self):
-        """Returns false if one of the options the condition depends on has been removed form the game."""
+        """Returns false if one of the options the condition depends on has been removed form the conflict."""
         for opt in self.options:
             if opt not in self.conflict.options:
                 return False
@@ -175,7 +174,7 @@ class CompoundCondition:
         return False
 
     def isValid(self):
-        """Returns False if one of the options the condition depends on has been removed form the game."""
+        """Returns False if one of the options the condition depends on has been removed from the conflict."""
         for cond in self.conditions:
             if not cond.isValid():
                 return False
