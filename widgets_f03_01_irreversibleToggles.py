@@ -74,6 +74,7 @@ class IrreversibleSetter(Frame):
         
     def resize(self,event=None):
         self.canv.configure(scrollregion=self.canv.bbox("all"))
+        self.canv["width"] = self.canv.bbox("all")[2]
 
     def refreshDisplay(self):
         self.opts=[]
