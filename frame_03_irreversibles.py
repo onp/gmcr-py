@@ -27,6 +27,8 @@ class IrrevInpFrame(ttk.Frame):
         self.inactiveIcon = PhotoImage(file='icons/Irreversible_Moves_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
+        
+        self.lastBuildDMs = None
 
 
 # ############################     METHODS  #######################################
@@ -39,9 +41,23 @@ class IrrevInpFrame(ttk.Frame):
         else:
             return True
             
+    def dataChanged(self):
+        if self.lastBuildDMs != self.conflict.decisionMakers.export_rep():
+            return True
+        else:
+            return False
+            
+            
     def buildFrame(self):
+    
         if self.built:
             return
+            
+            
+        # Ensure all required parts of the conflict model are properly set-up.
+        self.lastBuildDMs = self.conflict.decisionMakers.export_rep()
+
+            
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='')
 
@@ -101,6 +117,9 @@ class IrrevInpFrame(ttk.Frame):
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,
         and performs any other update tasks required on loading the frame."""
+        if self.dataChanged():
+            self.clearFrame()
+        
         if not self.built:
             self.buildFrame()
         self.grid()

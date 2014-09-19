@@ -16,6 +16,7 @@ from frame_07_inverseGMCR import InverseFrame
 from frame_08_stabilityAnalysis import StabilityFrame
 
 from multiprocessing import freeze_support
+import os
 
 class MainAppWindow:
     def __init__(self,file=None):
@@ -104,15 +105,6 @@ class MainAppWindow:
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
         
     def checkFramesHaveData(self,event=None):
-        print("check data")
-        self.activeConflict.reorderOptionsByDM()
-        self.activeConflict.options.set_indexes()
-        self.activeConflict.infeasibles.validate()
-        self.activeConflict.recalculateFeasibleStates()
-        
-        for dm in self.activeConflict.decisionMakers:
-            dm.calculatePreferences()
-        
         for idx,frame in enumerate(self.frameList):
             if frame.hasRequiredData():
                 self.frameBtnList[idx].config(state = "normal")
@@ -184,6 +176,7 @@ class MainAppWindow:
         if not fileName:
             fileName = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr"),
                                                                 ("All files", "*.*") ),
+                                                initialdir= os.getcwd()+'/examples',
                                                 parent=self.root)
         if fileName:
             self.file=fileName

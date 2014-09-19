@@ -597,6 +597,10 @@ class ConflictModel:
             feasDash = res[0]
             infeas.statesRemoved = res[1]
         self.feasibles = FeasibleList(feasDash)
+        
+    def clearPreferences(self):
+        for dm in self.decisionMakers:
+            dm.preferences.__init__(self)
 
     def reorderOptionsByDM(self):
         moved = []

@@ -96,8 +96,8 @@ class DMInpFrame(ttk.Frame):
         # bindings
         self.dmSelector.bind('<<DMselected>>', self.dmChange)
         self.dmSelector.bind('<<EditDM>>', self.dmEdit)
-        self.dmSelector.bind('<<breakingChange>>',self.breakingChange)
-        self.editor.bind('<<breakingChange>>',self.breakingChange)
+        self.dmSelector.bind('<<dmOptChg>>',self.handleDMOptChange)
+        self.editor.bind('<<dmOptChg>>',self.handleDMOptChange)
         self.editor.bind('<<dmNameChange>>',self.updateDMnames)
         
         self.built = True
@@ -151,8 +151,11 @@ class DMInpFrame(ttk.Frame):
         self.editor.dmNameEditor.focus()
         self.editor.dmNameEditor.select_range(0,END)
         
-    def breakingChange(self,event=None):
-        self.conflict.breakingChange()
+    def handleDMOptChange(self,event=None):
+        self.conflict.useManualPreferenceRanking = False
+        self.conflict.clearPreferences()
+        self.event_generate('<<checkData>>')
+        
         self.updateTotals()
         
     def updateDMnames(self,event=None):

@@ -29,6 +29,10 @@ class PreferencesFrame(ttk.Frame):
         self.inactiveIcon = PhotoImage(file='icons/Prioritization_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
+        
+        self.lastBuildDMs = None
+        self.lastBuildOptions = None
+        self.lastBuildInfeasibles = None
 
 
 # ############################     METHODS  #######################################
@@ -39,18 +43,41 @@ class PreferencesFrame(ttk.Frame):
         if len(self.conflict.options) < 1:
             return False
         if len(self.conflict.feasibles) < 1:
-            return False
+            self.conflict.recalculateFeasibleStates()
+            if len(self.conflict.feasibles) < 1:
+                return False
         else:
             return True
             
+    def dataChanged(self):
+        if self.lastBuildDMs != self.conflict.decisionMakers.export_rep():
+            return True
+        if self.lastBuildOptions != self.conflict.options.export_rep():
+            return True
+        if self.lastBuildInfeasibles != self.conflict.infeasibles.export_rep():
+            return True
+        else:
+            return False
+            
+        
             
     def buildFrame(self):
         if self.built:
             return
         
-        #calculate initial preferences
+        # Ensure all required parts of the conflict model are properly set-up.
+        self.conflict.reorderOptionsByDM()
+        self.conflict.options.set_indexes()
+        self.conflict.infeasibles.validate()
+        self.conflict.recalculateFeasibleStates()
+        
         for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
+        
+        self.lastBuildDMs = self.conflict.decisionMakers.export_rep()
+        self.lastBuildOptions = self.conflict.options.export_rep()
+        self.lastBuildInfeasibles = self.conflict.infeasibles.export_rep()
+        
             
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='Valid Preferences set for %s/%s DMs.'%(len(self.conflict.decisionMakers),len(self.conflict.decisionMakers)))
@@ -156,6 +183,10 @@ class PreferencesFrame(ttk.Frame):
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,
         and performs any other update tasks required on loading the frame."""
+        
+        if self.dataChanged():
+            self.clearFrame()
+        
         if not self.built:
             self.buildFrame()
         self.refresh()
