@@ -26,7 +26,7 @@ class PreferenceRanking(ttk.Frame):
             self.prefRankText = StringVar(value=str(dm.preferenceRanking))
         else:
             self.prefRankText = StringVar(value="Too Many States")
-        self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken")
+        self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken",width=40)
         self.prefRank.grid(row=1,column=0,sticky=(N,S,E,W))
         
         self.selectBtn = ttk.Button(self,text="Edit",command=self.selectCmd)
