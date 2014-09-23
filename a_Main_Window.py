@@ -162,7 +162,7 @@ class MainAppWindow:
         """Opens a file dialog that prompts for name and location for saving the conflict."""
         print('running saveAs')
         fileName = filedialog.asksaveasfilename(defaultextension= '.gmcr',
-                                                filetypes = (("GMCRo Save Files", "*.gmcr")
+                                                filetypes = (("GMCR+ Save Files", "*.gmcr")
                                                              ,("All files", "*.*") ),
                                                 parent=self.root)
         if fileName:
@@ -174,9 +174,9 @@ class MainAppWindow:
     def loadConflict(self,fileName=None):
         """Opens a file dialog that prompts for a save file to open."""
         if not fileName:
-            fileName = filedialog.askopenfilename(filetypes = (("GMCRo Save Files", "*.gmcr"),
+            fileName = filedialog.askopenfilename(filetypes = (("GMCR+ Save Files", "*.gmcr"),
                                                                 ("All files", "*.*") ),
-                                                initialdir= os.getcwd()+'/examples',
+                                                initialdir= os.getcwd()+'/Examples',
                                                 parent=self.root)
         if fileName:
             self.file=fileName
