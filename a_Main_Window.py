@@ -76,7 +76,6 @@ class MainAppWindow:
         
         self.refreshActiveFrames()
         
-        self.root.bind_all("<<breakingChange>>",self.refreshActiveFrames)
         self.root.bind_all("<<checkData>>",self.checkFramesHaveData)
         
         if self.file is not None:

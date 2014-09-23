@@ -610,12 +610,3 @@ class ConflictModel:
                     moved.append(option)
                     self.options.insert(len(moved),self.options.pop(self.options.index(option)))
         self.options.set_indexes()
-                
-    def breakingChange(self):
-        print('breaking change')
-        self.useManualPreferenceRanking = False
-        self.reorderOptionsByDM()
-        self.infeasibles.validate()
-        self.recalculateFeasibleStates()
-        for dm in self.decisionMakers:
-            dm.calculatePreferences()

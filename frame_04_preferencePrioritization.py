@@ -228,8 +228,6 @@ class PreferencesFrame(ttk.Frame):
     def usePrioritization(self):
         self.conflict.useManualPreferenceRanking = False
         self.conflict.preferenceErrors = None
-        self.event_generate("<<breakingChange>>")
-        self.rankings.enable()
         self.refresh()
 
     def dmChgHandler(self,event=None):
