@@ -108,6 +108,7 @@ class OptionFormSolutionTable(ttk.Frame):
         
         self.sortDM = None
         self.sortDirection = None
+        self.filterVals = []
         
         #widgets
         self.tableCanvas = Canvas(self)
@@ -245,12 +246,13 @@ class OptionFormSolutionTable(ttk.Frame):
 
         valRotation = {"-":"Y","Y":"N","N":"-"}
         
-        filterVals = numpy.zeros(rowCount,dtype="<U20")
+        if len(self.filterVals) != rowCount:
+            self.filterVals = numpy.zeros(rowCount,dtype="<U20")
         
         def filterStates():        
             for col in range(2,tableData.shape[1]):
-                yMatch = numpy.greater_equal(tableData[:,col]=="Y",filterVals=="Y")
-                nMatch = numpy.greater_equal(tableData[:,col]=="N",filterVals=="N")
+                yMatch = numpy.greater_equal(tableData[:,col]=="Y",self.filterVals=="Y")
+                nMatch = numpy.greater_equal(tableData[:,col]=="N",self.filterVals=="N")
                 if numpy.all(numpy.logical_and(yMatch,nMatch)):
                     for cell,tag in columns[col]:
                         cell.grid()
@@ -258,17 +260,18 @@ class OptionFormSolutionTable(ttk.Frame):
                     for cell,tag in columns[col]:
                         cell.grid_remove()
                 
-        
+        filterStates()
         
         def filtMaker(row):
             newFilterVal = StringVar()
-            newFilterVal.set("-")
-            filterVals[row] = "-"
+            if self.filterVals[row] == "":
+                self.filterVals[row] = "-"
+            newFilterVal.set(self.filterVals[row])
             
             def rotateVal(e=None):
                 newVal = valRotation[newFilterVal.get()]
                 newFilterVal.set(newVal)
-                filterVals[row] = newVal
+                self.filterVals[row] = newVal
                 filterStates()
             
             newFilterBtn = ttk.Button(self.table,textvariable=newFilterVal,command=rotateVal,width=5)
