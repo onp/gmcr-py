@@ -2,19 +2,19 @@
 
 ## Software packages
 
-(Python)[https://www.python.org/]
+[Python](https://www.python.org/)
 
 
-(Numpy)[http://www.numpy.org/]
+[Numpy](http://www.numpy.org/)
 
 
-(cx_Freeze)[http://cx-freeze.sourceforge.net/]
+[cx_Freeze](http://cx-freeze.sourceforge.net/)
 
 
-(jquery)[http://jquery.com/]
+[jquery](http://jquery.com/)
 
 
-(d3.js)[http://d3js.org/]
+[d3.js](http://d3js.org/)
 
 
 
