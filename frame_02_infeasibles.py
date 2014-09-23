@@ -40,7 +40,6 @@ class InfeasInpFrame(Frame):
 # ############################     METHODS  #######################################
 
     def hasRequiredData(self):
-        print('checking')
         if len(self.conflict.decisionMakers) < 1:
             return False
         if len(self.conflict.options) < 1:
