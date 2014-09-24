@@ -28,6 +28,8 @@ class InverseFrame(ttk.Frame):
         self.inactiveIcon = PhotoImage(file='icons/Inverse_GMCR_OFF.gif')    #Image used on button to select frame, when frame is inactive.
         
         self.built = False
+        
+        self.lastBuildConflict = None
 
 
 # ############################     METHODS  #######################################
@@ -44,9 +46,26 @@ class InverseFrame(ttk.Frame):
         else:
             return True
             
+    def dataChanged(self):
+        if self.lastBuildConflict != self.conflict.export_rep():
+            return True
+        else:
+            return False
+            
     def buildFrame(self):
         if self.built:
             return
+            
+        # Ensure all required parts of the conflict model are properly set-up.
+        self.conflict.reorderOptionsByDM()
+        self.conflict.options.set_indexes()
+        self.conflict.infeasibles.validate()
+        self.conflict.recalculateFeasibleStates()
+        
+        for dm in self.conflict.decisionMakers:
+            dm.calculatePreferences()
+        
+        self.lastBuildConflict = self.conflict.export_rep()
             
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value="")
