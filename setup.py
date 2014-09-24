@@ -11,7 +11,7 @@ from cx_Freeze import setup, Executable
 
 # Set other directories to be included.
 buildOptions = {'include_files': 
-                    ['save_files/','icons/','gmcr-vis/css/','gmcr-vis/js/','gmcr-vis/js-lib/','gmcr-vis/json/','gmcr-vis/favicon.ico','gmcr-vis/index.html','gmcr.ico'],
+                    ['Examples/','icons/','gmcr-vis/css/','gmcr-vis/js/','gmcr-vis/js-lib/','gmcr-vis/json/','gmcr-vis/favicon.ico','gmcr-vis/index.html','gmcr.ico'],
                 'silent': True}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
@@ -64,8 +64,8 @@ executables = [
 ]
 
 # Run setup
-setup(name='gmcr+',
-      version = '0.3.5',
+setup(name='gmcr-plus',
+      version = '0.3.6',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
                  'bdist_msi': bdist_msi_options},
