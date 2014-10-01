@@ -382,10 +382,10 @@ class FeasibleList:
         self.toOrdered,self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)   #conversion dictionaries
         self.ordered = sorted(self.toDecimal.keys())                            #as ordered numbers
         self.ordDec = ['%3d  [%s]'%(ord,dec) for ord,dec in zip(self.ordered,self.decimal)]     #special display notation
-    
+
     def __len__(self):
         return len(self.decimal)
-        
+
     def __iter__(self):
         return iter(range(len(self.decimal)))
 
