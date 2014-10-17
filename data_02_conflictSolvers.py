@@ -727,7 +727,7 @@ class InverseSolver(RMGenerator):
         for pRanki,prefRank in enumerate(self.preferenceRankings):
             eqms = self.equilibriums[:,pRanki]
             if numpy.greater_equal(eqms,filt).all():
-                values.append(tuple(list(prefRank)+[bool(x) for x in eqms]))
+                values.append(tuple(list(prefRank)+["Y" if bool(x) else "" for x in eqms]))
         counts = self.equilibriums.sum(axis=1)
         return values,counts
 
