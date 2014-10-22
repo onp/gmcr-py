@@ -178,6 +178,8 @@ class OptionFormSolutionTable(ttk.Frame):
             tableData[:,currCol] = newCol
             currCol += 1
             
+        self.owner.sol.dataTableRep = numpy.copy(tableData)
+            
         #sorting
         if self.sortDM is not None:
             sortIndex = numpy.array(tableData[self.sortDM,2:],int).argsort()+2
@@ -404,8 +406,10 @@ class Exporter(ttk.Frame):
 
         self.RMdumpBtnJSON = ttk.Button(self,text='Save Reachability as JSON',command=self.saveToJSON)
         self.RMdumpBtnJSON.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
+        self.ResToCSVBtn = ttk.Button(self,text='Save Results as CSV',command=self.saveToCSV)
+        self.ResToCSVBtn.grid(column=1,row=0,sticky=(N,S,E,W),padx=3,pady=3)
         self.visLaunchBtn = ttk.Button(self,text='Launch Visualizer',command=self.loadVis)
-        self.visLaunchBtn.grid(row=0,column=1,sticky=(N,S,E,W),padx=3,pady=3)
+        self.visLaunchBtn.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
         
     def saveToJSON(self,event=None):
         fileName = filedialog.asksaveasfilename(defaultextension= '.json',
@@ -420,6 +424,15 @@ class Exporter(ttk.Frame):
         copy_tree('gmcr-vis',os.environ['TEMP'] + '/gmcr-vis',update=True)
         self.owner.sol.saveJSON(os.environ['TEMP'] + '/gmcr-vis/json/conflictData.json')
         launchVis()
+        
+    def saveToCSV(self,event=None):
+        """Exports the currently displayed results to a csv file"""
+        fileName = filedialog.asksaveasfilename(defaultextension= '.csv',
+                                        filetypes = (("CSV files", "*.csv")
+                                                     ,("All files", "*.*") ),
+                                        parent=self)
+        if fileName:
+            numpy.savetxt(fileName, self.owner.sol.dataTableRep,fmt="%s",delimiter=", ")
 
 
 
