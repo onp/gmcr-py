@@ -327,12 +327,15 @@ class LogicalSolver(RMGenerator):
 
     def findEquilibria(self):
         """Calculates the equilibrium states that exist within the conflict for each stability concept."""
+        
             #Nash calculation
         nashStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 nashStabilities[idx,state]= self.nash(dm,state)[0]
-
+        
+        self.nashStabilities = numpy.copy(nashStabilities)
+        
         numpy.invert(nashStabilities.astype('bool'),nashStabilities)
         self.nashEquilibria = numpy.invert(sum(nashStabilities,0).astype('bool'))
 
@@ -343,6 +346,8 @@ class LogicalSolver(RMGenerator):
             for state in range(len(self.conflict.feasibles)):
                 seqStabilities[idx,state]= self.seq(dm,state)[0]
 
+        self.seqStabilities = numpy.copy(seqStabilities)
+                
         numpy.invert(seqStabilities.astype('bool'),seqStabilities)
         self.seqEquilibria = numpy.invert(sum(seqStabilities,0).astype('bool'))
 
@@ -352,6 +357,8 @@ class LogicalSolver(RMGenerator):
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 simStabilities[idx,state] = self.sim(dm,state)[0]
+                
+        self.simStabilities = numpy.copy(simStabilities)
 
         numpy.invert(simStabilities.astype('bool'),simStabilities)
         self.simEquilibria = numpy.invert(sum(simStabilities,0).astype('bool'))
@@ -365,6 +372,8 @@ class LogicalSolver(RMGenerator):
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 gmrStabilities[idx,state]=self.gmr(dm,state)[0]
+                
+        self.gmrStabilities = numpy.copy(gmrStabilities)
 
         numpy.invert(gmrStabilities.astype('bool'),gmrStabilities)
         self.gmrEquilibria = numpy.invert(sum(gmrStabilities,0).astype('bool'))
@@ -375,6 +384,8 @@ class LogicalSolver(RMGenerator):
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 smrStabilities[idx,state]=self.smr(dm,state)[0]
+                
+        self.smrStabilities = numpy.copy(smrStabilities)
 
         numpy.invert(smrStabilities.astype('bool'),smrStabilities)
         self.smrEquilibria = numpy.invert(sum(smrStabilities,0).astype('bool'))

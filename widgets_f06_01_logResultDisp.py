@@ -432,7 +432,23 @@ class Exporter(ttk.Frame):
                                                      ,("All files", "*.*") ),
                                         parent=self)
         if fileName:
-            numpy.savetxt(fileName, self.owner.sol.dataTableRep,fmt="%s",delimiter=", ")
+            exptTab = numpy.copy(self.owner.sol.dataTableRep)
+            
+            stabilities = [self.owner.sol.nashStabilities,
+                           self.owner.sol.seqStabilities,
+                           self.owner.sol.simStabilities,
+                           self.owner.sol.gmrStabilities,
+                           self.owner.sol.smrStabilities]
+            
+            for stab in stabilities:
+            
+                spacer = numpy.zeros((stab.shape[0],stab.shape[1]+2))
+                spacer[:,2:] = stab
+                
+                exptTab = numpy.concatenate((exptTab,spacer),axis=0)
+            
+            
+            numpy.savetxt(fileName, exptTab,fmt="%s",delimiter=", ")
 
 
 
