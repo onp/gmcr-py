@@ -18,9 +18,9 @@ buildOptions = {'include_files':
 shortcut_table = [
     ("DesktopShortcut",        # Shortcut
      "DesktopFolder",          # Directory_
-     "gmcr+",                  # Name
+     "GMCR+",                  # Name
      "TARGETDIR",              # Component_
-     "[TARGETDIR]gmcr.exe",    # Target
+     "[TARGETDIR]GMCRplus.exe",    # Target
      None,                     # Arguments
      None,                     # Description
      None,                     # Hotkey
@@ -31,9 +31,9 @@ shortcut_table = [
      ),
     ("StartMenuShortcut",      # Shortcut
      "ProgramMenuFolder",      # Directory_
-     "gmcr+",                  # Name
+     "GMCR+",                  # Name
      "TARGETDIR",              # Component_
-     "[TARGETDIR]gmcr.exe",    # Target
+     "[TARGETDIR]GMCRplus.exe",    # Target
      None,                     # Arguments
      None,                     # Description
      None,                     # Hotkey
@@ -55,17 +55,17 @@ bdist_msi_options = {'data': msi_data,
 executables = [
     Executable('a_Main_Window.py',
                 base='Win32GUI',
-                targetName = 'gmcr.exe',
+                targetName = 'GMCRplus.exe',
                 appendScriptToExe=True,
                 appendScriptToLibrary=False,
                 icon='gmcr.ico',
-                shortcutName='gmcr+',
+                shortcutName='GMCR+',
                 shortcutDir='ProgramMenuFolder')
 ]
 
 # Run setup
-setup(name='gmcr-plus',
-      version = '0.3.7',
+setup(name='GMCRplus',
+      version = '0.3.8',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
                  'bdist_msi': bdist_msi_options},

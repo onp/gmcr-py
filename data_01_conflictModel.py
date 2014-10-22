@@ -524,7 +524,7 @@ class ConflictModel:
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceRanking':self.useManualPreferenceRanking,
                 'program':'gmcr-py',
-                'version':'0.3.7'}
+                'version':'0.3.8'}
         
     def save_to_file(self,file):
         """Saves the current conflict to the file location given."""
