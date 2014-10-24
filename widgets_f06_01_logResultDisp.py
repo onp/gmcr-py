@@ -434,18 +434,24 @@ class Exporter(ttk.Frame):
         if fileName:
             exptTab = numpy.copy(self.owner.sol.dataTableRep)
             
-            stabilities = [self.owner.sol.nashStabilities,
-                           self.owner.sol.seqStabilities,
-                           self.owner.sol.simStabilities,
-                           self.owner.sol.gmrStabilities,
-                           self.owner.sol.smrStabilities]
+            stabilities = [(self.owner.sol.nashStabilities,'Nash'),
+                           (self.owner.sol.seqStabilities,'SEQ'),
+                           (self.owner.sol.simStabilities,'SIM'),
+                           (self.owner.sol.gmrStabilities,'GMR'),
+                           (self.owner.sol.smrStabilities,'SMR')]
+                           
+            spacer = numpy.zeros((len(self.conflict.decisionMakers),len(self.conflict.feasibles)+2),dtype="<U20")
             
-            for stab in stabilities:
+            for i,dm in enumerate(self.conflict.decisionMakers):
+                spacer[i,1] = dm.name
             
-                spacer = numpy.zeros((stab.shape[0],stab.shape[1]+2))
-                spacer[:,2:] = stab
+            for stab,name in stabilities:
+            
+                spc = spacer.copy()
+                spc[0,0] = name
+                spc[:,2:] = stab
                 
-                exptTab = numpy.concatenate((exptTab,spacer),axis=0)
+                exptTab = numpy.concatenate((exptTab,spc),axis=0)
             
             
             numpy.savetxt(fileName, exptTab,fmt="%s",delimiter=", ")
