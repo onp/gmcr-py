@@ -33,6 +33,7 @@ class PreferencesFrame(ttk.Frame):
         self.lastBuildDMs = None
         self.lastBuildOptions = None
         self.lastBuildInfeasibles = None
+        self.lastBuildUsedRanking = None
 
 
 # ############################     METHODS  #######################################
@@ -56,6 +57,8 @@ class PreferencesFrame(ttk.Frame):
             return True
         if self.lastBuildInfeasibles != self.conflict.infeasibles.export_rep():
             return True
+        if self.lastBuildUsedRanking != self.conflict.useManualPreferenceRanking:
+            return True
         else:
             return False
             
@@ -77,6 +80,7 @@ class PreferencesFrame(ttk.Frame):
         self.lastBuildDMs = self.conflict.decisionMakers.export_rep()
         self.lastBuildOptions = self.conflict.options.export_rep()
         self.lastBuildInfeasibles = self.conflict.infeasibles.export_rep()
+        self.lastBuildUsedRanking = self.conflict.useManualPreferenceRanking
         
             
         #Define variables that will display in the infoFrame

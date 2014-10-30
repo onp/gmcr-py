@@ -64,8 +64,15 @@ class DecisionMaker:
     def calculatePreferences(self):
         if self.conflict.useManualPreferenceRanking:
             self.payoffs = gmcrUtil.mapPrefRank2Payoffs(self.preferenceRanking,self.conflict.feasibles)
-        elif self.preferences.export_rep() != self.lastCalculatedPreferences:
-            self.lastCalculatedPreferences = self.preferences.export_rep()
+            self.usedRanking = self.conflict.useManualPreferenceRanking
+        elif (self.lastCalculatedPreferences != self.preferences.export_rep() or
+              self.usedRanking != self.conflict.useManualPreferenceRanking    or
+              self.oldFeasibles != self.conflict.feasibles.decimal):
+              
+            self.lastCalculatedPreferences   = self.preferences.export_rep()
+            self.usedRanking = self.conflict.useManualPreferenceRanking
+            self.oldFeasibles = list(self.conflict.feasibles.decimal)
+              
             self.preferences.validate()
             self.weightPreferences()
             result = gmcrUtil.prefPriorities2payoffs(self.preferences,self.conflict.feasibles)
@@ -591,12 +598,19 @@ class ConflictModel:
 
     def recalculateFeasibleStates(self):
         """Updates all feasible state calculations."""
+        oldFeas = list(self.feasibles.decimal)
         feasDash = ['-'*len(self.options)]
         for infeas in self.infeasibles:
             res = gmcrUtil.rmvSt(feasDash,infeas.ynd())
             feasDash = res[0]
             infeas.statesRemoved = res[1]
         self.feasibles = FeasibleList(feasDash)
+        if self.feasibles.decimal != oldFeas:
+            self.onFeasibleStatesChanged()
+        
+    def onFeasibleStatesChanged(self):
+        self.useManualPreferenceRanking = False
+        
         
     def clearPreferences(self):
         for dm in self.decisionMakers:

@@ -33,6 +33,7 @@ class PreferenceRankingFrame(ttk.Frame):
         self.lastBuildDMs = None
         self.lastBuildOptions = None
         self.lastBuildInfeasibles = None
+        self.lastBuildUsedRanking = None
 
 
 # ############################     METHODS  #######################################
@@ -42,6 +43,8 @@ class PreferenceRankingFrame(ttk.Frame):
             return False
         if len(self.conflict.options) < 1:
             return False
+        if self.lastBuildUsedRanking != self.conflict.useManualPreferenceRanking:
+            return True
         if len(self.conflict.feasibles) < 1:
             self.conflict.recalculateFeasibleStates()
             if len(self.conflict.feasibles) < 1:
@@ -77,6 +80,7 @@ class PreferenceRankingFrame(ttk.Frame):
         self.lastBuildDMs = self.conflict.decisionMakers.export_rep()
         self.lastBuildOptions = self.conflict.options.export_rep()
         self.lastBuildInfeasibles = self.conflict.infeasibles.export_rep()
+        self.lastBuildUsedRanking = self.conflict.useManualPreferenceRanking
             
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='')
@@ -128,17 +132,22 @@ class PreferenceRankingFrame(ttk.Frame):
         self.built = True
         
     def clearFrame(self):
-        if not self.built:
-            return
-        self.built = False
         for child in self.winfo_children():
             child.destroy()
+            print("destroy")
+        
         self.infoFrame.grid_forget()
         self.helpFrame.grid_forget()
+        
+        self.built = False
 
     def enter(self,*args):
         """ Re-grids the main frame, infoFrame and helpFrame into the master,
         and performs any other update tasks required on loading the frame."""
+        if self.dataChanged():
+            self.clearFrame()
+            print('cleared and rebuilding')
+        
         if not self.built:
             self.buildFrame()
         self.refresh()
