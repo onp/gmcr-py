@@ -63,6 +63,7 @@ class ResultFrame(ttk.Frame):
         self.conflict.options.set_indexes()
         self.conflict.infeasibles.validate()
         self.conflict.recalculateFeasibleStates()
+        self.conflict.coalitions.validate()
         
         for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()

@@ -58,6 +58,16 @@ class DecisionMaker:
         if option in self.options:
             self.options.remove(option)
             
+    def onDelete(self):
+        for opt in self.options:
+            self.removeOption(opt)
+        for co in self.conflict.coalitions:
+            if co is self:
+                self.conflict.coalitions.remove(self)
+            if isinstance(co,Coalition):
+                co.remove(self)
+                break
+            
     def weightPreferences(self):
         for idx,pref in enumerate(self.preferences):
             pref.weight = 2**(len(self.preferences)-idx-1)
@@ -261,6 +271,10 @@ class DecisionMakerList(ObjectList):
             self.itemList.append(item)
         elif isinstance(item,str):
             self.itemList.append(DecisionMaker(self.conflict,item))
+            
+    def __delitem__(self,key):
+        self.itemList[key].onDelete()
+        del self.itemList[key]
 
     def from_json(self,dmData):
         newDM = DecisionMaker(self.conflict,dmData['name'])
@@ -402,15 +416,18 @@ class Coalition:
     def __init__(self,conflict,dms):
         self.members = dms
         self.isCoalition = True
-        self.name = ', '.join([dm.name for dm in dms])
         self.conflict = conflict
-        self.options = OptionList(conflict.options)
-        self.preferences = ConditionList(conflict)
+        self.refresh()
         
-        for dm in dms:
+    def refresh(self):
+        self.name = ', '.join([dm.name for dm in self.members])
+        self.options = OptionList(conflict.options)
+        
+        for dm in self.members:
             for opt in dm.options:
                 self.options.append(opt)
                 
+        self.preferences = ConditionList(conflict)
         self.calculatePreferences()
                 
     def __str__(self):
@@ -418,6 +435,22 @@ class Coalition:
         
     def __iter__(self):
         return iter(self.members)
+        
+    def __delitem__(self,key):
+        del self.members[key]
+        self.refresh()
+        
+    def remove(self,dm):
+        if dm in self.members:
+            self.members.remove(dm)
+            self.refresh()
+        
+    def __contains__(self,dm):
+        return dm in self.members
+        
+    def insert(self,i,x):
+        self.members.insert(i,x)
+        self.refresh()
         
     def export_rep(self):
         if len(self.members) > 1:
@@ -491,7 +524,7 @@ class CoalitionList(ObjectList):
         for co in self.itemList:
             if isinstance(co,Coalition):
                 for dm in co:
-                    dms.remove(dm)
+                        dms.remove(dm)
             else:
                 dms.remove(co)
         if len(dms) == 0:
@@ -600,7 +633,6 @@ class ConflictModel:
     def recalculateFeasibleStates(self,init_override=False):
         """Updates all feasible state calculations."""
         oldFeas = list(self.feasibles.decimal)
-        print(self.feasibles.decimal)
         feasDash = ['-'*len(self.options)]
         for infeas in self.infeasibles:
             res = gmcrUtil.rmvSt(feasDash,infeas.ynd())

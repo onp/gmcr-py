@@ -60,7 +60,7 @@ class InfeasInpFrame(Frame):
         
             
     def buildFrame(self):
-    
+
         if self.built:
             return
         
@@ -149,8 +149,6 @@ class InfeasInpFrame(Frame):
         self.built = True
             
     def clearFrame(self):
-        if not self.built:
-            return
         self.built = False
         for child in self.winfo_children():
             child.destroy()
@@ -190,7 +188,6 @@ class InfeasInpFrame(Frame):
         """Run when entering the Infeasible States screen."""
         if self.dataChanged():
             self.clearFrame()
-        
         if not self.built:
             self.buildFrame()
         self.refreshWidgets()
