@@ -42,6 +42,7 @@ class DecisionMaker:
         rep['name'] = str(self.name)
         rep['options'] = self.options.export_rep()
         rep['preferences'] = self.preferences.export_rep()
+        rep['payoffs'] = self.payoffs.tolist()
         if self.conflict.useManualPreferenceRanking:
             rep['preferenceRanking'] = self.preferenceRanking
         return rep
@@ -560,7 +561,7 @@ class ConflictModel:
             self.infeasibles.from_json(infData)
         self.reorderOptionsByDM()
         self.infeasibles.validate()
-        self.recalculateFeasibleStates()
+        self.recalculateFeasibleStates(True)
         for dm in self.decisionMakers:
             dm.calculatePreferences()
         try:
@@ -596,9 +597,10 @@ class ConflictModel:
         finally:
             fileObj.close()
 
-    def recalculateFeasibleStates(self):
+    def recalculateFeasibleStates(self,init_override=False):
         """Updates all feasible state calculations."""
         oldFeas = list(self.feasibles.decimal)
+        print(self.feasibles.decimal)
         feasDash = ['-'*len(self.options)]
         for infeas in self.infeasibles:
             res = gmcrUtil.rmvSt(feasDash,infeas.ynd())
@@ -606,7 +608,8 @@ class ConflictModel:
             infeas.statesRemoved = res[1]
         self.feasibles = FeasibleList(feasDash)
         if self.feasibles.decimal != oldFeas:
-            self.onFeasibleStatesChanged()
+            if not init_override:
+                self.onFeasibleStatesChanged()
         
     def onFeasibleStatesChanged(self):
         self.useManualPreferenceRanking = False
