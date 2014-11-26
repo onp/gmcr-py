@@ -105,7 +105,7 @@ class ReachableTreeViewer(ttk.Frame):
         self.notFoundUI = []
         self.statusQuo = None
         
-        self.reachableTree = ttk.Treeview(self)
+        self.reachableTree = ttk.Treeview(self,selectmode='browse')
         self.reachableTree.grid(row=0,column=0,sticky=(N,S,E,W))
         self.scrollX = ttk.Scrollbar(self, orient=HORIZONTAL,command = self.reachableTree.xview)
         self.scrollX.grid(row=1,column=0,sticky=(N,S,E,W))

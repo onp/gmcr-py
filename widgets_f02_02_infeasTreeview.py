@@ -15,7 +15,7 @@ class TreeInfeas(ttk.Frame):
 
         self.conflict = conflict
 
-        self.tDisp = ttk.Treeview(self, columns=('state','stDes','stRem'))
+        self.tDisp = ttk.Treeview(self, columns=('state','stDes','stRem'),selectmode='browse')
         self.scrl       = ttk.Scrollbar(self, orient=VERTICAL,command = self.tDisp.yview)
 
         self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )

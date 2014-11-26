@@ -141,7 +141,7 @@ class InverseContent(ttk.Frame):
         self.conditionDispScrl.grid(column=4,row=0,rowspan=7,sticky=(N,S,E,W))
         
         
-        self.resDisp = ttk.Treeview(self)
+        self.resDisp = ttk.Treeview(self,selectmode='browse')
 
         self.resDisp.grid(column=3,row=7,rowspan=3,sticky=(N,S,E,W))
 

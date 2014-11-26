@@ -114,7 +114,7 @@ class PreferenceStaging(ttk.Frame):
         self.conflict = conflict
         
         self.label = ttk.Label(self,text="Staging")
-        self.listDisp = ttk.Treeview(self)
+        self.listDisp = ttk.Treeview(self,selectmode='browse')
         self.scrollY = ttk.Scrollbar(self,orient=VERTICAL,command = self.listDisp.yview)
         self.listDisp.configure(yscrollcommand=self.scrollY.set)
         self.removeConditionBtn = ttk.Button(self,text="Remove Condition from Staging",command=self.removeCondition)
@@ -199,7 +199,7 @@ class PreferenceListDisplay(ttk.Frame):
 
         self.conflict = conflict
         self.label = ttk.Label(self,text="Preferences")
-        self.disp = ttk.Treeview(self, columns=('state','weight'))
+        self.disp = ttk.Treeview(self, columns=('state','weight'),selectmode='browse')
         self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
         self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )
         self.downBtn = ttk.Button(self,width=10,text='Down',   command = self.downCmd)
