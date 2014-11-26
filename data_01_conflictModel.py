@@ -59,8 +59,10 @@ class DecisionMaker:
             self.options.remove(option)
             
     def onDelete(self):
-        for opt in self.options:
+        print([x.name for x in self.options])
+        for opt in reversed(self.options):
             self.removeOption(opt)
+        print([x.name for x in self.options])
         for co in self.conflict.coalitions:
             if co is self:
                 self.conflict.coalitions.remove(self)
