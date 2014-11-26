@@ -421,13 +421,13 @@ class Coalition:
         
     def refresh(self):
         self.name = ', '.join([dm.name for dm in self.members])
-        self.options = OptionList(conflict.options)
+        self.options = OptionList(self.conflict.options)
         
         for dm in self.members:
             for opt in dm.options:
                 self.options.append(opt)
                 
-        self.preferences = ConditionList(conflict)
+        self.preferences = ConditionList(self.conflict)
         self.calculatePreferences()
                 
     def __str__(self):
