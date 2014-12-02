@@ -38,6 +38,7 @@ class DecisionMaker:
         return self.name
         
     def export_rep(self):
+        self.calculatePreferences()
         rep  = {}
         rep['name'] = str(self.name)
         rep['options'] = self.options.export_rep()
@@ -567,7 +568,7 @@ class ConflictModel:
                 'infeasibles':self.infeasibles.export_rep(),
                 'useManualPreferenceRanking':self.useManualPreferenceRanking,
                 'program':'gmcr-py',
-                'version':'0.3.8'}
+                'version':'0.3.10'}
         
     def save_to_file(self,file):
         """Saves the current conflict to the file location given."""
