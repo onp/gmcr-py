@@ -134,6 +134,8 @@ def validatePreferenceRanking(prefRank,feasibles):
     """Check that the preference ranking given is valid."""
     
     alreadySeen = []
+    if not isinstance(prefRank, list):
+        return "Invalid format."
     for state in prefRank:
         if state in feasibles.ordered:
             if state in alreadySeen:

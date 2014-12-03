@@ -39,9 +39,13 @@ class RankingEditor(ttk.Frame):
             self.errorDetails = "DM %s's preference ranking is invalid."%(self.dm.name)
             self.master.event_generate("<<errorChange>>")
             return
+        except NameError:
+            self.errorDetails = "DM %s's preference ranking is invalid."%(self.dm.name)
+            self.master.event_generate("<<errorChange>>")
+            return
         self.errorDetails = gmcrUtil.validatePreferenceRanking(prefRank,self.conflict.feasibles)
         if self.errorDetails:
-            self.errorDetails += "  See DM %s's preference ranking."%(self.dm.name)
+            self.errorDetails += "  Check DM %s's preference ranking."%(self.dm.name)
             self.master.event_generate("<<errorChange>>")
             return
         self.dm.preferenceRanking = prefRank
