@@ -201,7 +201,9 @@ class MainAppWindow:
 if __name__ == '__main__':
     freeze_support()
     os.chdir(sys.argv[0].rpartition('\\')[0])
+    launchFile= None
     try:
-        a= MainAppWindow(sys.argv[1])
+        launchFile = sys.argv[1]
     except IndexError:
-        a= MainAppWindow()
+        pass
+    a= MainAppWindow(launchFile)
