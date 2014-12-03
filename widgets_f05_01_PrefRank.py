@@ -33,7 +33,12 @@ class RankingEditor(ttk.Frame):
         self.prefRankEntry.bind("<FocusOut>",self.onFocusOut)
         
     def onFocusOut(self,event):
-        prefRank = eval(self.prefRankVar.get())
+        try:
+            prefRank = eval(self.prefRankVar.get())
+        except SyntaxError:
+            self.errorDetails = "DM %s's preference ranking is invalid."%(self.dm.name)
+            self.master.event_generate("<<errorChange>>")
+            return
         self.errorDetails = gmcrUtil.validatePreferenceRanking(prefRank,self.conflict.feasibles)
         if self.errorDetails:
             self.errorDetails += "  See DM %s's preference ranking."%(self.dm.name)
