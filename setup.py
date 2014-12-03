@@ -65,7 +65,7 @@ executables = [
 
 # Run setup
 setup(name='GMCRplus',
-      version = '0.3.10',
+      version = '0.3.11',
       description = 'Graph Model for Conflict Resolution',
       options = {'build_exe': buildOptions,
                  'bdist_msi': bdist_msi_options},
