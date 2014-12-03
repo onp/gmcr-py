@@ -200,4 +200,8 @@ class MainAppWindow:
 
 if __name__ == '__main__':
     freeze_support()
-    a= MainAppWindow()
+    os.chdir(sys.argv[0].rpartition('\\')[0])
+    try:
+        a= MainAppWindow(sys.argv[1])
+    except IndexError:
+        a= MainAppWindow()
