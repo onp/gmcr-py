@@ -113,6 +113,7 @@ class RMGenerator:
             preferred from refState.
         """
         if dm not in self.effectiveDMs:
+        
             raise ValueError("DM or Coalition not valid.")
         if refState is None:
             refState = stateIdx
@@ -760,24 +761,27 @@ class GoalSeeker(RMGenerator):
         return True
         
     def nash(self):
-        requirements = Requirements("Conditions for goals using Nash:","AND", *[self.nashGoal(s0,stable) for s0,stable in self.goals])
+        requirements = PatternAnd(*[self.nashGoal(s0,stable) for s0,stable in self.goals], statement="Conditions for goals using Nash:")
+        conf = requirements.isImpossible()
         return requirements
         
     def seq(self):
-        requirements = Requirements("Conditions for goals using SEQ:","AND", *[self.seqGoal(s0,stable) for s0,stable in self.goals])
+        requirements = PatternAnd(*[self.seqGoal(s0,stable) for s0,stable in self.goals], statement="Conditions for goals using SEQ:")
         return requirements
 
     def nashGoal(self,state0,stable):
-        """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash."""
+        """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash.
+        
+        Returns a PatternAnd or a PatternOr object. """
+        
         if stable:
-            conditions = Requirements("For %s to be stable by Nash:"%(state0+1),"AND")
+            conditions = PatternAnd(statement="For %s to be stable by Nash:"%(state0+1))
         else:
-            conditions = Requirements("For %s to be unstable by Nash:"%(state0+1),"OR")
+            conditions = PatternOr(statement="For %s to be unstable by Nash:"%(state0+1))
         
         for coIdx,co in enumerate(self.effectiveDMs):
             if stable:
-                for state1 in self.reachable(co,state0):
-                    conditions.append(MoreThanFor(co,state0,state1))
+                conditions.append(MoreThanFor(co,state0,self.reachable(co,state0)))
             else:
                 if self.reachable(co,state0):
                     conditions.append(LessThanOneOf(co,state0,self.reachable(co,state0)))
@@ -786,7 +790,8 @@ class GoalSeeker(RMGenerator):
 
     def seqGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
-        conditions = Requirements("For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"),"AND")
+        
+        conditions = PatternAnd(statement="For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"))
         
         for coIdx,co in enumerate(self.effectiveDMs):
             if stable:
@@ -817,55 +822,118 @@ class GoalSeeker(RMGenerator):
                     conditions.append(isUnstable)
         return conditions
         
-
-        
-class Requirements:
-    """Holds patterns/conditions and a statement of what they define."""
-    def __init__(self,statement,betweenConditions,*patterns):
-        self.statement = statement
-        self.plist = list(patterns)
-        self.betweenConditions = betweenConditions
-        
-    def append(self,p):
-        self.plist.append(p)
-        
-    def asString(self,indent=""):
-        patterns = [p.asString(indent+" |") for p in self.plist]
-        return indent+self.statement+"\n"+(indent+self.betweenConditions+"\n").join(patterns)
     
 class PatternAnd:
     """All statements must be true."""
-    def __init__(self,*patterns):
-        self.plist = list(patterns)
+    def __init__(self,*patterns,statement=None):
+        self.plist = []
+        self.co = False #indicates that this is not a base level condition.
+        self.statement = statement
+        self.conf = None
+        for p in patterns:
+            self.append(p)
         
     def append(self,p):
-        self.plist.append(p)
+        if isinstance(p, PatternAnd):
+            for pp in p.plist:
+                self.append(pp)
+        else:
+            self.plist.append(p)
+        
+    def isImpossible(self,lessThans = {}):
+        # lessThans is a double level dict of indices {CO}{State}
+        # for each CO, and for each state, it lists the states that must be less preferred.
+        
+        for pat in self.plist:
+            conf = pat.isImpossible(lessThans)
+            if conf is not False:
+                self.conf = conf
+                return conf
+            
         
     def asString(self,indent=""):
-        patterns = [p.asString(indent+" |") for p in self.plist]
-        return (indent+"AND\n").join(patterns)
+        if self.conf:
+            return self.conf
+        pat = [p.asString(indent+" |") for p in self.plist]
+        if self.statement != None:
+            return indent+self.statement+"\n"+(indent+"AND\n").join(pat)
+        else:
+            return (indent+"AND\n").join(pat)
 
 class PatternOr:
     """At least one statement must be true."""
-    def __init__(self,*patterns):
-        self.plist = list(patterns)
+    def __init__(self,*patterns,statement=None):
+        self.plist = []
+        self.co = False #indicates that this is not a base level condition.
+        self.statement = statement
+        self.conf = None
+        for p in patterns:
+            self.append(p)
         
     def append(self,p):
-        self.plist.append(p)
+        if isinstance(p, PatternOr):
+            for pp in p.plist:
+                self.append(pp)
+        else:
+            self.plist.append(p)
+        
+    def isImpossible(self,lessThans = {}):
+        print("!!!!!!!! isImpossible testing doesn't work for OR statements yet.")
+        for pat in self.plist:
+            conf = pat.isImpossible(lessThans)
+            if not conf:
+                return False
+        self.conf
+        return conf
         
     def asString(self,indent=""):
+        if self.conf:
+            return self.conf
         patterns = [p.asString(indent+" |") for p in self.plist]
-        return (indent+"OR\n").join(patterns)
+        if self.statement != None:
+            return indent+self.statement+"\n"+(indent+"OR\n").join(patterns)
+        else:
+            return (indent+"OR\n").join(patterns)
 
 class MoreThanFor:
-    """s0 must be more preferred than s1 for co."""
+    """s0 must be more preferred than s1 for co.
+    
+    s1 can be a list.
+    
+    """
+    
     def __init__(self,co,s0,s1):
         self.co = co
         self.s0 = s0
-        self.s1 = s1
+        if isinstance(s1,list):
+            self.s1 = s1
+        else:
+            self.s1 = [s1]
+        
+    def isImpossible(self,lessThans):
+        try:
+            for s1 in self.s1:
+                conflict = s1 in lessThans[self.co.name][self.s0]   #true if the condition s1<s0 already exists, which conflicts with this condition.
+                if conflict:
+                    return "CONFLICT, %s and %s cannot be both more preferred and less preferred than each other. \n\n"%(self.s0+1, s1+1)
+        except KeyError:
+            conflict = False
+                        
+        if self.co.name not in lessThans:
+            lessThans[self.co.name] = {}
+        for s1 in self.s1:
+            if s1 not in lessThans[self.co.name]:
+                lessThans[self.co.name][s1] = []
+            lessThans[self.co.name][s1].append(self.s0)  #s1 must be less preferred than s0
+
+        return False
         
     def asString(self,indent=""):
-        return indent+"%s must be more preferred than %s for %s\n"%(self.s0+1,self.s1+1,self.co.name)
+        if len(self.s1) == 1:
+            lp = str(self.s1[0]+1)
+        else:
+            lp = "each of " + ", ".join([str(s+1) for s in self.s1])
+        return indent+"%s must be more preferred than %s for %s\n"%(self.s0+1,lp,self.co.name)
 
 class LessThanOneOf:
     """s0 must be less preferred than at least one of the states in li for co."""
@@ -873,6 +941,9 @@ class LessThanOneOf:
         self.co = co
         self.s0 = s0
         self.li = li
+        
+    def isImpossible(self,lessThans):
+        return False
         
     def asString(self,indent=""):
         return indent+"%s must be less preferred than at least one of %s for %s\n"%(self.s0+1,[s1+1 for s1 in self.li],self.co.name)
