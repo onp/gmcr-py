@@ -915,7 +915,7 @@ class MoreThanFor:
             for s1 in self.s1:
                 conflict = s1 in lessThans[self.co.name][self.s0]   #true if the condition s1<s0 already exists, which conflicts with this condition.
                 if conflict:
-                    return "CONFLICT, %s and %s cannot be both more preferred and less preferred than each other. \n\n"%(self.s0+1, s1+1)
+                    return "For Nash:\nCONFLICT, %s and %s cannot be both more preferred and less preferred than each other. Goals cannot be met. \n\n"%(self.s0+1, s1+1)
         except KeyError:
             conflict = False
                         
