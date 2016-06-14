@@ -14,12 +14,11 @@ from data_02_conflictSolvers import LogicalSolver
 from widgets_f06_01_logResultDisp import *
 
 
-
 class ResultFrame(ttk.Frame):
 # ########################     INITIALIZATION  ####################################
     def __init__(self,master,conflict,*args):
         ttk.Frame.__init__(self,master,*args)
-        
+
         self.infoFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
         self.helpFrame = ttk.Frame(master,relief='sunken',borderwidth='3')
 
@@ -28,9 +27,9 @@ class ResultFrame(ttk.Frame):
         self.buttonLabel= 'Equilibria Results'     #Label used for button to select frame in the main program.
         self.activeIcon = PhotoImage(file='icons/Equilibria_Results_ON.gif')      #Image used on button to select frame, when frame is active.
         self.inactiveIcon = PhotoImage(file='icons/Equilibria_Results_OFF.gif')    #Image used on button to select frame, when frame is inactive.
-        
+
         self.built = False
-        
+
         self.lastBuildConflict = None
 
 
@@ -47,29 +46,29 @@ class ResultFrame(ttk.Frame):
             return False
         else:
             return True
-            
+
     def dataChanged(self):
         if self.lastBuildConflict != self.conflict.export_rep():
             return True
         else:
             return False
-            
+
     def buildFrame(self):
         if self.built:
             return
-            
+
         # Ensure all required parts of the conflict model are properly set-up.
         self.conflict.reorderOptionsByDM()
         self.conflict.options.set_indexes()
         self.conflict.infeasibles.validate()
         self.conflict.recalculateFeasibleStates()
         self.conflict.coalitions.validate()
-        
+
         for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
-        
+
         self.lastBuildConflict = self.conflict.export_rep()
-        
+
         #Define variables that will display in the infoFrame
         self.infoText = StringVar(value='')
 
@@ -93,12 +92,12 @@ class ResultFrame(ttk.Frame):
 
         #Define frame-specific input widgets (with 'self' or a child thereof as master)
         self.paneMaster = PanedWindow(self,orient=HORIZONTAL,sashwidth=10,sashrelief="raised",sashpad=3,relief="sunken")
-        
+
         self.pane1 = ttk.Frame(self.paneMaster)
         self.coalitionSelector = CoalitionSelector(self.pane1,self.conflict,self)
         self.solutionTable = OptionFormSolutionTable(self.pane1,self.conflict,self)
         self.exporter = Exporter(self.pane1,self.conflict,self)
-        
+
         self.pane2 = ttk.Frame(self.paneMaster)
         self.narrator = LogNarrator(self.pane2,self.conflict,self)
 
@@ -129,7 +128,7 @@ class ResultFrame(ttk.Frame):
         self.coalitionSelector.grid(row=0,column=0,sticky=(N,S,E,W))
         self.solutionTable.grid(row=1,column=0,sticky=(N,S,E,W))
         self.exporter.grid(row=2,column=0,sticky=(N,S,E,W))
-        
+
         self.paneMaster.add(self.pane2,width=250,stretch='always')
         self.pane2.rowconfigure(0,weight=1)
         self.pane2.columnconfigure(0,weight=1)
@@ -138,9 +137,9 @@ class ResultFrame(ttk.Frame):
 
         # bindings
         self.coalitionSelector.bind("<<CoalitionsChanged>>",self.coalitionChange)
-            
+
         self.built = True
-        
+
     def clearFrame(self):
         if not self.built:
             return
@@ -196,7 +195,7 @@ class ResultFrame(ttk.Frame):
 
 def main():
     from data_01_conflictModel import ConflictModel
-    
+
     root = Tk()
     root.columnconfigure(0,weight=1)
     root.rowconfigure(0,weight=1)
