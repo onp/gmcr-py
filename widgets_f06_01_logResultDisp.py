@@ -16,38 +16,39 @@ import os
 
 
 class CoalitionSelector(ttk.Frame):
-    def __init__(self,master,conflict,solOwner):
-        ttk.Frame.__init__(self,master)
+    def __init__(self, master, conflict, solOwner):
+        ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
         self.owner = solOwner
         self.coalitionVar = StringVar()
-        self.statusVar  = StringVar()
+        self.statusVar = StringVar()
 
-        self.label = ttk.Label(self,text="Coalitions:")
-        self.label.grid(row=0,column=0,sticky=(N,S,E,W))
-        self.entry = ttk.Entry(self,textvariable=self.coalitionVar,validate='key')
+        self.label = ttk.Label(self, text="Coalitions:")
+        self.label.grid(row=0, column=0, sticky=(N,S,E,W))
+        self.entry = ttk.Entry(self, textvariable=self.coalitionVar,
+                               validate='key')
         vcmd = self.entry.register(self.onChange)
         self.entry.configure(validatecommand=(vcmd,'%P'))
-        self.entry.grid(row=0,column=1,sticky=(N,S,E,W))
-        self.statusLabel = ttk.Label(self,textvariable=self.statusVar)
-        self.statusLabel.grid(row=0,column=2,sticky=(N,S,E,W))
+        self.entry.grid(row=0, column=1, sticky=(N,S,E,W))
+        self.statusLabel = ttk.Label(self, textvariable=self.statusVar)
+        self.statusLabel.grid(row=0, column=2, sticky=(N,S,E,W))
 
-        self.columnconfigure(1,weight=1)
+        self.columnconfigure(1, weight=1)
 
         self.refresh()
 
     def refresh(self):
         if self.conflict.coalitions is None:
-            self.coalitionVar.set(str([i+1 for i in range(len(self.conflict.decisionMakers))])[1:-1])
+            self.coalitionVar.set(str([i + 1 for i in range(len(self.conflict.decisionMakers))])[1:-1])
         else:
             coalitionsRep = self.conflict.coalitions.disp_rep()
             self.coalitionVar.set(str(coalitionsRep)[1:-1])
         self.statusVar.set("Input OK.")
 
-    def onChange(self,newCoalitions):
+    def onChange(self, newCoalitions):
         try:
-            newCoIdxs = eval("["+newCoalitions+"]")
+            newCoIdxs = eval("[" + newCoalitions + "]")
         except:
             self.statusVar.set("Invalid Syntax.")
             return True
@@ -65,7 +66,7 @@ class CoalitionSelector(ttk.Frame):
                     return True
                 else:
                     seen.append(itm)
-                    newCos.append(self.conflict.decisionMakers[itm-1])
+                    newCos.append(self.conflict.decisionMakers[itm -1])
             elif type(itm) is list:
                 newCoMembers = []
                 for itm2 in itm:
@@ -101,8 +102,8 @@ class CoalitionSelector(ttk.Frame):
 
 
 class OptionFormSolutionTable(ttk.Frame):
-    def __init__(self,master,conflict,solOwner):
-        ttk.Frame.__init__(self,master)
+    def __init__(self, master, conflict, solOwner):
+        ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
         self.owner = solOwner
@@ -111,86 +112,87 @@ class OptionFormSolutionTable(ttk.Frame):
         self.sortDirection = None
         self.filterVals = []
 
-        #widgets
+        # widgets
         self.tableCanvas = Canvas(self)
         self.table = ttk.Frame(self.tableCanvas)
-        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,command = self.tableCanvas.yview)
-        self.scrollX = ttk.Scrollbar(self, orient=HORIZONTAL,command = self.tableCanvas.xview)
+        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,
+                                     command=self.tableCanvas.yview)
+        self.scrollX = ttk.Scrollbar(self, orient=HORIZONTAL,
+                                     command=self.tableCanvas.xview)
 
-        #configuration
-        self.columnconfigure(0,weight=1)
-        self.rowconfigure(0,weight=1)
+        # configuration
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
 
         def resize(event):
             self.tableCanvas.configure(scrollregion=self.tableCanvas.bbox("all"))
 
-        self.tableCanvas.grid(column=0,row=0,sticky=(N,S,E,W))
-        self.scrollY.grid(column=1,row=0,sticky=(N,S,E,W))
-        self.scrollX.grid(column=0,row=1,sticky=(N,S,E,W))
+        self.tableCanvas.grid(column=0, row=0, sticky=(N,S,E,W))
+        self.scrollY.grid(column=1, row=0, sticky=(N,S,E,W))
+        self.scrollX.grid(column=0, row=1, sticky=(N,S,E,W))
         self.tableCanvas.configure(yscrollcommand=self.scrollY.set)
         self.tableCanvas.configure(xscrollcommand=self.scrollX.set)
-        self.tableCanvas.create_window((0,0),window=self.table,anchor='nw')
-        self.table.bind("<Configure>",resize)
+        self.tableCanvas.create_window((0,0), window=self.table, anchor='nw')
+        self.table.bind("<Configure>", resize)
 
         self.style = ttk.Style()
-        self.style.configure('states.TLabel',background="grey80")
-        self.style.configure('yn.TLabel',background="white")
-        self.style.configure('payoffs.TLabel',background="green")
-        self.style.configure('hover.TLabel',background="lightpink")
+        self.style.configure('states.TLabel', background="grey80")
+        self.style.configure('yn.TLabel', background="white")
+        self.style.configure('payoffs.TLabel', background="green")
+        self.style.configure('hover.TLabel', background="lightpink")
 
         self.refresh()
 
     def refresh(self):
         rowCount = len(self.conflict.options)+len(self.conflict.decisionMakers)+2+6
 
-        columnCount = len(self.conflict.feasibles)+2
-        tableData = numpy.zeros((rowCount,columnCount),dtype="<U20")
+        columnCount = len(self.conflict.feasibles) + 2
+        tableData = numpy.zeros((rowCount, columnCount), dtype="<U20")
 
-        #labels
+        # labels
         tableData[0,1] = "Ordered"
         tableData[1,1] = "Decimal"
 
-        ##DMs and options
+        # #DMs and options
         currRow = 2
-        for i,dm in enumerate(self.conflict.decisionMakers):
-            tableData[currRow,0] = "%s - %s"%(i+1,dm.name)
+        for i, dm in enumerate(self.conflict.decisionMakers):
+            tableData[currRow, 0] = "%s - %s"%(i + 1, dm.name)
             for opt in dm.options:
-                tableData[currRow,1] = opt.name
+                tableData[currRow, 1] = opt.name
                 currRow += 1
 
-        ##payoff labels
+        # #payoff labels
         for dm in self.conflict.decisionMakers:
-            tableData[currRow,0:2] = ["Payoff For:",dm.name]
+            tableData[currRow, 0:2] = ["Payoff For:", dm.name]
             currRow += 1
 
-        ##stability type labels
-        for st in ['Nash','GMR','SEQ','SIM','SEQ & SIM','SMR']:
-            tableData[currRow,1] = st
+        # #stability type labels
+        for st in ['Nash', 'GMR', 'SEQ', 'SIM', 'SEQ & SIM', 'SMR']:
+            tableData[currRow, 1] = st
             currRow += 1
 
-        #fill states and stabilities
+        # fill states and stabilities
         currCol = 2
         feasibles = self.conflict.feasibles
         for state in range(len(feasibles)):
-            newCol = [feasibles.ordered[state],feasibles.decimal[state]]+list(feasibles.yn[state])
+            newCol = [feasibles.ordered[state], feasibles.decimal[state]]+list(feasibles.yn[state])
             for dm in self.conflict.decisionMakers:
                 newCol.append(dm.payoffs[state])
             newCol += [("Y" if stability else "N") for stability in self.owner.sol.allEquilibria[:,state]]
-            tableData[:,currCol] = newCol
+            tableData[:, currCol] = newCol
             currCol += 1
 
         self.owner.sol.dataTableRep = numpy.copy(tableData)
 
-        #sorting
+        # sorting
         if self.sortDM is not None:
-            sortIndex = numpy.array(tableData[self.sortDM,2:],int).argsort()+2
+            sortIndex = numpy.array(tableData[self.sortDM, 2:], int).argsort() +2
             if self.sortDirection == "ascending":
-                tableData[:,2:] = tableData[:,sortIndex]
+                tableData[:, 2:] = tableData[:, sortIndex]
             else:
-                tableData[:,2:] = tableData[:,sortIndex[::-1]]
+                tableData[:, 2:] = tableData[:, sortIndex[::-1]]
 
-
-        #push to display
+        # push to display
 
         for child in self.table.winfo_children():
             child.destroy()
@@ -199,49 +201,50 @@ class OptionFormSolutionTable(ttk.Frame):
         columns = [[] for col in range(tableData.shape[1])]
 
         for row in range(tableData.shape[0]):
-            if row<2:
+            if row < 2:
                 tag = "states"
-            elif row<(len(self.conflict.options)+2):
+            elif row < (len(self.conflict.options) + 2):
                 tag = "yn"
-            elif row<(len(self.conflict.options)+len(self.conflict.decisionMakers)+2):
+            elif row < (len(self.conflict.options)+len(self.conflict.decisionMakers)+2):
                 tag = "payoffs"
             else:
                 tag = "stabilities"
 
             for col in range(tableData.shape[1]):
-                if col <2:
+                if col < 2:
                     newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel")
-                    newEntry.grid(row=row,column=col,sticky=(N,S,E,W))
+                    newEntry.grid(row=row, column=col, sticky=(N,S,E,W))
                 else:
-                    if (tag == "stabilities") and (tableData[row,col] == "N"):
-                        newEntry = ttk.Label(self.table,text="",style=tag+".TLabel",width=4)
+                    if (tag == "stabilities") and (tableData[row, col] == "N"):
+                        newEntry = ttk.Label(self.table, text="",
+                                             style=tag + ".TLabel", width=4)
                     else:
                         newEntry = ttk.Label(self.table,text=tableData[row,col],style=tag+".TLabel",width=4)
-                    newEntry.grid(row=row,column=col+1,sticky=(N,S,E,W))
+                    newEntry.grid(row=row, column=col+1, sticky=(N,S,E,W))
 
-                def enterCell(event=None,row=row,col=col):
-                    for cell,tag in rows[row]:
+                def enterCell(event=None, row=row, col=col):
+                    for cell, tag in rows[row]:
                         cell.configure(style="hover.TLabel")
-                    for cell,tag in columns[col]:
+                    for cell, tag in columns[col]:
                         cell.configure(style="hover.TLabel")
 
-                def exitCell(event=None,row=row,col=col):
+                def exitCell(event=None, row=row, col=col):
                     for cell,tag in rows[row]:
                         cell.configure(style=tag+".TLabel")
                     for cell,tag in columns[col]:
                         cell.configure(style=tag+".TLabel")
 
-                if (row < 2) and (col >=2):
-                    columns[col].append([newEntry,tag])
+                if (row < 2) and (col >= 2):
+                    columns[col].append([newEntry, tag])
                     newEntry.bind("<Enter>", enterCell)
                     newEntry.bind("<Leave>", exitCell)
                 elif (row >= 2) and (col == 1):
-                    rows[row].append([newEntry,tag])
+                    rows[row].append([newEntry, tag])
                     newEntry.bind("<Enter>", enterCell)
                     newEntry.bind("<Leave>", exitCell)
                 elif (col >= 2) and (row >= 2):
-                    rows[row].append([newEntry,tag])
-                    columns[col].append([newEntry,tag])
+                    rows[row].append([newEntry, tag])
+                    columns[col].append([newEntry, tag])
                     newEntry.bind("<Enter>", enterCell)
                     newEntry.bind("<Leave>", exitCell)
 
@@ -256,7 +259,7 @@ class OptionFormSolutionTable(ttk.Frame):
             for col in range(2,tableData.shape[1]):
                 yMatch = numpy.greater_equal(tableData[:,col]=="Y",self.filterVals=="Y")
                 nMatch = numpy.greater_equal(tableData[:,col]=="N",self.filterVals=="N")
-                if numpy.all(numpy.logical_and(yMatch,nMatch)):
+                if numpy.all(numpy.logical_and(yMatch, nMatch)):
                     for cell,tag in columns[col]:
                         cell.grid()
                 else:
@@ -277,7 +280,8 @@ class OptionFormSolutionTable(ttk.Frame):
                 self.filterVals[row] = newVal
                 filterStates()
 
-            newFilterBtn = ttk.Button(self.table,textvariable=newFilterVal,command=rotateVal,width=5)
+            newFilterBtn = ttk.Button(self.table, textvariable=newFilterVal,
+                                      command=rotateVal, width=5)
 
             return newFilterBtn
 
@@ -300,31 +304,31 @@ class OptionFormSolutionTable(ttk.Frame):
                     self.sortDirection = None
                 self.refresh()
 
-            newSortButton = ttk.Button(self.table,text=buttonText,command=sortByDMPrefs,width=5)
+            newSortButton = ttk.Button(self.table, text=buttonText,
+                                       command=sortByDMPrefs, width=5)
 
             return newSortButton
 
 
-        for row in range(2,2+len(self.conflict.options)):
+        for row in range(2, 2+len(self.conflict.options)):
             nfb = filtMaker(row)
-            nfb.grid(row=row,column=2,sticky=(N,S,E,W))
+            nfb.grid(row=row, column=2, sticky=(N,S,E,W))
 
         for row in range(2+len(self.conflict.options)+len(self.conflict.decisionMakers),tableData.shape[0]):
             nfb = filtMaker(row)
-            nfb.grid(row=row,column=2,sticky=(N,S,E,W))
+            nfb.grid(row=row, column=2, sticky=(N,S,E,W))
 
         for row in range(2+len(self.conflict.options),2+len(self.conflict.options)+len(self.conflict.decisionMakers)):
             nsb = sortMaker(row)
-            nsb.grid(row=row,column=2,sticky=(N,S,E,W))
+            nsb.grid(row=row, column=2, sticky=(N,S,E,W))
 
-
-        filterLabel = ttk.Label(self.table,text="Filter",anchor='center')
-        filterLabel.grid(row=1,column=2,sticky=(N,S,E,W))
+        filterLabel = ttk.Label(self.table, text="Filter", anchor='center')
+        filterLabel.grid(row=1, column=2, sticky=(N,S,E,W))
 
 
 
 class LogNarrator(ttk.Frame):
-    def __init__(self,master,conflict,solOwner):
+    def __init__(self, master, conflict, solOwner):
         ttk.Frame.__init__(self,master)
 
         self.conflict = conflict
@@ -335,31 +339,36 @@ class LogNarrator(ttk.Frame):
         self.eqTypeVar = StringVar()
         self.useCoalitions = False
 
-        self.dmSel = ttk.Combobox(self,textvariable=self.dmVar,state='readonly',width=15)
-        self.dmSel.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
+        self.dmSel = ttk.Combobox(self, textvariable=self.dmVar,
+                                  state='readonly', width=15)
+        self.dmSel.grid(column=0, row=0, sticky=(N,S,E,W), padx=3, pady=3)
 
-        self.stateSel = ttk.Combobox(self,textvariable=self.stateVar,state='readonly',width=15)
-        self.stateSel.grid(column=1,row=0,sticky=(N,S,E,W),padx=3,pady=3)
+        self.stateSel = ttk.Combobox(self, textvariable=self.stateVar,
+                                     state='readonly', width=15)
+        self.stateSel.grid(column=1, row=0, sticky=(N,S,E,W), padx=3, pady=3)
 
-        self.eqTypeSel = ttk.Combobox(self,textvariable=self.eqTypeVar,state='readonly',width=15)
+        self.eqTypeSel = ttk.Combobox(self,textvariable=self.eqTypeVar,
+                                      state='readonly', width=15)
         self.eqTypeSel['values'] = ('Nash','GMR','SEQ','SIM','SMR')
-        self.eqTypeSel.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
+        self.eqTypeSel.grid(column=2, row=0, sticky=(N,S,E,W), padx=3, pady=3)
 
         self.equilibriumNarrator = Text(self, wrap='word')
-        self.equilibriumNarrator.grid(column=0,row=1,columnspan=3,sticky=(N,S,E,W))
+        self.equilibriumNarrator.grid(column=0, row=1, columnspan=3,
+                                      sticky=(N,S,E,W))
 
-        self.eqNarrScrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.equilibriumNarrator.yview)
+        self.eqNarrScrl = ttk.Scrollbar(self, orient=VERTICAL,
+                                        command=self.equilibriumNarrator.yview)
         self.equilibriumNarrator.configure(yscrollcommand=self.eqNarrScrl.set)
-        self.eqNarrScrl.grid(column=3,row=1,sticky=(N,S,E,W))
+        self.eqNarrScrl.grid(column=3, row=1, sticky=(N,S,E,W))
 
-        self.columnconfigure(0,weight=1)
-        self.columnconfigure(1,weight=1)
-        self.columnconfigure(2,weight=1)
-        self.rowconfigure(1,weight=1)
+        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(2, weight=1)
+        self.rowconfigure(1, weight=1)
 
-        self.dmSel.bind('<<ComboboxSelected>>',self.refreshNarration)
-        self.stateSel.bind('<<ComboboxSelected>>',self.refreshNarration)
-        self.eqTypeSel.bind('<<ComboboxSelected>>',self.refreshNarration)
+        self.dmSel.bind('<<ComboboxSelected>>', self.refreshNarration)
+        self.stateSel.bind('<<ComboboxSelected>>', self.refreshNarration)
+        self.eqTypeSel.bind('<<ComboboxSelected>>', self.refreshNarration)
 
         self.refresh()
 
@@ -375,8 +384,8 @@ class LogNarrator(ttk.Frame):
         self.stateSel.current(0)
         self.eqTypeSel.current(0)
 
-    def refreshNarration(self,*args):
-        self.equilibriumNarrator.delete('1.0','end')
+    def refreshNarration(self, *args):
+        self.equilibriumNarrator.delete('1.0', 'end')
         if self.useCoalitions:
             dm = self.conflict.coalitions[self.dmSel.current()]
         else:
@@ -384,35 +393,44 @@ class LogNarrator(ttk.Frame):
         state = self.stateSel.current()
         eqType = self.eqTypeVar.get()
         if eqType == "Nash":
-            newText = self.owner.sol.nash(dm,state)[1]
+            newText = self.owner.sol.nash(dm, state)[1]
         elif eqType == 'GMR':
-            newText = self.owner.sol.gmr(dm,state)[1]
+            newText = self.owner.sol.gmr(dm, state)[1]
         elif eqType == 'SEQ':
-            newText = self.owner.sol.seq(dm,state)[1]
+            newText = self.owner.sol.seq(dm, state)[1]
         elif eqType == 'SIM':
-            newText = self.owner.sol.sim(dm,state)[1]
+            newText = self.owner.sol.sim(dm, state)[1]
         elif eqType == 'SMR':
-            newText = self.owner.sol.smr(dm,state)[1]
+            newText = self.owner.sol.smr(dm, state)[1]
         else:
             newText = "Error: bad equilibrium type selected."
-        self.equilibriumNarrator.insert('1.0',newText)
+        self.equilibriumNarrator.insert('1.0', newText)
 
 
 class Exporter(ttk.Frame):
-    def __init__(self,master,conflict,solOwner):
-        ttk.Frame.__init__(self,master)
+    """Export function display frame."""
+
+    def __init__(self, master, conflict, solOwner):
+        """Create widgets and initialize exporter."""
+        ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
         self.owner = solOwner
 
-        self.RMdumpBtnJSON = ttk.Button(self,text='Save all data as JSON',command=self.saveToJSON)
-        self.RMdumpBtnJSON.grid(column=0,row=0,sticky=(N,S,E,W),padx=3,pady=3)
-        self.ResToCSVBtn = ttk.Button(self,text='Save Results as CSV',command=self.saveToCSV)
-        self.ResToCSVBtn.grid(column=1,row=0,sticky=(N,S,E,W),padx=3,pady=3)
-        self.visLaunchBtn = ttk.Button(self,text='Launch Visualizer',command=self.loadVis)
-        self.visLaunchBtn.grid(column=2,row=0,sticky=(N,S,E,W),padx=3,pady=3)
-        self.RMminJSON = ttk.Button(self,text='Save reachbility matrix to json',command=self.rmJSON)
-        self.RMminJSON.grid(column=3,row=0,sticky=(N,S,E,W),padx=3,pady=3)
+        self.RMdumpBtnJSON = ttk.Button(self, text='Save all data as JSON',
+                                        command=self.saveToJSON)
+        self.RMdumpBtnJSON.grid(column=0, row=0, sticky=(N,S,E,W),
+                                padx=3, pady=3)
+        self.ResToCSVBtn = ttk.Button(self, text='Save Results as CSV',
+                                      command=self.saveToCSV)
+        self.ResToCSVBtn.grid(column=1, row=0, sticky=(N,S,E,W), padx=3, pady=3)
+        self.visLaunchBtn = ttk.Button(self, text='Launch Visualizer',
+                                       command=self.loadVis)
+        self.visLaunchBtn.grid(column=2, row=0, sticky=(N,S,E,W), padx=3, pady=3)
+        self.RMminJSON = ttk.Button(self,
+                                    text='Save reachbility matrix to json',
+                                    command=self.rmJSON)
+        self.RMminJSON.grid(column=3, row=0, sticky=(N,S,E,W), padx=3, pady=3)
 
     def saveToJSON(self, event=None):
         fileName = filedialog.asksaveasfilename(
@@ -422,7 +440,7 @@ class Exporter(ttk.Frame):
         if fileName:
             self.owner.sol.saveJSON(fileName)
 
-    def rmJSON(self,event=None):
+    def rmJSON(self, event=None):
         fileName = filedialog.asksaveasfilename(
             defaultextension='.json',
             filetypes=(("JSON files", "*.json"), ("All files", "*.*")),
@@ -430,61 +448,59 @@ class Exporter(ttk.Frame):
         if fileName:
             rmJSONdata = {dm.name: dm.reachability.tolist()
                           for dm in self.owner.sol.effectiveDMs}
-            with open(fileName,'w') as jsonfile:
-                json.dump(rmJSONdata,jsonfile)
+            with open(fileName, 'w') as jsonfile:
+                json.dump(rmJSONdata, jsonfile)
 
-    def loadVis(self,event=None):
-        """Exports conflict data to a JSON, and then serves a webpage containing it."""
-        copy_tree('gmcr-vis',os.environ['TEMP'] + '/gmcr-vis',update=True)
-        self.owner.sol.saveJSON(os.environ['TEMP'] + '/gmcr-vis/json/conflictData.json')
+    def loadVis(self, event=None):
+        """Launches visualization in browser."""
+        copy_tree('gmcr-vis', os.environ['TEMP'] + '/gmcr-vis', update=True)
+        self.owner.sol.saveJSON(os.environ['TEMP'] +
+                                '/gmcr-vis/json/conflictData.json')
         launchVis()
 
-    def saveToCSV(self,event=None):
+    def saveToCSV(self, event=None):
         """Exports the currently displayed results to a csv file"""
-        fileName = filedialog.asksaveasfilename(defaultextension= '.csv',
-                                        filetypes = (("CSV files", "*.csv")
-                                                     ,("All files", "*.*") ),
-                                        parent=self)
+        fileName = filedialog.asksaveasfilename(defaultextension='.csv',
+                                        filetypes=(("CSV files", "*.csv"),
+                                                   ("All files", "*.*")),
+                                                parent=self)
         if fileName:
             exptTab = numpy.copy(self.owner.sol.dataTableRep)
 
-            stabilities = [(self.owner.sol.nashStabilities,'Nash'),
+            stabilities = [(self.owner.sol.nashStabilities, 'Nash'),
                            (self.owner.sol.seqStabilities,'SEQ'),
                            (self.owner.sol.simStabilities,'SIM'),
                            (self.owner.sol.gmrStabilities,'GMR'),
-                           (self.owner.sol.smrStabilities,'SMR')]
+                           (self.owner.sol.smrStabilities, 'SMR')]
 
-            spacer = numpy.zeros((len(self.conflict.decisionMakers),len(self.conflict.feasibles)+2),dtype="<U20")
+            spacer = numpy.zeros((len(self.conflict.decisionMakers),
+                                  len(self.conflict.feasibles)+2),
+                                 dtype="<U20")
 
-            for i,dm in enumerate(self.conflict.decisionMakers):
-                spacer[i,1] = dm.name
+            for i, dm in enumerate(self.conflict.decisionMakers):
+                spacer[i, 1] = dm.name
 
-            for stab,name in stabilities:
+            for stab, name in stabilities:
 
                 spc = spacer.copy()
                 spc[0,0] = name
-                spc[:,2:] = stab
+                spc[:, 2:] = stab
 
-                exptTab = numpy.concatenate((exptTab,spc),axis=0)
+                exptTab = numpy.concatenate((exptTab, spc), axis=0)
 
-
-            numpy.savetxt(fileName, exptTab,fmt="%s",delimiter=", ")
-
-
-
+            numpy.savetxt(fileName, exptTab, fmt="%s", delimiter=", ")
 
 
 def main():
+    """Run screen in test mode."""
     root = Tk()
-    root.columnconfigure(0,weight=1)
-    root.rowconfigure(0,weight=1)
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
 
     g1 = ConflictModel('Prisoners.gmcr')
 
-
-    res = LogResultDisp(root,g1)
-    res.grid(column=0,row=0,sticky=(N,S,E,W))
-
+    res = LogResultDisp(root, g1)
+    res.grid(column=0, row=0, sticky=(N, S, E, W))
 
     root.mainloop()
 
