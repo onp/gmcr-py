@@ -300,9 +300,11 @@ class LogicalSolver(RMGenerator):
             narr += self.chattyHelper(dm, state0) + ' is stable by GMR for focal DM '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+'are sanctioned by other players.\n\n'
         return gmrStab, narr
 
-
     def smr(self, dm, state0):
-        """Used to calculate SMR stability. Returns true if state0 is SMR stable for dm."""
+        """Calculate SMR stability.
+
+        Returns true if state0 is SMR stable for dm.
+        """
         ui = self.UIs(dm, state0)
         narr = ''
 
