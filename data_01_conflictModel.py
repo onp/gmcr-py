@@ -40,6 +40,7 @@ class DecisionMaker:
         self.isCoalition = False
         self.conflict = conflict
         self.options = OptionList(conflict.options)
+        self.misperceivedStates = []
         self.preferences = ConditionList(conflict)
         self.lastCalculatedPreferences = None
 
@@ -55,6 +56,7 @@ class DecisionMaker:
         rep['options'] = self.options.export_rep()
         rep['preferences'] = self.preferences.export_rep()
         rep['payoffs'] = self.payoffs.tolist()
+        rep['misperceivedStates'] = self.misperceivedStates
         if self.conflict.useManualPreferenceRanking:
             rep['preferenceRanking'] = self.preferenceRanking
         return rep
@@ -330,6 +332,10 @@ class DecisionMakerList(ObjectList):
             newDM.options.append(self.conflict.options[int(optIdx)])
         for preference in dmData['preferences']:
             newDM.preferences.from_json(preference)
+        try:
+            newDM.misperceivedStates = dmData['misperceivedStates']
+        except KeyError:
+            pass
         if self.conflict.useManualPreferenceRanking:
             try:
                 newDM.preferenceRanking = dmData['preferenceRanking']
@@ -337,6 +343,7 @@ class DecisionMakerList(ObjectList):
                 # for compatibility with old save files
                 newDM.preferenceRanking = dmData['preferenceVector']
         self.append(newDM)
+
 
 class OptionList(ObjectList):
     """A list of Option objects."""
@@ -371,6 +378,7 @@ class OptionList(ObjectList):
         newOption = Option(optData['name'], self.masterList,
                            optData['permittedDirection'])
         self.append(newOption)
+
 
 class ConditionList(ObjectList):
     """A list of Condition objects."""
@@ -479,8 +487,8 @@ class FeasibleList:
 class Coalition:
     """Combination of two or more decision makers.
 
-     Has interfaces equivalent to DMs.
-     """
+    Has interfaces equivalent to DMs.
+    """
 
     def __init__(self, conflict, dms):
         self.members = dms
@@ -602,8 +610,7 @@ class CoalitionList(ObjectList):
 
 class ConflictModel:
     def __init__(self):
-        """Initializes a new, empty conflict."""
-
+        """Initialize a new, empty conflict."""
         # list of Option objects
         self.options = OptionList()
 
@@ -640,7 +647,7 @@ class ConflictModel:
                 'version': '0.3.12'}
 
     def save_to_file(self, file):
-        """Saves the current conflict to the file location given."""
+        """Save the current conflict to the file location given."""
         print(self.export_rep())
         try:
             fileObj = open(file, mode='w')
@@ -653,7 +660,7 @@ class ConflictModel:
             fileObj.close()
 
     def json_import(self, d):
-        """Imports values into the conflict from JSON data d"""
+        """Import values into the conflict from JSON data."""
         try:
             self.useManualPreferenceRanking = d['useManualPreferenceRanking']
         except KeyError:
@@ -684,7 +691,6 @@ class ConflictModel:
             if not self.coalitions.validate():
                 raise Exception("Coalitions Failure")
 
-
     def load_from_file(self, file):
         """Load a conflict from the file given."""
         self.__init__()
@@ -703,7 +709,7 @@ class ConflictModel:
             fileObj.close()
 
     def recalculateFeasibleStates(self, init_override=False):
-        """Updates all feasible state calculations."""
+        """Update all feasible state calculations."""
         oldFeas = list(self.feasibles.decimal)
         feasDash = ['-'*len(self.options)]
         for infeas in self.infeasibles:
@@ -716,13 +722,16 @@ class ConflictModel:
                 self.onFeasibleStatesChanged()
 
     def onFeasibleStatesChanged(self):
+        """Clear obsolete preferences when feasible states are changed."""
         self.useManualPreferenceRanking = False
 
     def clearPreferences(self):
+        """Reinitialize preferences for all DMs."""
         for dm in self.decisionMakers:
             dm.preferences.__init__(self)
 
     def reorderOptionsByDM(self):
+        """Sort option list, placing options controlled by same DM together."""
         moved = []
         for dm in self.decisionMakers:
             for option in dm.options:

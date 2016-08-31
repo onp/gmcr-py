@@ -9,27 +9,27 @@ import data_01_conflictModel as model
 from tkinter import filedialog
 
 class Preference:
-    def __init__(self,preferred,oneOfSet):
+    def __init__(self, preferred, oneOfSet):
         self.preferred = preferred
 
 
 class RMGenerator:
     """Reachability matrix class.
-    
-    When initialized with a conflict for data, it produces reachability matrices
-    for each of the decision makers.
-    
+
+    When initialized with a conflict for data, it produces reachability
+    matrices for each of the decision makers.
+
     Key methods for extracting data from the matrix are:
     reachable(dm,state)
     uis(dm,state)
-    
+
     Other methods are provided that allow the reachability data to be exported.
-    
     """
-    def __init__(self,conflict,useCoalitions=True):
+
+    def __init__(self, conflict, useCoalitions=True):
 
         self.conflict = conflict
-        
+
         if useCoalitions:
             if len(self.conflict.coalitions) == 0:
                 for dm in self.conflict.decisionMakers:
@@ -50,7 +50,7 @@ class RMGenerator:
 
             # generate a flat list of move values controlled by other DMs
 
-            otherCOsMoves = [option.dec_val for otherDM in self.effectiveDMs if otherDM!=dm for option in otherDM.options ]
+            otherCOsMoves = [option.dec_val for otherDM in self.effectiveDMs if otherDM != dm for option in otherDM.options]
             focalCOmoves = [option.dec_val for option in dm.options]
 
             # translate the list of moves values for other DMs into a list of base states
@@ -89,102 +89,114 @@ class RMGenerator:
                                 if val0 != val1:
                                 #remove irreversible moves from reachability matrix
                                     dm.reachability[idx0,idx1] = 0
-                                        
 
-    def reachable(self,dm,stateIdx):
-        """Returns a list of all states reachable by a decisionMaker or coalition from state.
-        
+            # Remove moves to or from misperceived states
+            for state in dm.misperceivedStates:
+                dm.reachability[:, state-1] = 0
+                dm.reachability[state-1, :] = 0
+
+    def reachable(self, dm, stateIdx):
+        """List all states reachable by a decisionMaker or coalition from state.
+
         dm: a DecisionMaker or Coalition that was passed to the constructor.
         stateIdx: the index of the state in the conflict.
         """
         if dm not in self.effectiveDMs:
             raise ValueError("DM or Coalition not valid.")
-        reachVec = numpy.nonzero(dm.reachability[stateIdx,:])[0].tolist()
+        reachVec = numpy.nonzero(dm.reachability[stateIdx, :])[0].tolist()
         return reachVec
 
-    def UIs(self,dm,stateIdx,refState=None):
-        """Returns a list of a unilateral improvements available to dm from state.
-        
+    def UIs(self, dm, stateIdx, refState=None):
+        """List unilateral improvements available to dm from state.
+
         dm: a DecisionMaker or Coalition that was passed to the constructor.
         stateIdx is the index of the state in the conflict.
-        refState (optional) is another state to be used as a baseline for 
+        refState (optional) is another state to be used as a baseline for
             determining whether or not a state is an improvement -- states will
-            be returned as UIs only if they are reachable from stateIdx and more
-            preferred from refState.
+            be returned as UIs only if they are reachable from stateIdx and
+            more preferred from refState.
         """
         if dm not in self.effectiveDMs:
-        
+
             raise ValueError("DM or Coalition not valid.")
         if refState is None:
             refState = stateIdx
         UIvec = numpy.nonzero(dm.reachability[stateIdx,:] * dm.payoffMatrix[refState,:] > 0)[0].tolist()
         return UIvec
 
-    def saveJSON(self,file):
+    def saveJSON(self, file):
         """Export conflict data to JSON format for presentation.
 
         Includes the full normal save file, plus reachability data and payoffs.
         """
         conflictData = self.conflict.export_rep()
-        
+
         nodes = []
 
-        for stateIdx,stateDec in enumerate(self.conflict.feasibles.decimal):
+        for stateIdx, stateDec in enumerate(self.conflict.feasibles.decimal):
             stateYN = self.conflict.feasibles.yn[stateIdx]
             stateOrd = self.conflict.feasibles.ordered[stateIdx]
             reachable = []
 
-            for coInd,dm in enumerate(self.effectiveDMs):
-                for rchSt in self.reachable(dm,stateIdx):
-                    reachable.append({'target':rchSt,
+            for coInd, dm in enumerate(self.effectiveDMs):
+                for rchSt in self.reachable(dm, stateIdx):
+                    reachable.append({'target': rchSt,
                                       'dm': 'dm%s'%coInd,
-                                      'payoffChange':int(dm.payoffMatrix[stateIdx,rchSt])})
-                         
-            nodes.append({'id':stateIdx,
-                          'decimal':str(stateDec),
-                          'ordered':str(stateOrd),
-                          'state':str(stateYN),
-                          'reachable':reachable})
-                          
+                                      'payoffChange': int(dm.payoffMatrix[stateIdx,rchSt])})
+
+            nodes.append({'id': stateIdx,
+                          'decimal': str(stateDec),
+                          'ordered': str(stateOrd),
+                          'state': str(stateYN),
+                          'reachable': reachable})
+
         conflictData["nodes"] = nodes
-                                                
-        with open(file,'w') as jsonfile:
-            json.dump(conflictData,jsonfile)
+
+        with open(file, 'w') as jsonfile:
+            json.dump(conflictData, jsonfile)
 
 
 class LogicalSolver(RMGenerator):
-    """Solves the conflicts for equilibria, based on the logical definitions of stability concepts."""
-    def __init__(self,conflict):
-        RMGenerator.__init__(self,conflict)
+    """Solves the conflicts for equilibria.
 
-    def chattyHelper(self,co,state):
-        """Used in generating narration for the verbose versions of the stability calculations."""
+    Uses logical definitions of stability concepts.
+    """
+
+    def __init__(self, conflict):
+        RMGenerator.__init__(self, conflict)
+
+    def chattyHelper(self, co, state):
+        """Generate narration for verbose stability calculations."""
         if co.isCoalition:
             pay = [dm.payoffs[state] for dm in co.members]
         else:
-            pay  = co.payoffs[state]
+            pay = co.payoffs[state]
         snippet = 'state %s (decimal %s, payoff %s)' %(state+1, self.conflict.feasibles.decimal[state], pay)
         return snippet
 
+    def nash(self, dm, state0):
+        """Calculate Nash stability.
 
-    def nash(self,dm,state0):
-        """Used to calculate Nash stability. Returns true if state0 Nash is stable for dm."""
-        ui=self.UIs(dm,state0)
+        Returns true if state0 Nash is stable for dm.
+        """
+        ui = self.UIs(dm, state0)
         if not ui:
-            narr = self.chattyHelper(dm,state0)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.\n'
-            return True,narr
+            narr = self.chattyHelper(dm, state0)+' is Nash stable for DM '+ dm.name +' since they have no UIs from this state.\n'
+            return True, narr
         else:
-            narr = self.chattyHelper(dm,state0)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in ui])+"\n"
-            return False,narr
+            narr = self.chattyHelper(dm, state0)+' is NOT Nash stable for DM '+ dm.name +' since they have UIs available to: '+','.join([self.chattyHelper(dm,state1) for state1 in ui])+"\n"
+            return False, narr
 
+    def seq(self, dm, state0):
+        """Calculate SEQ stability.
 
-    def seq(self,dm,state0):
-        """Used to calculate SEQ stability. Returns true if state0 is SEQ stable for dm."""
-        ui=self.UIs(dm,state0)
+        Returns true if state0 is SEQ stable for dm.
+        """
+        ui = self.UIs(dm, state0)
         narr = ''
 
         if not ui:
-            seqStab = 1      #stable since the dm has no UIs available
+            seqStab = 1      # stable since the dm has no UIs available
             narr += self.chattyHelper(dm,state0)+' is SEQ stable for DM '+ dm.name +' since they have no UIs from this state.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
@@ -209,65 +221,70 @@ class LogicalSolver(RMGenerator):
 
             seqStab = 1
             narr += self.chattyHelper(dm,state0) + ' is stable by SEQ for focal dm ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players. \n\n'
-        return seqStab,narr
+        return seqStab, narr
 
+    def sim(self, dm, state0):
+        """Calculate SIM stability.
 
-    def sim(self,dm,state0):
-        """Used to calculate SIM stability. Returns true if state0 is SIM stable for dm."""
-        ui=self.UIs(dm,state0)
-        narr=''
+        Returns true if state0 is SIM stable for dm.
+        """
+        ui = self.UIs(dm, state0)
+        narr = ''
 
         if not ui:
-            simStab = 1      #stable since the dm has no UIs available
-            narr += self.chattyHelper(dm,state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
+            simStab = 1      # stable since the dm has no UIs available
+            narr += self.chattyHelper(dm, state0)+' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
         else:
-            narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
+            narr += 'From ' + self.chattyHelper(dm, state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
             otherDMuis = [x for oDM in self.effectiveDMs if oDM != dm for x in self.UIs(oDM,state0)]     #find all possible UIs available to other players
             if not otherDMuis:
-                simStab=0
-                narr += self.chattyHelper(dm,state0)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state0) + '.\n\n'
-                return simStab,narr
+                simStab = 0
+                narr += self.chattyHelper(dm, state0)+' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from '+self.chattyHelper(dm,state0) + '.\n\n'
+                return simStab, narr
             else:
                 for state1 in ui:
-                    stable=0
+                    stable = 0
                     for state2 in otherDMuis:
                         state2combinedDec = self.conflict.feasibles.decimal[state1]+self.conflict.feasibles.decimal[state2]-self.conflict.feasibles.decimal[state0]
                         if state2combinedDec in self.conflict.feasibles.decimal:
                             state2combined = self.conflict.feasibles.decimal.index(state2combinedDec)
                             if dm.payoffMatrix[state0,state2combined] <= 0:
                                 stable = 1
-                                narr += 'A move to '+self.chattyHelper(dm,state1)+' is SIM sanctioned for focal DM ' + dm.name + ' by a move to '+self.chattyHelper(dm,state2)+' by other DMs, which would give a final state of ' + self.chattyHelper(dm,state2combined) + '.  Check other focal DM UIs for sanctioning...\n\n'
+                                narr += 'A move to '+self.chattyHelper(dm, state1)+' is SIM sanctioned for focal DM ' + dm.name + ' by a move to '+self.chattyHelper(dm,state2)+' by other DMs, which would give a final state of ' + self.chattyHelper(dm,state2combined) + '.  Check other focal DM UIs for sanctioning...\n\n'
                                 break
                         else: narr += 'Simultaneous moves towards ' + str(state1) + ' and ' + str(state2) + ' are not possible since the resultant state is infeasible.\n\n'
 
                     if not stable:
                         simStab=0
-                        narr += self.chattyHelper(dm,state0)+') is unstable by SIM for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm,state1) + '.\n\n'
+                        narr += self.chattyHelper(dm, state0)+') is unstable by SIM for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm,state1) + '.\n\n'
                         return simStab,narr
 
             simStab = 1
-            narr += self.chattyHelper(dm,state0) + ' is stable by SIM for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players.\n\n'
-        return simStab,narr
+            narr += self.chattyHelper(dm, state0) + ' is stable by SIM for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm,state1) for state1 in ui]) + ' are sanctioned by other players.\n\n'
+        return simStab, narr
 
 
-    def gmr(self,dm,state0):
-        """Used to calculate GMR stability. Returns true if state0 is GMR stable for dm."""
-        ui=self.UIs(dm,state0)
-        narr=''
+    def gmr(self, dm, state0):
+        """Calculate GMR stability.
+
+        Returns true if state0 is GMR stable for dm.
+        """
+        ui = self.UIs(dm, state0)
+        narr = ''
 
         if not ui:
-            gmrStab = 1      #stable since the dm has no UIs available
+            gmrStab = 1      # stable since the dm has no UIs available
             narr += self.chattyHelper(dm,state0)+' is GMR stable since focal DM '+dm.name+' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + '.   Check for sanctioning...\n\n'
-            for state1 in ui:             #for each potential move...
+            for state1 in ui:             # for each potential move...
                 otherDMums = [x for oDM in self.effectiveDMs if oDM != dm for x in self.reachable(oDM,state1)]        #find all possible moves (not just UIs) available to other players
                 if not otherDMums:
-                    gmrStab=0
+                    gmrStab = 0
                     narr += self.chattyHelper(dm,state0)+' is unstable by GMR for focal DM '+dm.name+', since their opponents have no moves from '+self.chattyHelper(dm,state1) +'.\n\n'
                     return gmrStab,narr
                 else:
-                    stable=0
+                    stable = 0
                     for state2 in otherDMums:
                         if dm.payoffMatrix[state0,state2] <= 0:
                             stable = 1
@@ -275,22 +292,22 @@ class LogicalSolver(RMGenerator):
                             break
 
                     if not stable:
-                        gmrStab=0
-                        narr += self.chattyHelper(dm,state0)+') is unstable by GMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n\n'
-                        return gmrStab,narr
+                        gmrStab = 0
+                        narr += self.chattyHelper(dm, state0)+') is unstable by GMR for focal dm '+dm.name+', since their opponents have no less preferred sanctioning UIs from '+self.chattyHelper(dm,state1) + '.\n\n'
+                        return gmrStab, narr
 
             gmrStab = 1
-            narr += self.chattyHelper(dm,state0) + ' is stable by GMR for focal DM '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+'are sanctioned by other players.\n\n'
-        return gmrStab,narr
+            narr += self.chattyHelper(dm, state0) + ' is stable by GMR for focal DM '+dm.name+', since all available UIs '+str([self.chattyHelper(dm,state1) for state1 in ui])+'are sanctioned by other players.\n\n'
+        return gmrStab, narr
 
 
-    def smr(self,dm,state0):
+    def smr(self, dm, state0):
         """Used to calculate SMR stability. Returns true if state0 is SMR stable for dm."""
-        ui=self.UIs(dm,state0)
-        narr= ''
+        ui = self.UIs(dm, state0)
+        narr = ''
 
         if not ui:
-            smrStab = 1      #stable since the dm has no UIs available
+            smrStab = 1      # stable since the dm has no UIs available
             narr += self.chattyHelper(dm,state0)+' is SMR stable since focal DM '+dm.name+' has no UIs available.\n'
         else:
             narr += 'From ' + self.chattyHelper(dm,state0) + ' ' + dm.name +' has UIs available to: ' + ''.join([self.chattyHelper(dm,state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
@@ -328,15 +345,15 @@ class LogicalSolver(RMGenerator):
 
     def findEquilibria(self):
         """Calculates the equilibrium states that exist within the conflict for each stability concept."""
-        
+
             #Nash calculation
         nashStabilities = numpy.zeros((len(self.effectiveDMs),len(self.conflict.feasibles)))
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 nashStabilities[idx,state]= self.nash(dm,state)[0]
-        
+
         self.nashStabilities = numpy.copy(nashStabilities)
-        
+
         numpy.invert(nashStabilities.astype('bool'),nashStabilities)
         self.nashEquilibria = numpy.invert(sum(nashStabilities,0).astype('bool'))
 
@@ -348,7 +365,7 @@ class LogicalSolver(RMGenerator):
                 seqStabilities[idx,state]= self.seq(dm,state)[0]
 
         self.seqStabilities = numpy.copy(seqStabilities)
-                
+
         numpy.invert(seqStabilities.astype('bool'),seqStabilities)
         self.seqEquilibria = numpy.invert(sum(seqStabilities,0).astype('bool'))
 
@@ -358,7 +375,7 @@ class LogicalSolver(RMGenerator):
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 simStabilities[idx,state] = self.sim(dm,state)[0]
-                
+
         self.simStabilities = numpy.copy(simStabilities)
 
         numpy.invert(simStabilities.astype('bool'),simStabilities)
@@ -373,7 +390,7 @@ class LogicalSolver(RMGenerator):
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 gmrStabilities[idx,state]=self.gmr(dm,state)[0]
-                
+
         self.gmrStabilities = numpy.copy(gmrStabilities)
 
         numpy.invert(gmrStabilities.astype('bool'),gmrStabilities)
@@ -385,7 +402,7 @@ class LogicalSolver(RMGenerator):
         for idx,dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 smrStabilities[idx,state]=self.smr(dm,state)[0]
-                
+
         self.smrStabilities = numpy.copy(smrStabilities)
 
         numpy.invert(smrStabilities.astype('bool'),smrStabilities)
@@ -409,7 +426,7 @@ class InverseSolver(RMGenerator):
             self.desEq = desiredEquilibria
         self.vary  = vary
         self.conflict = conflict
-        
+
         for idx,dm in enumerate(self.conflict.decisionMakers):
             dm.improvementsInv = numpy.sign(numpy.array(dm.payoffMatrix,numpy.float64))
             if self.vary is not None:
@@ -422,14 +439,14 @@ class InverseSolver(RMGenerator):
                             variedStates.extend([state-1 for state in sl])
                         else:
                             variedStates.append(sl-1)
-                
+
                 for s0 in variedStates:
                     for s1 in variedStates:
                         if s0 != s1:
                             dm.improvementsInv[s0,s1] = numpy.nan
 
-        #dm.improvementsInv[s0,s1] indicates whether a state s0 is more preferred (+1), 
-        # less preferred(-1), equally preferred(0), or has an unspecified relation (nan) to 
+        #dm.improvementsInv[s0,s1] indicates whether a state s0 is more preferred (+1),
+        # less preferred(-1), equally preferred(0), or has an unspecified relation (nan) to
         # another state s1. Generated based on the vary ranges selected.
 
     def _decPerm(self,full,vary):
@@ -448,7 +465,7 @@ class InverseSolver(RMGenerator):
         c=itertools.product(*b)
         for y in c:
             yield y
-            
+
     def nashCond(self):
         """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
         output=[""]
@@ -473,7 +490,7 @@ class InverseSolver(RMGenerator):
                     message1 = "    equilibrium exists under all selected rankings"
                 output.append(message1)
         return "\n\n".join(output)+"\n\n\n\n"
-        
+
     def gmrCond(self):
         """Generates a list of the conditions that preferences must satisfy for GMR stability to exist."""
         output=[""]
@@ -484,7 +501,7 @@ class InverseSolver(RMGenerator):
             for stateList in self.mustBeLowerGMR[dmIdx]:
                 mbl2GMR.extend(stateList)
             mbl2GMR = list(set(mbl2GMR))
-            mbl2GMR = [self.conflict.feasibles.ordered[state] for state in mbl2GMR] 
+            mbl2GMR = [self.conflict.feasibles.ordered[state] for state in mbl2GMR]
             message = "For DM %s: %s must be more preferred than %s"%(dm.name,desEq,mblGMR)
             message += "\n\n  or at least one of %s must be less preferred than %s"%(mbl2GMR,desEq)
             output.append(message)
@@ -607,12 +624,12 @@ class InverseSolver(RMGenerator):
                     message1 = "    equilibrium exists under all selected rankings"
                 output.append(message1)
         return "\n\n".join(output)
-        
+
 
     def _mblInit(self):
         """Used internally to initialize the 'Must Be Lower' arrays used in inverse calculation."""
         self.mustBeLowerNash = [self.reachable(dm,self.desEq) for dm in self.conflict.decisionMakers]
-        #mustBeLowerNash[dm] contains the states that must be less preferred than the 
+        #mustBeLowerNash[dm] contains the states that must be less preferred than the
         # desired equilibrium 'state0' for 'dm' to have a Nash equilibrium at 'state0'.
 
         self.mustBeLowerGMR = [[[] for state1 in dm] for dm in self.mustBeLowerNash]
@@ -743,13 +760,13 @@ class InverseSolver(RMGenerator):
         counts = self.equilibriums.sum(axis=1)
         return values,counts
 
-        
+
 class GoalSeeker(RMGenerator):
     def __init__(self,conflict,goals=[]):
         RMGenerator.__init__(self,conflict)
         self.conflict = conflict
         self.goals = goals
-        
+
     def validGoals(self):
         if len(self.goals)==0:
             return False
@@ -759,46 +776,46 @@ class GoalSeeker(RMGenerator):
             if g[1] == -1:
                 return False
         return True
-        
+
     def nash(self):
         requirements = PatternAnd(*[self.nashGoal(s0,stable) for s0,stable in self.goals], statement="Conditions for goals using Nash:")
         conf = requirements.isImpossible()
         return requirements
-        
+
     def seq(self):
         requirements = PatternAnd(*[self.seqGoal(s0,stable) for s0,stable in self.goals], statement="Conditions for goals using SEQ:")
         return requirements
 
     def nashGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by Nash.
-        
+
         Returns a PatternAnd or a PatternOr object. """
-        
+
         if stable:
             conditions = PatternAnd(statement="For %s to be stable by Nash:"%(state0+1))
         else:
             conditions = PatternOr(statement="For %s to be unstable by Nash:"%(state0+1))
-        
+
         for coIdx,co in enumerate(self.effectiveDMs):
             if stable:
                 conditions.append(MoreThanFor(co,state0,self.reachable(co,state0)))
             else:
                 if self.reachable(co,state0):
                     conditions.append(LessThanOneOf(co,state0,self.reachable(co,state0)))
-        
+
         return conditions
 
     def seqGoal(self,state0,stable):
         """Generates a list of the conditions that preferences must satisfy for state0 to be stable/unstable by SEQ."""
-        
+
         conditions = PatternAnd(statement="For %s to be %s by SEQ:"%(state0+1,"stable" if stable else "unstable"))
-        
+
         for coIdx,co in enumerate(self.effectiveDMs):
             if stable:
                 for state1 in self.reachable(co,state0):
                     isNash = MoreThanFor(co,state0,state1)
                     isStable = PatternOr(isNash)
-                    
+
                     for coIdx2,co2 in enumerate(self.effectiveDMs):
                         if coIdx2 == coIdx:
                             continue
@@ -821,8 +838,8 @@ class GoalSeeker(RMGenerator):
                 if len(isUnstable.plist) > 0:
                     conditions.append(isUnstable)
         return conditions
-        
-    
+
+
 class PatternAnd:
     """All statements must be true."""
     def __init__(self,*patterns,statement=None):
@@ -832,25 +849,25 @@ class PatternAnd:
         self.conf = None
         for p in patterns:
             self.append(p)
-        
+
     def append(self,p):
         if isinstance(p, PatternAnd):
             for pp in p.plist:
                 self.append(pp)
         else:
             self.plist.append(p)
-        
+
     def isImpossible(self,lessThans = {}):
         # lessThans is a double level dict of indices {CO}{State}
         # for each CO, and for each state, it lists the states that must be less preferred.
-        
+
         for pat in self.plist:
             conf = pat.isImpossible(lessThans)
             if conf is not False:
                 self.conf = conf
                 return conf
-            
-        
+
+
     def asString(self,indent=""):
         if self.conf:
             return self.conf
@@ -869,14 +886,14 @@ class PatternOr:
         self.conf = None
         for p in patterns:
             self.append(p)
-        
+
     def append(self,p):
         if isinstance(p, PatternOr):
             for pp in p.plist:
                 self.append(pp)
         else:
             self.plist.append(p)
-        
+
     def isImpossible(self,lessThans = {}):
         print("!!!!!!!! isImpossible testing doesn't work for OR statements yet.")
         for pat in self.plist:
@@ -885,7 +902,7 @@ class PatternOr:
                 return False
         self.conf
         return conf
-        
+
     def asString(self,indent=""):
         if self.conf:
             return self.conf
@@ -897,11 +914,11 @@ class PatternOr:
 
 class MoreThanFor:
     """s0 must be more preferred than s1 for co.
-    
+
     s1 can be a list.
-    
+
     """
-    
+
     def __init__(self,co,s0,s1):
         self.co = co
         self.s0 = s0
@@ -909,7 +926,7 @@ class MoreThanFor:
             self.s1 = s1
         else:
             self.s1 = [s1]
-        
+
     def isImpossible(self,lessThans):
         try:
             for s1 in self.s1:
@@ -918,7 +935,7 @@ class MoreThanFor:
                     return "For Nash:\nCONFLICT, %s and %s cannot be both more preferred and less preferred than each other. Goals cannot be met. \n\n"%(self.s0+1, s1+1)
         except KeyError:
             conflict = False
-                        
+
         if self.co.name not in lessThans:
             lessThans[self.co.name] = {}
         for s1 in self.s1:
@@ -927,7 +944,7 @@ class MoreThanFor:
             lessThans[self.co.name][s1].append(self.s0)  #s1 must be less preferred than s0
 
         return False
-        
+
     def asString(self,indent=""):
         if len(self.s1) == 1:
             lp = str(self.s1[0]+1)
@@ -941,10 +958,10 @@ class LessThanOneOf:
         self.co = co
         self.s0 = s0
         self.li = li
-        
+
     def isImpossible(self,lessThans):
         return False
-        
+
     def asString(self,indent=""):
         return indent+"%s must be less preferred than at least one of %s for %s\n"%(self.s0+1,[s1+1 for s1 in self.li],self.co.name)
 
