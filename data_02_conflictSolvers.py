@@ -8,6 +8,7 @@ import json
 import data_01_conflictModel as model
 from tkinter import filedialog
 
+
 class Preference:
     def __init__(self, preferred, oneOfSet):
         self.preferred = preferred

@@ -20,8 +20,8 @@ import os
 
 class MainAppWindow:
     def __init__(self,file=None):
-        self.file = file # file reference used for saving the conflict. 
-        
+        self.file = file # file reference used for saving the conflict.
+
         self.root= Tk()
         self.root.iconbitmap('gmcr.ico')
         self.root.wm_title('New GMCR+ Model')
@@ -73,14 +73,14 @@ class MainAppWindow:
         self.addMod(ResultFrame)
         self.addMod(InverseFrame)
         self.addMod(StabilityFrame)
-        
+
         self.refreshActiveFrames()
-        
+
         self.root.bind_all("<<checkData>>",self.checkFramesHaveData)
-        
+
         if self.file is not None:
             self.loadConflict(self.file)
-        
+
         self.root.mainloop()
 
     def addMod(self,newMod):
@@ -88,7 +88,6 @@ class MainAppWindow:
         newFrame = newMod(self.contentFrame,self.activeConflict)
         fNum = len(self.frameList)
         self.frameList.append(newFrame)
-
 
         def FSelect(self,*args):
             print('Loading %s frame...'%(str(newFrame.buttonLabel)))
@@ -102,7 +101,7 @@ class MainAppWindow:
         self.frameBtnList.append(newButton)
         newFrame.button = newButton
         newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
-        
+
     def checkFramesHaveData(self,event=None):
         for idx,frame in enumerate(self.frameList):
             if frame.hasRequiredData():
@@ -116,12 +115,12 @@ class MainAppWindow:
     def refreshActiveFrames(self,event=None):
         self.unloadAllFrames()
         self.checkFramesHaveData()
-        
+
         try:
             self.contentFrame.currFrame.built = False
         except AttributeError:
             pass
-        
+
         try:
             if self.contentFrame.currFrame.hasRequiredData():
                 self.contentFrame.currFrame.enter()
@@ -129,14 +128,14 @@ class MainAppWindow:
                 self.frameBtnCmds[0](self)
         except AttributeError:
             self.frameBtnCmds[0](self)
-                
+
     def unloadAllFrames(self,event=None):
         for idx,frame in enumerate(self.frameList):
             frame.clearFrame()
             self.frameBtnList[idx].config(state = "disabled")
-        
-        
-        
+
+
+
     def frameLeave(self):
         """ Ungrids the current frame and performs other exit tasks"""
         try:
@@ -186,7 +185,7 @@ class MainAppWindow:
             self.root.wm_title(fileName)
             self.activeConflict.load_from_file(fileName)
             self.refreshActiveFrames()
-        
+
 
     def newConflict(self):
         """Clears all data in the conflict, allowing a new conflict to be entered."""
@@ -196,7 +195,7 @@ class MainAppWindow:
         self.file = None
         self.refreshActiveFrames()
         self.root.wm_title('New GMCR+ Model')
-    
+
 
 if __name__ == '__main__':
     freeze_support()
