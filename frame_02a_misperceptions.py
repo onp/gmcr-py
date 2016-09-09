@@ -1,6 +1,6 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Frame for editing infeasible states in the conflict.
+"""Frame for editing misperceived states in the conflict.
 
 Loaded by the a_Main_Window module, and implements all of its required
 interfaces.
@@ -20,6 +20,7 @@ class MisperceptionInpFrame(Frame):
 
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict, *args):
+        """Initialize the Frame. Does not build widgets."""
         ttk.Frame.__init__(self, master, *args)
 
         self.infoFrame = ttk.Frame(master, relief='sunken', borderwidth='3')
@@ -54,6 +55,7 @@ class MisperceptionInpFrame(Frame):
             return True
 
     def dataChanged(self):
+        """Check if data has changed since the last build of the Frame."""
         if self.lastBuildDMs != self.conflict.decisionMakers.export_rep():
             return True
         if self.lastBuildOptions != self.conflict.options.export_rep():
@@ -64,7 +66,7 @@ class MisperceptionInpFrame(Frame):
             return False
 
     def buildFrame(self):
-
+        """Build all content for the Frame."""
         if self.built:
             return
 
@@ -94,12 +96,12 @@ class MisperceptionInpFrame(Frame):
         # Define frame-specific variables
         self.warnText = StringVar(value='')
 
-        # infoFrame : frame and label definitions   (with master of 'self.infoFrame')
+        # infoFrame: frame and label definitions (with master 'self.infoFrame')
         self.originalStatesLabel = ttk.Label(self.infoFrame, textvariable=self.originalStatesText)
         self.removedStatesLabel = ttk.Label(self.infoFrame, textvariable=self.removedStatesText)
         self.feasStatesLabel = ttk.Label(self.infoFrame, textvariable=self.feasStatesText)
 
-        # helpFrame : frame and label definitions (with master of 'self.helpFrame')
+        # helpFrame: frame and label definitions (with master 'self.helpFrame')
         self.helpLabel = ttk.Label(self.helpFrame, textvariable=self.helpText, wraplength=150)
 
         # Define frame-specific input widgets (with 'self' as master)
@@ -134,7 +136,6 @@ class MisperceptionInpFrame(Frame):
         self.helpFrame.grid_remove()
         self.helpLabel.grid(column=0, row=0, sticky=(N,S,E,W))
 
-
         # configuring frame-specific options
         self.optsFrame.columnconfigure(0, weight=1)
         self.optsFrame.rowconfigure(0, weight=1)
@@ -166,9 +167,11 @@ class MisperceptionInpFrame(Frame):
         """Refresh information in the widgets. Triggered when data changes."""
         self.infeasDisp.refreshView()
         self.feasList.refreshList()
-        self.originalStatesText.set('Original States: %s' %(2**len(self.conflict.options)))
-        self.feasStatesText.set('Feasible States: %s'%(len(self.conflict.feasibles)))
-        self.removedStatesText.set('States Removed: %s'%(2**len(self.conflict.options) - len(self.conflict.feasibles)))
+        numF = len(self.conflict.feasibles)
+        numO = len(self.conflict.options)
+        self.originalStatesText.set('Original States: %s' % (2**numO))
+        self.feasStatesText.set('Feasible States: %s' % (numF))
+        self.removedStatesText.set('States Removed: %s' % (2**numO - numF))
 
     def addInfeas(self, *args):
         """Remove an infeasible state from the conflict."""

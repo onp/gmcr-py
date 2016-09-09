@@ -18,38 +18,39 @@ from frame_08_stabilityAnalysis import StabilityFrame
 from multiprocessing import freeze_support
 import os
 
-class MainAppWindow:
-    def __init__(self,file=None):
-        self.file = file # file reference used for saving the conflict.
 
-        self.root= Tk()
+class MainAppWindow:
+    def __init__(self, file=None):
+        self.file = file  # file reference used for saving the conflict.
+
+        self.root = Tk()
         self.root.iconbitmap('gmcr.ico')
         self.root.wm_title('New GMCR+ Model')
-        self.root.columnconfigure(0,weight=1)
-        self.root.rowconfigure(0,weight=1)
+        self.root.columnconfigure(0, weight=1)
+        self.root.rowconfigure(0, weight=1)
 
-        self.frameList    = []
+        self.frameList = []
         self.frameBtnCmds = []
         self.frameBtnList = []
 
         self.topFrame = ttk.Frame(self.root)
-        self.fileFrame = ttk.Frame(self.topFrame,border=3,relief='raised')
+        self.fileFrame = ttk.Frame(self.topFrame, border=3, relief='raised')
         self.pageSelectFrame = ttk.Frame(self.topFrame,border=3,relief='raised')
         self.contentFrame = ttk.Frame(self.topFrame)
-        self.topVSep = ttk.Separator(self.topFrame,orient=HORIZONTAL)
-        self.bottomHSep = ttk.Separator(self.contentFrame,orient=VERTICAL)
+        self.topVSep = ttk.Separator(self.topFrame, orient=HORIZONTAL)
+        self.bottomHSep = ttk.Separator(self.contentFrame, orient=VERTICAL)
 
-        self.topFrame.grid(column=0,row=0,sticky=(N,S,E,W))
-        self.topFrame.columnconfigure(2,weight=1)
-        self.topFrame.rowconfigure(3,weight=1)
-        self.fileFrame.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.pageSelectFrame.grid(column=1,row=1,columnspan=4,sticky=(N,S,W))
-        self.pageSelectFrame.rowconfigure(0,weight=1)
-        self.topVSep.grid(column=0,row=2,columnspan=10,sticky=(N,S,E,W))
-        self.bottomHSep.grid(column=1,row=0,rowspan=10,sticky=(N,S,E,W))
-        self.contentFrame.grid(column=0,row=3,columnspan=5,sticky=(N,S,E,W))
-        self.contentFrame.columnconfigure(0,weight=1)
-        self.contentFrame.rowconfigure(1,weight=1)
+        self.topFrame.grid(column=0, row=0, sticky=(N,S,E,W))
+        self.topFrame.columnconfigure(2, weight=1)
+        self.topFrame.rowconfigure(3, weight=1)
+        self.fileFrame.grid(column=0, row=1, sticky=(N,S,E,W))
+        self.pageSelectFrame.grid(column=1, row=1, columnspan=4, sticky=(N,S,W))
+        self.pageSelectFrame.rowconfigure(0, weight=1)
+        self.topVSep.grid(column=0, row=2, columnspan=10, sticky=(N,S,E,W))
+        self.bottomHSep.grid(column=1, row=0, rowspan=10, sticky=(N,S,E,W))
+        self.contentFrame.grid(column=0, row=3, columnspan=5, sticky=(N,S,E,W))
+        self.contentFrame.columnconfigure(0, weight=1)
+        self.contentFrame.rowconfigure(1, weight=1)
 
         self.saveButton   = ttk.Button(self.fileFrame,text='Save Conflict'   ,command=self.saveConflict, width=20)
         self.saveAsButton = ttk.Button(self.fileFrame,text='Save Conflict As',command=self.saveAs,   width=20)
@@ -63,7 +64,7 @@ class MainAppWindow:
 
         self.activeConflict = ConflictModel()
 
-        self.contentFrame.currFrame=None
+        self.contentFrame.currFrame = None
 
         self.addMod(DMInpFrame)
         self.addMod(InfeasInpFrame)
@@ -76,24 +77,24 @@ class MainAppWindow:
 
         self.refreshActiveFrames()
 
-        self.root.bind_all("<<checkData>>",self.checkFramesHaveData)
+        self.root.bind_all("<<checkData>>", self.checkFramesHaveData)
 
         if self.file is not None:
             self.loadConflict(self.file)
 
         self.root.mainloop()
 
-    def addMod(self,newMod):
+    def addMod(self, newMod):
         """ Adds a new input frame and Module to the Conflict """
-        newFrame = newMod(self.contentFrame,self.activeConflict)
-        fNum = len(self.frameList)
+        newFrame = newMod(self.contentFrame, self.activeConflict)
+
         self.frameList.append(newFrame)
 
-        def FSelect(self,*args):
+        def FSelect(self, *args):
             print('Loading %s frame...'%(str(newFrame.buttonLabel)))
             self.frameLeave()
             newFrame.enter()
-            self.contentFrame.currFrame=newFrame
+            self.contentFrame.currFrame = newFrame
 
         self.frameBtnCmds.append(FSelect)
 
