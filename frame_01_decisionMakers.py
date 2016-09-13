@@ -33,8 +33,6 @@ class DMInpFrame(FrameTemplate):
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict):
         """Initialize DMinput Frame."""
-        print(self.helpText)
-
         FrameTemplate.__init__(self, master, conflict, self.buttonLabel,
                                self.activeIcon, self.inactiveIcon,
                                self.helpText)

@@ -99,22 +99,9 @@ class MainAppWindow:
     def addMod(self, newMod):
         """Add a new input frame and Module to the Conflict."""
         newFrame = newMod(self.contentFrame, self.activeConflict)
-
         self.frameList.append(newFrame)
-
-        def FSelect(self, *args):
-            print('Loading {} frame...'.format(newFrame.buttonLabel))
-            self.frameLeave()
-            newFrame.enter()
-            self.contentFrame.currFrame = newFrame
-
-        self.frameBtnCmds.append(FSelect)
-
-        newButton = ttk.Button(self.pageSelectFrame, text=newFrame.buttonLabel,
-                               image=newFrame.inactiveIcon, compound="top",
-                               width=20, command=lambda: FSelect(self))
+        newButton = newFrame.makeButton(self.pageSelectFrame, self)
         self.frameBtnList.append(newButton)
-        newFrame.button = newButton
         newButton.grid(column=len(self.frameBtnList), row=0, sticky=tkNSEW)
 
     def checkFramesHaveData(self, event=None):

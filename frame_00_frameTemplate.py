@@ -38,7 +38,7 @@ class FrameTemplate(Frame):
     def makeButton(self, buttonMaster, mainWindow):
         """Create a button to be used ot enter the frame."""
         def onClick(*args):
-            print('Loading {0} frame...'.format(self.buttonLabel))
+            print('Loading {} frame...'.format(self.buttonLabel))
             mainWindow.frameLeave()
             self.enter()
             mainWindow.contentFrame.currFrame = self
@@ -48,10 +48,9 @@ class FrameTemplate(Frame):
         self.button = ttk.Button(buttonMaster, text=self.buttonLabel,
                                  image=self.inactiveIcon, compound="top",
                                  width=20, command=lambda: onClick())
-
-        mainWindow.frameBtnList.append(self.button)
         self.button.grid(column=len(mainWindow.frameBtnList), row=0,
                          sticky=tkNSEW)
+        return self.button
 
     def hasRequiredData(self):
         """Check that minimum data for input of misperceivedStates exists.
