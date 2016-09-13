@@ -216,6 +216,13 @@ class MainAppWindow:
 
 if __name__ == '__main__':
     freeze_support()
+    # Set working directory to program folder if started from executable.
+    # This allows easy access to example files.
+    try:
+        os.chdir(sys.argv[0].rpartition('\\')[0])
+    except OSError:
+        pass
+    launchFile = None
     try:
         launchFile = sys.argv[1]
     except IndexError:
