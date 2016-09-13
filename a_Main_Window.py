@@ -2,7 +2,7 @@
 
 """Launches the GMCR-py Decision Support System."""
 
-from tkinter import *
+from tkinter import Tk, VERTICAL, HORIZONTAL, N, S, E, W
 from tkinter import ttk
 from tkinter import filedialog
 from data_01_conflictModel import ConflictModel
@@ -17,10 +17,16 @@ from frame_08_stabilityAnalysis import StabilityFrame
 
 from multiprocessing import freeze_support
 import os
+import sys
+
+tkNSEW = (N, S, E, W)
 
 
 class MainAppWindow:
+    """Top Level Window for the GMCR-py application."""
+
     def __init__(self, file=None):
+        """Initialize the window."""
         self.file = file  # file reference used for saving the conflict.
 
         self.root = Tk()
@@ -35,32 +41,38 @@ class MainAppWindow:
 
         self.topFrame = ttk.Frame(self.root)
         self.fileFrame = ttk.Frame(self.topFrame, border=3, relief='raised')
-        self.pageSelectFrame = ttk.Frame(self.topFrame,border=3,relief='raised')
+        self.pageSelectFrame = ttk.Frame(self.topFrame, border=3,
+                                         relief='raised')
         self.contentFrame = ttk.Frame(self.topFrame)
         self.topVSep = ttk.Separator(self.topFrame, orient=HORIZONTAL)
         self.bottomHSep = ttk.Separator(self.contentFrame, orient=VERTICAL)
 
-        self.topFrame.grid(column=0, row=0, sticky=(N,S,E,W))
+        self.topFrame.grid(column=0, row=0, sticky=tkNSEW)
         self.topFrame.columnconfigure(2, weight=1)
         self.topFrame.rowconfigure(3, weight=1)
-        self.fileFrame.grid(column=0, row=1, sticky=(N,S,E,W))
-        self.pageSelectFrame.grid(column=1, row=1, columnspan=4, sticky=(N,S,W))
+        self.fileFrame.grid(column=0, row=1, sticky=tkNSEW)
+        self.pageSelectFrame.grid(column=1, row=1, columnspan=4,
+                                  sticky=(N, S, W))
         self.pageSelectFrame.rowconfigure(0, weight=1)
-        self.topVSep.grid(column=0, row=2, columnspan=10, sticky=(N,S,E,W))
-        self.bottomHSep.grid(column=1, row=0, rowspan=10, sticky=(N,S,E,W))
-        self.contentFrame.grid(column=0, row=3, columnspan=5, sticky=(N,S,E,W))
+        self.topVSep.grid(column=0, row=2, columnspan=10, sticky=tkNSEW)
+        self.bottomHSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+        self.contentFrame.grid(column=0, row=3, columnspan=5, sticky=tkNSEW)
         self.contentFrame.columnconfigure(0, weight=1)
         self.contentFrame.rowconfigure(1, weight=1)
 
-        self.saveButton   = ttk.Button(self.fileFrame,text='Save Conflict'   ,command=self.saveConflict, width=20)
-        self.saveAsButton = ttk.Button(self.fileFrame,text='Save Conflict As',command=self.saveAs,   width=20)
-        self.loadButton   = ttk.Button(self.fileFrame,text='Load Conflict'   ,command=self.loadConflict, width=20)
-        self.newButton    = ttk.Button(self.fileFrame,text='New Conflict'    ,command=self.newConflict,  width=20)
+        self.saveButton = ttk.Button(self.fileFrame, text='Save Conflict',
+                                     command=self.saveConflict, width=20)
+        self.saveAsButton = ttk.Button(self.fileFrame, text='Save Conflict As',
+                                       command=self.saveAs, width=20)
+        self.loadButton = ttk.Button(self.fileFrame, text='Load Conflict',
+                                     command=self.loadConflict, width=20)
+        self.newButton = ttk.Button(self.fileFrame, text='New Conflict',
+                                    command=self.newConflict, width=20)
 
-        self.saveButton.grid(  column=0, row=0, sticky=(E,W))
-        self.saveAsButton.grid(column=0, row=1, sticky=(E,W))
-        self.loadButton.grid(  column=0, row=2, sticky=(E,W))
-        self.newButton.grid(   column=0, row=3, sticky=(E,W))
+        self.saveButton.grid(column=0, row=0, sticky=(E, W))
+        self.saveAsButton.grid(column=0, row=1, sticky=(E, W))
+        self.loadButton.grid(column=0, row=2, sticky=(E, W))
+        self.newButton.grid(column=0, row=3, sticky=(E, W))
 
         self.activeConflict = ConflictModel()
 
@@ -68,12 +80,12 @@ class MainAppWindow:
 
         self.addMod(DMInpFrame)
         self.addMod(InfeasInpFrame)
-        self.addMod(IrrevInpFrame)
-        self.addMod(PreferencesFrame)
-        self.addMod(PreferenceRankingFrame)
-        self.addMod(ResultFrame)
-        self.addMod(InverseFrame)
-        self.addMod(StabilityFrame)
+        # self.addMod(IrrevInpFrame)
+        # self.addMod(PreferencesFrame)
+        # self.addMod(PreferenceRankingFrame)
+        # self.addMod(ResultFrame)
+        # self.addMod(InverseFrame)
+        # self.addMod(StabilityFrame)
 
         self.refreshActiveFrames()
 
@@ -85,35 +97,39 @@ class MainAppWindow:
         self.root.mainloop()
 
     def addMod(self, newMod):
-        """ Adds a new input frame and Module to the Conflict """
+        """Add a new input frame and Module to the Conflict."""
         newFrame = newMod(self.contentFrame, self.activeConflict)
 
         self.frameList.append(newFrame)
 
         def FSelect(self, *args):
-            print('Loading %s frame...'%(str(newFrame.buttonLabel)))
+            print('Loading {} frame...'.format(newFrame.buttonLabel))
             self.frameLeave()
             newFrame.enter()
             self.contentFrame.currFrame = newFrame
 
         self.frameBtnCmds.append(FSelect)
 
-        newButton = ttk.Button(self.pageSelectFrame,text=newFrame.buttonLabel,image=newFrame.inactiveIcon,compound="top",width=20,command=lambda: FSelect(self))
+        newButton = ttk.Button(self.pageSelectFrame, text=newFrame.buttonLabel,
+                               image=newFrame.inactiveIcon, compound="top",
+                               width=20, command=lambda: FSelect(self))
         self.frameBtnList.append(newButton)
         newFrame.button = newButton
-        newButton.grid(column=len(self.frameBtnList),row=0,sticky=(N,S,E,W))
+        newButton.grid(column=len(self.frameBtnList), row=0, sticky=tkNSEW)
 
-    def checkFramesHaveData(self,event=None):
-        for idx,frame in enumerate(self.frameList):
+    def checkFramesHaveData(self, event=None):
+        """Check if required data exists for each frame then de/activate."""
+        for idx, frame in enumerate(self.frameList):
             if frame.hasRequiredData():
-                self.frameBtnList[idx].config(state = "normal")
+                self.frameBtnList[idx].config(state="normal")
             else:
                 frame.clearFrame()
-                self.frameBtnList[idx].config(state = "disabled")
+                self.frameBtnList[idx].config(state="disabled")
             if frame != self.contentFrame.currFrame:
                 frame.built = False
 
-    def refreshActiveFrames(self,event=None):
+    def refreshActiveFrames(self, event=None):
+        """Unload all frames and attempt to reload the current one."""
         self.unloadAllFrames()
         self.checkFramesHaveData()
 
@@ -130,22 +146,21 @@ class MainAppWindow:
         except AttributeError:
             self.frameBtnCmds[0](self)
 
-    def unloadAllFrames(self,event=None):
-        for idx,frame in enumerate(self.frameList):
+    def unloadAllFrames(self, event=None):
+        """Remove all frames (conflict screens) from the window."""
+        for idx, frame in enumerate(self.frameList):
             frame.clearFrame()
-            self.frameBtnList[idx].config(state = "disabled")
-
-
+            self.frameBtnList[idx].config(state="disabled")
 
     def frameLeave(self):
-        """ Ungrids the current frame and performs other exit tasks"""
+        """Ungrid the current frame and performs other exit tasks."""
         try:
             self.contentFrame.currFrame.leave()
         except AttributeError:
             pass
 
     def saveConflict(self):
-        """Saves all information to the currently active file."""
+        """Save all information to the currently active file."""
         if not self.file:
             self.saveAs()
             return
@@ -158,38 +173,39 @@ class MainAppWindow:
         print('Saved')
 
     def saveAs(self):
-        """Opens a file dialog that prompts for name and location for saving the conflict."""
+        """Open a file dialog to save the conflict to file."""
         print('running saveAs')
-        fileName = filedialog.asksaveasfilename(defaultextension= '.gmcr',
-                                                filetypes = (("GMCR+ Save Files", "*.gmcr")
-                                                             ,("All files", "*.*") ),
-                                                parent=self.root)
+        fileName = filedialog.asksaveasfilename(
+            defaultextension='.gmcr',
+            filetypes=(("GMCR+ Save Files", "*.gmcr"), ("All files", "*.*")),
+            parent=self.root
+        )
         if fileName:
             self.file = fileName
             self.root.wm_title(self.file)
             self.saveConflict()
 
-
-    def loadConflict(self,fileName=None):
-        """Opens a file dialog that prompts for a save file to open."""
+    def loadConflict(self, fileName=None):
+        """Open a file dialog that prompts for a save file to open."""
         if not fileName:
-            fileName = filedialog.askopenfilename(filetypes = (("GMCR+ Save Files", "*.gmcr"),
-                                                                ("All files", "*.*") ),
-                                                initialdir= os.getcwd()+'/Examples',
-                                                parent=self.root)
+            fileName = filedialog.askopenfilename(
+                filetypes=(("GMCR+ Save Files", "*.gmcr"),
+                           ("All files", "*.*")),
+                initialdir='{}/Examples'.format(os.getcwd()),
+                parent=self.root
+            )
         if fileName:
-            self.file=fileName
+            self.file = fileName
             self.frameBtnCmds[0](self)
             self.frameLeave()
             self.unloadAllFrames()
-            print('loading: %s'%(fileName))
+            print('loading: {}'.format(fileName))
             self.root.wm_title(fileName)
             self.activeConflict.load_from_file(fileName)
             self.refreshActiveFrames()
 
-
     def newConflict(self):
-        """Clears all data in the conflict, allowing a new conflict to be entered."""
+        """Clear all data, creating a new conflict."""
         print("Initializing new conflict...")
         self.unloadAllFrames()
         self.activeConflict.__init__()
@@ -200,10 +216,8 @@ class MainAppWindow:
 
 if __name__ == '__main__':
     freeze_support()
-    os.chdir(sys.argv[0].rpartition('\\')[0])
-    launchFile= None
     try:
         launchFile = sys.argv[1]
     except IndexError:
         pass
-    a= MainAppWindow(launchFile)
+    a = MainAppWindow(launchFile)

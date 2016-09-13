@@ -2,8 +2,10 @@
 
 """Base class for frames to be loaded into the main window."""
 
-from tkinter import Frame, PhotoImage
+from tkinter import Frame, PhotoImage, StringVar, N, S, E, W
 from tkinter import ttk
+
+tkNSEW = (N, S, E, W)
 
 
 class FrameTemplate(Frame):
@@ -27,17 +29,16 @@ class FrameTemplate(Frame):
         self.activeIcon = PhotoImage(file=activeIcon)
         # Image used on button to select frame, when frame is inactive.
         self.inactiveIcon = PhotoImage(file=inactiveIcon)
+        # Help text string variable.
+        self.helpText = StringVar(value=self.helpText)
 
         self.built = False
-
-        self.lastBuildDMs = None
-        self.lastBuildOptions = None
-        self.lastBuildInfeasibles = None
+        self.button = None
 
     def makeButton(self, buttonMaster, mainWindow):
         """Create a button to be used ot enter the frame."""
         def onClick(*args):
-            print('Loading %s frame...'%(str(self.buttonLabel)))
+            print('Loading {0} frame...'.format(self.buttonLabel))
             mainWindow.frameLeave()
             self.enter()
             mainWindow.contentFrame.currFrame = self
@@ -50,7 +51,7 @@ class FrameTemplate(Frame):
 
         mainWindow.frameBtnList.append(self.button)
         self.button.grid(column=len(mainWindow.frameBtnList), row=0,
-                         sticky=(N,S,E,W))
+                         sticky=tkNSEW)
 
     def hasRequiredData(self):
         """Check that minimum data for input of misperceivedStates exists.
@@ -77,9 +78,7 @@ class FrameTemplate(Frame):
         self.helpFrame.grid_forget()
 
     def enter(self):
-        """Run when entering the screen."""
-        if self.dataChanged():
-            self.clearFrame()
+        """Re-grid the screen into the master. Perform required updates."""
         if not self.built:
             self.buildFrame()
         self.refreshWidgets()
@@ -90,7 +89,7 @@ class FrameTemplate(Frame):
             self.button['image'] = self.activeIcon
 
     def leave(self):
-        """Run when leaving the screen."""
+        """Un-grid the screen. Perform exit update tasks."""
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()

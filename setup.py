@@ -10,8 +10,11 @@ Built versions will appear in the `dist` top directory.
 from cx_Freeze import setup, Executable
 
 # Set other directories to be included.
-buildOptions = {'include_files': 
-                    ['Examples/','icons/','gmcr-vis/css/','gmcr-vis/js/','gmcr-vis/js-lib/','gmcr-vis/json/','gmcr-vis/favicon.ico','gmcr-vis/index.html','gmcr.ico','GMCR+handout.pdf','END USER AGREEMENT.txt'],
+buildOptions = {'include_files':
+                ['Examples/', 'icons/', 'gmcr-vis/css/', 'gmcr-vis/js/',
+                 'gmcr-vis/js-lib/', 'gmcr-vis/json/', 'gmcr-vis/favicon.ico',
+                 'gmcr-vis/index.html', 'gmcr.ico', 'GMCR+handout.pdf',
+                 'END USER AGREEMENT.txt'],
                 'silent': True}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
@@ -42,31 +45,31 @@ shortcut_table = [
      None,                     # ShowCmd
      'TARGETDIR'               # WkDir
      )
-    ]
+]
 
 # Create the table dictionary
 msi_data = {"Shortcut": shortcut_table}
 
-# Change some default MSI options and specify the use of the above defined tables
+# Change default MSI options and specify the use of the above defined tables
 bdist_msi_options = {'data': msi_data,
-                     'upgrade_code':'272b3c8b-515d-4e8d-980c-f007dac5ecdf'}
+                     'upgrade_code': '272b3c8b-515d-4e8d-980c-f007dac5ecdf'}
 
 # Specify executables
 executables = [
     Executable('a_Main_Window.py',
-                base='Win32GUI',
-                targetName = 'GMCRplus.exe',
-                appendScriptToExe=True,
-                appendScriptToLibrary=False,
-                icon='gmcr.ico',
-                shortcutName='GMCR+',
-                shortcutDir='ProgramMenuFolder')
+               base='Win32GUI',
+               targetName='GMCRplus.exe',
+               appendScriptToExe=True,
+               appendScriptToLibrary=False,
+               icon='gmcr.ico',
+               shortcutName='GMCR+',
+               shortcutDir='ProgramMenuFolder')
 ]
 
 # Run setup
 setup(name='GMCRplus',
-      version = '0.3.12',
-      description = 'Graph Model for Conflict Resolution',
-      options = {'build_exe': buildOptions,
-                 'bdist_msi': bdist_msi_options},
-      executables = executables)
+      version='0.3.12',
+      description='Graph Model for Conflict Resolution',
+      options={'build_exe': buildOptions,
+               'bdist_msi': bdist_msi_options},
+      executables=executables)
