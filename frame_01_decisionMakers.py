@@ -25,14 +25,16 @@ class DMInpFrame(FrameTemplate):
     # Image used on button to select frame, when frame is inactive.
     inactiveIcon = 'icons/DMs_and_Options_OFF.gif'
     # Help text to be displayed when screen is active.
-    helpText = "Click a decision maker in the left panel to view their "
-    "associated options in the right panel.  Double clicking an entry or "
-    "hitting 'Enter' with it selected allows you to edit it. Pressing 'Delete'"
-    " with an entry selected will remove it."
+    helpText = ("Click a decision maker in the left panel to view their "
+                "associated options in the right panel.  Double clicking an "
+                "entry or hitting 'Enter' with it selected allows you to edit "
+                "it. Pressing 'Delete' with an entry selected will remove it.")
 
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict):
         """Initialize DMinput Frame."""
+        print(self.helpText)
+
         FrameTemplate.__init__(self, master, conflict, self.buttonLabel,
                                self.activeIcon, self.inactiveIcon,
                                self.helpText)

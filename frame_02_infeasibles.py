@@ -30,15 +30,17 @@ class InfeasInpFrame(FrameTemplate):
     # Image used on button to select frame, when frame is inactive.
     inactiveIcon = 'icons/Infeasible_States_OFF.gif'
     # Help text to be displayed when screen is active.
-    helpText = "Enter infeasible states using the box at left. Removing as "
-    "infeasible state will remove all states that match the pattern from the "
-    "conflict. Removing as mutually exclusive will remove all states where "
-    "ANY TWO OR MORE of the specified options occur together."
+    helpText = ("Enter infeasible states using the box at left. Removing as "
+                "infeasible state will remove all states that match the "
+                "pattern from the conflict. Removing as mutually exclusive "
+                "will remove all states where ANY TWO OR MORE of the specified"
+                " options occur together.")
 
     def __init__(self, master, conflict, *args):
         """Initialize the Frame. Does not build widgets."""
         FrameTemplate.__init__(self, master, conflict, self.buttonLabel,
-                               self.activeIcon, self.inactiveIcon)
+                               self.activeIcon, self.inactiveIcon,
+                               self.helpText)
 
         self.lastBuildDMs = None
         self.lastBuildOptions = None

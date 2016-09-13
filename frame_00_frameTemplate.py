@@ -13,9 +13,9 @@ class FrameTemplate(Frame):
 
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict, buttonLabel, activeIcon,
-                 inactiveIcon, *args):
+                 inactiveIcon, helpText):
         """Initialize the Frame. Does not build widgets."""
-        ttk.Frame.__init__(self, master, *args)
+        ttk.Frame.__init__(self, master)
 
         self.infoFrame = ttk.Frame(master, relief='sunken', borderwidth='3')
         self.helpFrame = ttk.Frame(master, relief='sunken', borderwidth='3')
