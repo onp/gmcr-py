@@ -30,7 +30,7 @@ class FrameTemplate(Frame):
         # Image used on button to select frame, when frame is inactive.
         self.inactiveIcon = PhotoImage(file=inactiveIcon)
         # Help text string variable.
-        self.helpText = StringVar(value=self.helpText)
+        self.helpVar = StringVar(value=self.helpText)
 
         self.built = False
         self.button = None

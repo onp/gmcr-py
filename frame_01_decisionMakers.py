@@ -25,16 +25,17 @@ class DMInpFrame(FrameTemplate):
     # Image used on button to select frame, when frame is inactive.
     inactiveIcon = 'icons/DMs_and_Options_OFF.gif'
     # Help text to be displayed when screen is active.
-    helpText = """Click a decision maker in the left panel to view their \
-    associated options in the right panel.  Double clicking an entry or \
-    hitting 'Enter' with it selected allows you to edit it. Pressing 'Delete' \
-    with an entry selected will remove it."""
+    helpText = "Click a decision maker in the left panel to view their "
+    "associated options in the right panel.  Double clicking an entry or "
+    "hitting 'Enter' with it selected allows you to edit it. Pressing 'Delete'"
+    " with an entry selected will remove it."
 
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict):
         """Initialize DMinput Frame."""
         FrameTemplate.__init__(self, master, conflict, self.buttonLabel,
-                               self.activeIcon, self.inactiveIcon)
+                               self.activeIcon, self.inactiveIcon,
+                               self.helpText)
 
 # ############################     METHODS  ###################################
 
@@ -58,7 +59,7 @@ class DMInpFrame(FrameTemplate):
                                          textvariable=self.stateCount)
 
         # helpFrame: frame and label definitions (with master 'self.helpFrame')
-        self.helpLabel = ttk.Label(self.helpFrame, textvariable=self.helpText,
+        self.helpLabel = ttk.Label(self.helpFrame, textvariable=self.helpVar,
                                    wraplength=150)
 
         # Define frame-specific input widgets
