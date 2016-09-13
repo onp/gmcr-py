@@ -6,53 +6,46 @@ Loaded by the a_Main_Window module, and implements all of its required
 interfaces.
 """
 
-from tkinter import Tk, PhotoImage, StringVar, VERTICAL, N, S, E, W, END
+from tkinter import Tk, StringVar, VERTICAL, N, S, E, W, END
 from tkinter import ttk
+from frame_00_frameTemplate import FrameTemplate
 from widgets_f01_01_dmOptElements import DMselector, DMeditor
 from data_01_conflictModel import ConflictModel
 
+tkNSEW = (N, S, E, W)
 
-class DMInpFrame(ttk.Frame):
+
+class DMInpFrame(FrameTemplate):
     """Frame for input of DMs and options."""
+
+    # Label used for button to select frame in the main program.
+    buttonLabel = 'DMs & Options'
+    # Image used on button to select frame, when frame is active.
+    activeIcon = 'icons/DMs_and_Options_ON.gif'
+    # Image used on button to select frame, when frame is inactive.
+    inactiveIcon = 'icons/DMs_and_Options_OFF.gif'
+    # Help text to be displayed when screen is active.
+    helpText = """Click a decision maker in the left panel to view their \
+    associated options in the right panel.  Double clicking an entry or \
+    hitting 'Enter' with it selected allows you to edit it. Pressing 'Delete' \
+    with an entry selected will remove it."""
 
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict):
-        ttk.Frame.__init__(self, master)
-
-        self.infoFrame = ttk.Frame(master, relief='sunken', borderwidth='3')
-        self.helpFrame = ttk.Frame(master, relief='sunken', borderwidth='3')
-
-        # Connect to active conflict module
-        self.conflict = conflict
-
-        # Label used for button to select frame in the main program.
-        self.buttonLabel = 'DMs & Options'
-        # Image used on button to select frame, when frame is active.
-        self.activeIcon = PhotoImage(file='icons/DMs_and_Options_ON.gif')
-        # Image used on button to select frame, when frame is inactive.
-        self.inactiveIcon = PhotoImage(file='icons/DMs_and_Options_OFF.gif')
-        self.button = None
-
-        self.built = False
+        """Initialize DMinput Frame."""
+        FrameTemplate.__init__(self, master, conflict, self.buttonLabel,
+                               self.activeIcon, self.inactiveIcon)
 
 # ############################     METHODS  ###################################
-    def hasRequiredData(self):
-        return True
 
     def buildFrame(self):
+        """Contruct frame widgets and initialize data."""
         if self.built:
             return
         # Define variables that will display in the infoFrame
         self.dmCount = StringVar(value='Number of Decision Makers: ' + 'init')
         self.optCount = StringVar(value='Number of Options: ' + 'init')
         self.stateCount = StringVar(value='Total States: ' + 'init')
-
-        # Define variables that will display in the helpFrame
-        self.helpText = StringVar(
-            value="Click a decision maker in the left panel to view their "
-            "associated options in the right panel.  Double clicking an entry "
-            "or hitting 'Enter' with it selected allows you to edit it. "
-            "Pressing 'Delete' with an entry selected will remove it.")
 
         # Define frame-specific variables
 
@@ -76,28 +69,29 @@ class DMInpFrame(ttk.Frame):
         # ########  preliminary griding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=(N,S,E,W))
+        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
         self.grid_remove()
         self.columnconfigure(0, weight=1)
         self.columnconfigure(2, weight=1)
         self.rowconfigure(0, weight=1)
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=(N,S,E,W), padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.dmCountLabel.grid(column=0, row=1, sticky=(N,S,E,W))
-        self.optCountLabel.grid(column=0, row=2, sticky=(N,S,E,W))
-        self.stateCountLabel.grid(column=0, row=3, sticky=(N,S,E,W))
+        self.dmCountLabel.grid(column=0, row=1, sticky=tkNSEW)
+        self.optCountLabel.grid(column=0, row=2, sticky=tkNSEW)
+        self.stateCountLabel.grid(column=0, row=3, sticky=tkNSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=(N,S,E,W), padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=(N,S,E,W))
+        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
 
         # configuring frame-specific options
-        self.dmSelector.grid(row=0, column=0, sticky=(N,S,E,W))
-        ttk.Separator(self, orient=VERTICAL).grid(row=0, column=1, sticky=(N,S,E,W), padx=3)
-        self.editor.grid(row=0, column=2, sticky=(N,S,E,W))
+        self.dmSelector.grid(row=0, column=0, sticky=tkNSEW)
+        ttk.Separator(self, orient=VERTICAL).grid(row=0, column=1,
+                                                  sticky=tkNSEW, padx=3)
+        self.editor.grid(row=0, column=2, sticky=tkNSEW)
 
         # bindings
         self.dmSelector.bind('<<DMselected>>', self.dmChange)
@@ -108,38 +102,11 @@ class DMInpFrame(ttk.Frame):
 
         self.built = True
 
-    def clearFrame(self):
-        if not self.built:
-            return
-        self.built = False
-        for child in self.winfo_children():
-            child.destroy()
-        self.infoFrame.grid_forget()
-        self.helpFrame.grid_forget()
-
     def refreshWidgets(self):
+        """Refresh data in all active display widgets."""
         self.dmSelector.refresh()
         self.dmSelector.reselect()
         self.updateTotals()
-
-    def enter(self, *args):
-        """Re-grid the screen into the master. Perform required updates."""
-        if not self.built:
-            self.buildFrame()
-        self.refreshWidgets()
-        self.grid()
-        self.infoFrame.grid()
-        self.helpFrame.grid()
-        if self.button:
-            self.button['image'] = self.activeIcon
-
-    def leave(self, event=None):
-        """Un-grid the screen. Perform exit update tasks."""
-        self.grid_remove()
-        self.infoFrame.grid_remove()
-        self.helpFrame.grid_remove()
-        if self.button:
-            self.button['image'] = self.inactiveIcon
 
     def dmChange(self, event=None):
         """Change the selected decision maker."""
@@ -156,6 +123,7 @@ class DMInpFrame(ttk.Frame):
         self.editor.dmNameEditor.select_range(0, END)
 
     def handleDMOptChange(self, event=None):
+        """Update data when a DM or option is changed."""
         self.conflict.useManualPreferenceRanking = False
         self.conflict.clearPreferences()
         self.event_generate('<<checkData>>')
@@ -163,14 +131,16 @@ class DMInpFrame(ttk.Frame):
         self.updateTotals()
 
     def updateDMnames(self, event=None):
+        """Update screen when a DM name is changed."""
         self.dmSelector.updateList()
 
     def updateTotals(self, event=None):
+        """Update data shown in the infobox."""
         numD = len(self.conflict.decisionMakers)
         numO = sum([len(dm.options) for dm in self.conflict.decisionMakers])
-        self.dmCount.set('Number of Decision Makers: ' + str(numD))
-        self.optCount.set('Number of Options: ' + str(numO))
-        self.stateCount.set('Total States: ' + str(2**numO))
+        self.dmCount.set('Number of Decision Makers: {}'.format(numD))
+        self.optCount.set('Number of Options: {}'.format(numO))
+        self.stateCount.set('Total States: {}'.format(2**numO))
 
 # ######################
 
@@ -184,10 +154,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=(N,S,E,W))
+    cFrame.grid(column=0, row=0, sticky=tkNSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=(N,S,E,W))
+    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
 
     g1 = ConflictModel('AmRv2.gmcr')
 
