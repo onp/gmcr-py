@@ -53,7 +53,7 @@ class FrameTemplate(Frame):
         return self.button
 
     def hasRequiredData(self):
-        """Check that minimum data for input of misperceivedStates exists.
+        """Check that minimum data required to render the frame exists.
 
         Always returns True. Should be re-implmented in subclass if an actual
         test is needed.

@@ -21,8 +21,6 @@ tkNSEW = (N, S, E, W)
 class InfeasInpFrame(FrameTemplate):
     """Frame for input of infeasible states."""
 
-# ########################     INITIALIZATION  ################################
-
     # Label used for button to select frame in the main program.
     buttonLabel = 'Infeasible States'
     # Image used on button to select frame, when frame is active.
@@ -36,6 +34,7 @@ class InfeasInpFrame(FrameTemplate):
                 "will remove all states where ANY TWO OR MORE of the specified"
                 " options occur together.")
 
+# ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict, *args):
         """Initialize the Frame. Does not build widgets."""
         FrameTemplate.__init__(self, master, conflict, self.buttonLabel,
@@ -49,7 +48,7 @@ class InfeasInpFrame(FrameTemplate):
 # ############################     METHODS  ###################################
 
     def hasRequiredData(self):
-        """Check that minimum data for input of misperceivedStates exists."""
+        """Check that minimum data required to render the frame exists."""
         if len(self.conflict.decisionMakers) < 1:
             return False
         if len(self.conflict.options) < 1:
