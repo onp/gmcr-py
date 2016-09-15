@@ -15,7 +15,6 @@ from widgets_f04_02_prefElements import (PreferenceRankingMaster,
                                          PreferenceStaging,
                                          PreferenceListDisplay)
 from widgets_f04_03_optionForm import OptionFormTable
-import data_03_gmcrUtilities as gmcrUtil
 
 tkNSEW = (N, S, E, W)
 
@@ -46,7 +45,7 @@ class PreferencesFrame(FrameTemplate):
         self.lastBuildDMs = None
         self.lastBuildOptions = None
         self.lastBuildInfeasibles = None
-        self.lastBuildUsedRanking = None
+        self.lastBuildRanking = None
 
 
 # ############################     METHODS  ###################################
@@ -72,7 +71,7 @@ class PreferencesFrame(FrameTemplate):
             return True
         if self.lastBuildInfeasibles != self.conflict.infeasibles.export_rep():
             return True
-        if self.lastBuildUsedRanking != self.conflict.useManualPreferenceRanking:
+        if self.lastBuildRanking != self.conflict.useManualPreferenceRanking:
             return True
         else:
             return False
@@ -94,7 +93,7 @@ class PreferencesFrame(FrameTemplate):
         self.lastBuildDMs = self.conflict.decisionMakers.export_rep()
         self.lastBuildOptions = self.conflict.options.export_rep()
         self.lastBuildInfeasibles = self.conflict.infeasibles.export_rep()
-        self.lastBuildUsedRanking = self.conflict.useManualPreferenceRanking
+        self.lastBuildRanking = self.conflict.useManualPreferenceRanking
 
         # Define variables that will display in the infoFrame
         numD = len(self.conflict.decisionMakers)
@@ -193,41 +192,15 @@ class PreferencesFrame(FrameTemplate):
 
         self.built = True
 
-    def clearFrame(self):
-        if not self.built:
-            return
-        self.built = False
-        for child in self.winfo_children():
-            child.destroy()
-        self.infoFrame.grid_forget()
-        self.helpFrame.grid_forget()
-
     def enter(self, *args):
-        """ Re-grids the main frame, infoFrame and helpFrame into the master,
-        and performs any other update tasks required on loading the frame."""
-
+        """Re-grid the screen into the master. Perform required updates."""
         if self.dataChanged():
             self.clearFrame()
 
-        if not self.built:
-            self.buildFrame()
-        self.refresh()
-        self.grid()
-        self.infoFrame.grid()
-        self.helpFrame.grid()
-        if self.button:
-            self.button['image'] = self.activeIcon
-
-    def leave(self, *args):
-        """ Removes the main frame, infoFrame and helpFrame from the master,
-        and performs any other update tasks required on exiting the frame."""
-        self.grid_remove()
-        self.infoFrame.grid_remove()
-        self.helpFrame.grid_remove()
-        if self.button:
-            self.button['image'] = self.inactiveIcon
+        FrameTemplate.enter()
 
     def refresh(self, *args):
+        """Refresh data in all active display widgets."""
         for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
         self.editor.reloadOpts()
@@ -238,6 +211,7 @@ class PreferencesFrame(FrameTemplate):
         self.checkIfUsingRankings()
 
     def checkIfUsingRankings(self, event=None):
+        """Disable screen if Manual Ranking has been assigned."""
         if self.conflict.useManualPreferenceRanking:
             self.usePrioritizationButton.grid()
             self.rankings.disable()
@@ -248,6 +222,7 @@ class PreferencesFrame(FrameTemplate):
             self.usePrioritizationButton.grid_remove()
 
     def usePrioritization(self):
+        """Reactivate the screen if user decides to use prioritization."""
         self.conflict.useManualPreferenceRanking = False
         self.conflict.preferenceErrors = None
         self.refresh()
@@ -274,7 +249,7 @@ class PreferencesFrame(FrameTemplate):
         self.refresh()
 
     def stagePref(self, event=None):
-        """Stages a condition."""
+        """Send a condition to the staging area."""
         if self.editor.hasValidIf:
             for cond in self.editor.ifCond:
                 self.staging.addCondition(cond)
@@ -286,7 +261,7 @@ class PreferencesFrame(FrameTemplate):
         self.editor.setStates('clear')
 
     def pullFromStage(self, event=None):
-        """Moves a compound condition from Staging to Preferences."""
+        """Move a compound condition from Staging to Preferences."""
         newPref = self.staging.conditionList
         self.staging.clear()
         self.dm.preferences.append(newPref)

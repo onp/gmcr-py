@@ -1,74 +1,82 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Various widgets used in editing and displaying prioritization-based preferences.
+"""Widgets used in editing and displaying prioritization-based preferences.
 
 Loaded by the frame_04_preferencePrioritization module.
 """
 
-from tkinter import *
+from tkinter import StringVar, N, S, E, W, VERTICAL, Label
 from tkinter import ttk
-import data_03_gmcrUtilities as gmcrUtil
+
+tkNSEW = (N, S, E, W)
+
 
 class PreferenceRanking(ttk.Frame):
-    """Displays the state ranking for a single DM, and allows that DM to be selected."""
-    def __init__(self,master,conflict,dm,idx):
-        ttk.Frame.__init__(self,master,borderwidth=2)
+    """Allows a DM to be selected and displays that DMs state ranking."""
+
+    def __init__(self, master, conflict, dm, idx):
+        ttk.Frame.__init__(self, master, borderwidth=2)
 
         self.conflict = conflict
         self.dm = dm
         self.dmIdx = idx
-        
-        self.dmText = StringVar(value = dm.name + ': ')
-        self.dmLabel = Label(self,textvariable=self.dmText)
-        self.dmLabel.grid(row=0,column=0,sticky=(N,S,E,W))
-        
-        if len(conflict.feasibles)<1000:
+
+        self.dmText = StringVar(value=dm.name + ': ')
+        self.dmLabel = Label(self, textvariable=self.dmText)
+        self.dmLabel.grid(row=0, column=0, sticky=tkNSEW)
+
+        if len(conflict.feasibles) < 1000:
             self.prefRankText = StringVar(value=str(dm.preferenceRanking))
         else:
             self.prefRankText = StringVar(value="Too Many States")
-        self.prefRank = ttk.Label(self,textvariable=self.prefRankText,relief="sunken",width=40)
-        self.prefRank.grid(row=1,column=0,sticky=(N,S,E,W))
-        
-        self.selectBtn = ttk.Button(self,text="Edit",command=self.selectCmd)
-        self.selectBtn.grid(row=0,column=1,rowspan=2,sticky=(N,S,E,W))
+        self.prefRank = ttk.Label(self, textvariable=self.prefRankText,
+                                  relief="sunken", width=40)
+        self.prefRank.grid(row=1, column=0, sticky=tkNSEW)
 
-        self.columnconfigure(0,weight=1)
+        self.selectBtn = ttk.Button(self, text="Edit", command=self.selectCmd)
+        self.selectBtn.grid(row=0, column=1, rowspan=2, sticky=tkNSEW)
 
-    def update(self,*args):
-        self.prefRankText.set('still not implemented') #str(self.conflict.prefRank(self.dmIdx)))
+        self.columnconfigure(0, weight=1)
 
-    def selectCmd(self,*args):
-        self.event_generate('<<DMselect>>',x=self.dmIdx)
+    def update(self, *args):
+        self.prefRankText.set('still not implemented')
+        # str(self.conflict.prefRank(self.dmIdx)))
 
-    def deselect(self,*args):
+    def selectCmd(self, *args):
+        self.event_generate('<<DMselect>>', x=self.dmIdx)
+
+    def deselect(self, *args):
         self.configure(relief='flat')
         self.dmLabel.configure(bg="SystemButtonFace")
-        
-    def select(self,*args):
+
+    def select(self, *args):
         self.configure(relief='raised')
         self.dmLabel.configure(bg="green")
 
+
 class PreferenceRankingMaster(ttk.Frame):
     """Displays a PreferenceRanking widget for each DM."""
-    def __init__(self,master,conflict):
-        ttk.Frame.__init__(self,master)
+
+    def __init__(self, master, conflict):
+        ttk.Frame.__init__(self, master)
         self.conflict = conflict
         self.cframe = ttk.Frame(self)
-        self.columnconfigure(0,weight=1)
-        self.cframe.columnconfigure(0,weight=1)
+        self.columnconfigure(0, weight=1)
+        self.cframe.columnconfigure(0, weight=1)
         self.dmSelIdx = None
         self.dm = None
-        
-        self.clearBtn = ttk.Button(self,text="Clear Selection",command=self.clearSel)
-        self.clearBtn.grid(row=1,column=0,sticky=(N,S,E,W))
-        
+
+        self.clearBtn = ttk.Button(self, text="Clear Selection",
+                                   command=self.clearSel)
+        self.clearBtn.grid(row=1, column=0, sticky=tkNSEW)
+
         self.refresh()
 
     def update(self):
         for ranking in self.rankings:
             ranking.update()
 
-    def chgDM(self,event):
+    def chgDM(self, event):
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = event.x
@@ -79,76 +87,84 @@ class PreferenceRankingMaster(ttk.Frame):
     def refresh(self):
         self.cframe.destroy()
         self.cframe = ttk.Frame(self)
-        self.cframe.grid(row=0,column=0,sticky=(N,S,E,W))
-        self.cframe.columnconfigure(0,weight=1)
+        self.cframe.grid(row=0, column=0, sticky=tkNSEW)
+        self.cframe.columnconfigure(0, weight=1)
         self.rankings = []
-        for idx,dm in enumerate(self.conflict.decisionMakers):
-            self.rankings.append(PreferenceRanking(self.cframe,self.conflict,dm,idx))
-            self.rankings[-1].grid(row=idx,column=0,padx=3,pady=3,sticky=(N,S,E,W))
-            self.rankings[-1].bind('<<DMselect>>',self.chgDM)
+        for idx, dm in enumerate(self.conflict.decisionMakers):
+            self.rankings.append(PreferenceRanking(self.cframe, self.conflict,
+                                                   dm, idx))
+            self.rankings[-1].grid(row=idx, column=0, padx=3, pady=3,
+                                   sticky=tkNSEW)
+            self.rankings[-1].bind('<<DMselect>>', self.chgDM)
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].select()
-                
-    def disable(self,event=None):
+
+    def disable(self, event=None):
         for ranking in self.rankings:
             ranking.selectBtn['state'] = 'disabled'
         self.clearBtn['state'] = 'disabled'
-            
-    def enable(self,event=None):
+
+    def enable(self, event=None):
         for ranking in self.rankings:
-            ranking.selectBtn['state'] = 'normal'    
+            ranking.selectBtn['state'] = 'normal'
         self.clearBtn['state'] = 'normal'
-            
-    def clearSel(self,event=None):
+
+    def clearSel(self, event=None):
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = None
         self.dm = None
         self.event_generate('<<DMchg>>')
-        
+
+
 class PreferenceStaging(ttk.Frame):
     """Displays the conditions that make up a compound condition."""
-    def __init__(self,master,conflict):
-        ttk.Frame.__init__(self,master)
+
+    def __init__(self, master, conflict):
+        ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
-        
-        self.label = ttk.Label(self,text="Staging")
-        self.listDisp = ttk.Treeview(self,selectmode='browse')
-        self.scrollY = ttk.Scrollbar(self,orient=VERTICAL,command = self.listDisp.yview)
+
+        self.label = ttk.Label(self, text="Staging")
+        self.listDisp = ttk.Treeview(self, selectmode='browse')
+        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,
+                                     command=self.listDisp.yview)
         self.listDisp.configure(yscrollcommand=self.scrollY.set)
-        self.removeConditionBtn = ttk.Button(self,text="Remove Condition from Staging",command=self.removeCondition)
-        self.addToPreferencesBtn = ttk.Button(self,text="Add to Preferences ->",command=self.addToPreferences)
-        
-        self.columnconfigure(0,weight=1)
-        self.rowconfigure(1,weight=1)
-        
-        self.label.grid(column=0,row=0,sticky=(N,S,E,W))
-        self.listDisp.grid(column=0,row=1,sticky=(N,S,E,W))
-        self.scrollY.grid(column=1,row=1,sticky=(N,S,E,W))
-        self.removeConditionBtn.grid(column=0,row=2,sticky=(N,S,E,W))
-        self.addToPreferencesBtn.grid(column=0,row=3,sticky=(N,S,E,W))
-        
+        self.removeConditionBtn = ttk.Button(
+            self, text="Remove Condition from Staging",
+            command=self.removeCondition)
+        self.addToPreferencesBtn = ttk.Button(
+            self, text="Add to Preferences ->", command=self.addToPreferences)
+
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
+
+        self.label.grid(column=0, row=0, sticky=tkNSEW)
+        self.listDisp.grid(column=0, row=1, sticky=tkNSEW)
+        self.scrollY.grid(column=1, row=1, sticky=tkNSEW)
+        self.removeConditionBtn.grid(column=0, row=2, sticky=tkNSEW)
+        self.addToPreferencesBtn.grid(column=0, row=3, sticky=tkNSEW)
+
         self.listDisp.bind('<<TreeviewSelect>>', self.selChgCmd)
         self.clear()
-        
+
     def clear(self):
         self.conditionList = self.conflict.newCompoundCondition([])
-        self.selId  = None
+        self.selId = None
         self.selIdx = None
-        
+
         for child in self.listDisp.get_children():
             self.listDisp.delete(child)
         self.removeConditionBtn['state'] = 'disabled'
         self.addToPreferencesBtn['state'] = 'disabled'
-            
-    def selChgCmd(self,*args):
+
+    def selChgCmd(self, *args):
         """Called whenever the selection changes."""
-        self.selId  = self.listDisp.selection()
+        self.selId = self.listDisp.selection()
         self.selIdx = self.listDisp.index(self.selId)
-        self.event_generate('<<SelCond>>',x=self.selIdx)
-        
-    def setList(self,newConditions):
+        self.event_generate('<<SelCond>>', x=self.selIdx)
+
+    def setList(self, newConditions):
         self.clear()
         if newConditions.isCompound:
             self.conditionList = newConditions
@@ -156,54 +172,58 @@ class PreferenceStaging(ttk.Frame):
             self.conditionList.append(newConditions)
 
         for ynd in self.conditionList.name.split(', '):
-            self.listDisp.insert('','end',text=ynd)
-            
-        if len(self.conditionList)>0:
+            self.listDisp.insert('', 'end', text=ynd)
+
+        if len(self.conditionList) > 0:
             self.removeConditionBtn['state'] = 'normal'
             self.addToPreferencesBtn['state'] = 'normal'
-        
-    def removeCondition(self,event=None):
+
+    def removeCondition(self, event=None):
         if self.selIdx is not None:
             del self.conditionList[self.selIdx]
             self.listDisp.delete(self.selId)
-            
+
             if len(self.conditionList) == 0:
                 self.removeConditionBtn['state'] = 'disabled'
                 self.addToPreferencesBtn['state'] = 'disabled'
-        
-    def addToPreferences(self,event=None):
+
+    def addToPreferences(self, event=None):
         self.event_generate('<<PullFromStage>>')
-        
-    def addCondition(self,condition):
+
+    def addCondition(self, condition):
         self.conditionList.append(condition)
-        self.listDisp.insert('','end',text=condition.name)
-        
-        if len(self.conditionList)>0:
+        self.listDisp.insert('', 'end', text=condition.name)
+
+        if len(self.conditionList) > 0:
             self.removeConditionBtn['state'] = 'normal'
             self.addToPreferencesBtn['state'] = 'normal'
-        
-    def disable(self,event=None):
+
+    def disable(self, event=None):
         self.removeConditionBtn['state'] = 'disabled'
         self.addToPreferencesBtn['state'] = 'disabled'
-        
-    def enable(self,event=None):
+
+    def enable(self, event=None):
         self.removeConditionBtn['state'] = 'normal'
         self.addToPreferencesBtn['state'] = 'normal'
 
 
-        
 class PreferenceListDisplay(ttk.Frame):
     """Displays the preference statements for the selected DM."""
-    def __init__(self,master,conflict):
-        ttk.Frame.__init__(self,master)
+
+    def __init__(self, master, conflict):
+        ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
-        self.label = ttk.Label(self,text="Preferences")
-        self.disp = ttk.Treeview(self, columns=('state','weight'),selectmode='browse')
-        self.scrl = ttk.Scrollbar(self, orient=VERTICAL,command = self.disp.yview)
-        self.upBtn   = ttk.Button(self,width=10,text='Up',     command = self.upCmd  )
-        self.downBtn = ttk.Button(self,width=10,text='Down',   command = self.downCmd)
-        self.delBtn  = ttk.Button(self,width=10,text='Delete', command = self.delCmd)
+        self.label = ttk.Label(self, text="Preferences")
+        self.disp = ttk.Treeview(self, columns=('state', 'weight'),
+                                 selectmode='browse')
+        self.scrl = ttk.Scrollbar(self, orient=VERTICAL,
+                                  command=self.disp.yview)
+        self.upBtn = ttk.Button(self, width=10, text='Up', command=self.upCmd)
+        self.downBtn = ttk.Button(self, width=10, text='Down',
+                                  command=self.downCmd)
+        self.delBtn = ttk.Button(self, width=10, text='Delete',
+                                 command=self.delCmd)
         self.dm = self.conflict.decisionMakers[0]
         self.selIdx = None
         self.selId = None
@@ -211,21 +231,21 @@ class PreferenceListDisplay(ttk.Frame):
         # ##########
 
         self.columnconfigure(0, weight=1)
-        self.rowconfigure(1,weight=1)
+        self.rowconfigure(1, weight=1)
 
         self.disp.heading('state', text='Preferred Condition')
         self.disp.heading('weight', text='Weighting')
         self.disp['show'] = 'headings'
 
-        self.label.grid(column=0,row=0,columnspan=5,sticky=(N,S,E,W))
-        
-        self.disp.grid(column=0,row=1,columnspan=5,sticky=(N,S,E,W))
-        self.scrl.grid(column=5,row=1,sticky=(N,S,E,W))
+        self.label.grid(column=0, row=0, columnspan=5, sticky=tkNSEW)
+
+        self.disp.grid(column=0, row=1, columnspan=5, sticky=tkNSEW)
+        self.scrl.grid(column=5, row=1, sticky=tkNSEW)
         self.disp.configure(yscrollcommand=self.scrl.set)
 
-        self.upBtn.grid(column=2,row=3,sticky=(N,S,E,W))
-        self.downBtn.grid(column=3,row=3,sticky=(N,S,E,W))
-        self.delBtn.grid(column=4,row=3,sticky=(N,S,E,W))
+        self.upBtn.grid(column=2, row=3, sticky=tkNSEW)
+        self.downBtn.grid(column=3, row=3, sticky=tkNSEW)
+        self.delBtn.grid(column=4, row=3, sticky=tkNSEW)
 
         self.disp.bind('<<TreeviewSelect>>', self.selChgCmd)
 
@@ -237,67 +257,66 @@ class PreferenceListDisplay(ttk.Frame):
             self.dm.weightPreferences()
             self.keys = []
             for pref in self.dm.preferences:
-                key = self.disp.insert('','end',text=pref.name)
-                self.disp.set(key,'state',pref.name)
-                self.disp.set(key,'weight',pref.weight)
+                key = self.disp.insert('', 'end', text=pref.name)
+                self.disp.set(key, 'state', pref.name)
+                self.disp.set(key, 'weight', pref.weight)
                 self.keys.append(key)
-        
-        
-    def disable(self,event=None):
+
+    def disable(self, event=None):
         self.disp['selectmode'] = 'none'
         self.upBtn['state'] = 'disabled'
         self.downBtn['state'] = 'disabled'
         self.delBtn['state'] = 'disabled'
-    
-    def enable(self,event=None):
+
+    def enable(self, event=None):
         self.disp['selectmode'] = 'browse'
         self.upBtn['state'] = 'normal'
         self.downBtn['state'] = 'normal'
         self.delBtn['state'] = 'normal'
 
-    def changeDM(self,dm):
-        """Changes which Decision Maker is displayed."""
+    def changeDM(self, dm):
+        """Change which Decision Maker is displayed."""
         self.dm = dm
         self.refresh()
 
-    def selChgCmd(self,*args):
+    def selChgCmd(self, *args):
         """Called whenever the selection changes."""
-        self.selId  = self.disp.selection()
+        self.selId = self.disp.selection()
         self.selIdx = self.disp.index(self.selId)
-        self.event_generate('<<SelPref>>',x=self.selIdx)
+        self.event_generate('<<SelPref>>', x=self.selIdx)
 
-    def upCmd(self,*args):
+    def upCmd(self, *args):
         """Called whenever an item is moved upwards."""
         idx = self.selIdx
-        if (idx !=0) and (self.dm is not None):
-            newIdx = idx-1
-            self.dm.preferences.moveCondition(idx,idx-1)
+        if (idx != 0) and (self.dm is not None):
+            newIdx = idx - 1
+            self.dm.preferences.moveCondition(idx, idx - 1)
             self.event_generate('<<ValueChange>>')
             self.disp.selection_set(self.keys[newIdx])
             self.selChgCmd()
 
-    def downCmd(self,*args):
+    def downCmd(self, *args):
         """Called whenever an item is moved downwards."""
         idx = self.selIdx
-        if (idx != len(self.dm.preferences)-1) and (self.dm is not None):
-            newIdx = idx+1
-            self.dm.preferences.moveCondition(idx,idx+1)
+        if (idx != len(self.dm.preferences) - 1) and (self.dm is not None):
+            newIdx = idx + 1
+            self.dm.preferences.moveCondition(idx, idx + 1)
             self.event_generate('<<ValueChange>>')
             self.disp.selection_set(self.keys[newIdx])
             self.selChgCmd()
 
-    def delCmd(self,*args):
+    def delCmd(self, *args):
         """Called when an item is deleted."""
-        if self.selIdx < len(self.keys)-1:
+        if self.selIdx < len(self.keys) - 1:
             newSelIdx = self.selIdx
         elif len(self.keys) <= 1:
             newSelIdx = None
         else:
-            newSelIdx = self.selIdx-1
-                
+            newSelIdx = self.selIdx - 1
+
         self.dm.preferences.removeCondition(self.selIdx)
         self.event_generate('<<ValueChange>>')
-        
+
         if newSelIdx is not None:
             self.disp.selection_set(self.keys[newSelIdx])
         else:

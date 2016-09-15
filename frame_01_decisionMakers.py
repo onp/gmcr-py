@@ -103,7 +103,7 @@ class DMInpFrame(FrameTemplate):
 
         self.built = True
 
-    def refreshWidgets(self):
+    def refresh(self):
         """Refresh data in all active display widgets."""
         self.dmSelector.refresh()
         self.dmSelector.reselect()
@@ -143,7 +143,12 @@ class DMInpFrame(FrameTemplate):
         self.optCount.set('Number of Options: {}'.format(numO))
         self.stateCount.set('Total States: {}'.format(2**numO))
 
-# ######################
+# #############################################################################
+# ###############                   TESTING                         ###########
+# #############################################################################
+
+# Code in this section is only run when this module is run by itself. It serves
+# as a test of module functionality.
 
 
 def main():

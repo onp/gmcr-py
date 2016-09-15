@@ -80,7 +80,7 @@ class FrameTemplate(Frame):
         """Re-grid the screen into the master. Perform required updates."""
         if not self.built:
             self.buildFrame()
-        self.refreshWidgets()
+        self.refresh()
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
@@ -88,7 +88,7 @@ class FrameTemplate(Frame):
             self.button['image'] = self.activeIcon
 
     def leave(self):
-        """Un-grid the screen. Perform exit update tasks."""
+        """Un-grid the screen. Perform exit clean-up tasks."""
         self.grid_remove()
         self.infoFrame.grid_remove()
         self.helpFrame.grid_remove()

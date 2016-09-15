@@ -146,15 +146,15 @@ class InfeasInpFrame(FrameTemplate):
         self.optsInp.bind('<<AddMutEx>>', self.addMutEx)
 
         self.infeasDisp.bind('<<SelItem>>', self.selChg)
-        self.infeasDisp.bind('<<ValueChange>>', self.refreshWidgets)
+        self.infeasDisp.bind('<<ValueChange>>', self.refresh)
 
         self.hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
 
-        self.refreshWidgets()
+        self.refresh()
 
         self.built = True
 
-    def refreshWidgets(self, *args):
+    def refresh(self, *args):
         """Refresh data in all active display widgets."""
         self.infeasDisp.refreshView()
         self.feasList.refreshList()
@@ -173,7 +173,7 @@ class InfeasInpFrame(FrameTemplate):
         infeas = self.optsInp.getStates()
         self.conflict.infeasibles.append(infeas)
         self.conflict.recalculateFeasibleStates()
-        self.refreshWidgets()
+        self.refresh()
 
     def addMutEx(self, *args):
         """Remove a set of Mutually Exclusive States from the conflict."""
@@ -181,7 +181,7 @@ class InfeasInpFrame(FrameTemplate):
         mutEx = gmcrUtil.mutuallyExclusive(mutEx)
         for infeas in mutEx:
             self.conflict.infeasibles.append(list(infeas))
-        self.refreshWidgets()
+        self.refresh()
 
     def selChg(self, event):
         """Triggered when the selection changes in the treeview."""
@@ -197,7 +197,12 @@ class InfeasInpFrame(FrameTemplate):
 
         self.optsInp.reloadOpts()
 
-# ########
+# #############################################################################
+# ###############                   TESTING                         ###########
+# #############################################################################
+
+# Code in this section is only run when this module is run by itself. It serves
+# as a test of module functionality.
 
 
 def main():

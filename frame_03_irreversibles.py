@@ -100,7 +100,7 @@ class IrrevInpFrame(FrameTemplate):
 
         self.built = True
 
-    def refreshWidgets(self, *args):
+    def refresh(self, *args):
         """Refresh data in all active display widgets."""
         self.irrevEntry.refreshDisplay()
 

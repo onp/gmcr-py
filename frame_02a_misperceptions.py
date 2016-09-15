@@ -148,11 +148,11 @@ class MisperceptionInpFrame(Frame):
         self.optsInp.bind('<<AddMutEx>>', self.addMutEx)
 
         self.infeasDisp.bind('<<SelItem>>', self.selChg)
-        self.infeasDisp.bind('<<ValueChange>>', self.refreshWidgets)
+        self.infeasDisp.bind('<<ValueChange>>', self.refresh)
 
         self.hSep.grid(column=1, row=0, rowspan=10, sticky=(N,S,E,W))
 
-        self.refreshWidgets()
+        self.refresh()
 
         self.built = True
 
@@ -163,7 +163,7 @@ class MisperceptionInpFrame(Frame):
         self.infoFrame.grid_forget()
         self.helpFrame.grid_forget()
 
-    def refreshWidgets(self, *args):
+    def refresh(self, *args):
         """Refresh information in the widgets. Triggered when data changes."""
         self.infeasDisp.refreshView()
         self.feasList.refreshList()
@@ -178,7 +178,7 @@ class MisperceptionInpFrame(Frame):
         infeas = self.optsInp.getStates()
         self.conflict.infeasibles.append(infeas)
         self.conflict.recalculateFeasibleStates()
-        self.refreshWidgets()
+        self.refresh()
 
     def addMutEx(self, *args):
         """Remove a set of Mutually Exclusive States from the conflict."""
@@ -186,7 +186,7 @@ class MisperceptionInpFrame(Frame):
         mutEx = gmcrUtil.mutuallyExclusive(mutEx)
         for infeas in mutEx:
             self.conflict.infeasibles.append(list(infeas))
-        self.refreshWidgets()
+        self.refresh()
 
     def selChg(self, event):
         """Triggered when the selection changes in the treeview."""
@@ -199,7 +199,7 @@ class MisperceptionInpFrame(Frame):
             self.clearFrame()
         if not self.built:
             self.buildFrame()
-        self.refreshWidgets()
+        self.refresh()
         self.grid()
         self.infoFrame.grid()
         self.helpFrame.grid()
