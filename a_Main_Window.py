@@ -82,7 +82,7 @@ class MainAppWindow:
         self.addMod(InfeasInpFrame)
         self.addMod(IrrevInpFrame)
         self.addMod(PreferencesFrame)
-        # self.addMod(PreferenceRankingFrame)
+        self.addMod(PreferenceRankingFrame)
         # self.addMod(ResultFrame)
         # self.addMod(InverseFrame)
         # self.addMod(StabilityFrame)

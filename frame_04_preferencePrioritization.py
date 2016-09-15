@@ -197,7 +197,7 @@ class PreferencesFrame(FrameTemplate):
         if self.dataChanged():
             self.clearFrame()
 
-        FrameTemplate.enter()
+        FrameTemplate.enter(self)
 
     def refresh(self, *args):
         """Refresh data in all active display widgets."""
