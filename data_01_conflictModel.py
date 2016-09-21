@@ -101,8 +101,8 @@ class DecisionMaker:
     def calculatePreferences(self):
         """Calculate the DM's prefence ranking of the valid states."""
         if self.conflict.useManualPreferenceRanking:
-            self.payoffs = gmcrUtil.mapPrefRank2Payoffs(self.preferenceRanking,
-                                                        self.conflict.feasibles)
+            self.payoffs = gmcrUtil.mapPrefRank2Payoffs(
+                self.preferenceRanking, self.conflict.feasibles)
             self.usedRanking = self.conflict.useManualPreferenceRanking
         elif (self.lastCalculatedPreferences != self.preferences.export_rep() or
               self.usedRanking != self.conflict.useManualPreferenceRanking or

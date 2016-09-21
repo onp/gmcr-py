@@ -37,7 +37,7 @@ class TreeInfeas(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
-        self.tDisp.heading('state', text='Infeasible State')
+        self.tDisp.heading('state', text='Misperceived State')
         self.tDisp.heading('stDes', text='# of States Described')
         self.tDisp.heading('stRem', text='# of States Removed')
         self.tDisp['show'] = 'headings'
@@ -56,6 +56,7 @@ class TreeInfeas(ttk.Frame):
 
     def refreshView(self):
         """Fully refreshes the list displayed."""
+        # TODO fix to use misperceived states instead of infeasibles.
         chldn = self.tDisp.get_children()
         for chld in chldn:
             self.tDisp.delete(chld)
@@ -76,6 +77,7 @@ class TreeInfeas(ttk.Frame):
 
     def upCmd(self, *args):
         """Called whenever an item is moved upwards."""
+        # TODO fix to use misperceived states instead of infeasibles.
         idx = self.tDisp.selIdx
         if idx != 0:
             self.conflict.infeasibles.moveCondition(idx, idx - 1)
@@ -86,6 +88,7 @@ class TreeInfeas(ttk.Frame):
 
     def downCmd(self, *args):
         """Called whenever an item is moved downwards."""
+        # TODO fix to use misperceived states instead of infeasibles.
         idx = self.tDisp.selIdx
         if idx != len(self.conflict.infeasibles) - 1:
             self.conflict.infeasibles.moveCondition(idx, idx + 1)
@@ -96,6 +99,7 @@ class TreeInfeas(ttk.Frame):
 
     def delCmd(self, *args):
         """Called when an item is deleted."""
+        # TODO fix to use misperceived states instead of infeasibles.
         idx = self.tDisp.selIdx
         self.conflict.infeasibles.removeCondition(idx)
         self.conflict.recalculateFeasibleStates()
@@ -114,7 +118,8 @@ def main():
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    g1 = ConflictModel('AmRv2.gmcr')
+    g1 = ConflictModel()
+    g1.load_from_file('Examples/SyriaIraq.gmcr')
 
     theTree = TreeInfeas(root, g1)
     theTree.grid(column=0, row=0, sticky=tkNSEW)

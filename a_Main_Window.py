@@ -8,6 +8,7 @@ from tkinter import filedialog
 from data_01_conflictModel import ConflictModel
 from frame_01_decisionMakers import DMInpFrame
 from frame_02_infeasibles import InfeasInpFrame
+from frame_02a_misperceptions import MisperceptionFrame
 from frame_03_irreversibles import IrrevInpFrame
 from frame_04_preferencePrioritization import PreferencesFrame
 from frame_05_preferenceRanking import PreferenceRankingFrame
@@ -80,6 +81,7 @@ class MainAppWindow:
 
         self.addMod(DMInpFrame)
         self.addMod(InfeasInpFrame)
+        self.addMod(MisperceptionFrame)
         self.addMod(IrrevInpFrame)
         self.addMod(PreferencesFrame)
         self.addMod(PreferenceRankingFrame)

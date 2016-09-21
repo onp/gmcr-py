@@ -5,7 +5,7 @@
 Loaded by the a_Main_Window module, and implements all of its required
 interfaces.
 
-This frame is a repurposed "infeasibles" frame and reuses most of the same
+This frame is a repurposed "Infeasibles" frame and reuses most of the same
 elements.
 """
 
@@ -147,6 +147,7 @@ class MisperceptionFrame(FrameTemplate):
         self.optsInp.grid(column=0, row=0, columnspan=2, sticky=tkNSEW)
         self.optsInp.bind('<<AddInfeas>>', self.addInfeas)
         self.optsInp.bind('<<AddMutEx>>', self.addMutEx)
+        self.optsInp.bind('<<ChangeDM>>', self.changeDM)
 
         self.infeasDisp.bind('<<SelItem>>', self.selChg)
         self.infeasDisp.bind('<<ValueChange>>', self.refresh)
@@ -195,10 +196,14 @@ class MisperceptionFrame(FrameTemplate):
         """Run when entering the Infeasible States screen."""
         if self.dataChanged():
             self.clearFrame()
-
         FrameTemplate.enter(self)
-
         self.optsInp.reloadOpts()
+
+    def changeDM(self, *args):
+        """Triggered when the focus DM is changed."""
+        dmName = self.optsInp.activeDMname.get()
+        dm = self.optsInp.dmLookup[dmName]
+        print(dm, dm.options)
 
 # #############################################################################
 # ###############                   TESTING                         ###########
@@ -222,7 +227,8 @@ def main():
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
     hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
 
-    g1 = ConflictModel('Prisoners.gmcr')
+    g1 = ConflictModel()
+    g1.load_from_file('Examples/SyriaIraq.gmcr')
 
     testFrame = MisperceptionFrame(cFrame, g1)
     testFrame.enter()

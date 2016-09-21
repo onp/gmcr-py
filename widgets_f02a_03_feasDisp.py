@@ -30,7 +30,7 @@ class FeasDisp(ttk.Frame):
         self.fmts = {'Pattern': 'YN-', 'List (YN)': 'YN',
                      'List (ordered and [decimal])': 'ord_dec'}
         cBoxOpts = ('Pattern', 'List (YN)', 'List (ordered and [decimal])')
-        self.feasText = ttk.Label(self, text='Feasible States')
+        self.feasText = ttk.Label(self, text='Perceived States')
         self.feasText.grid(row=0, column=0, columnspan=3)
         self.cBox = ttk.Combobox(self, textvariable=self.dispFormat,
                                  values=cBoxOpts, state='readonly')
@@ -62,6 +62,7 @@ class FeasDisp(ttk.Frame):
 
     def refreshList(self):
         """Update the list of feasible states displayed and the format."""
+        # TODO fix to use misperceived states instead of infeasibles.
         fmt = self.fmts[self.dispFormat.get()]
         if fmt == "YN-":
             feas = self.conflict.feasibles.dash

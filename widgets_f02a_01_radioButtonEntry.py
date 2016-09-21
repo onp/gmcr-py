@@ -75,7 +75,7 @@ class RadiobuttonSeries(ttk.Labelframe):
 
 
 class RadiobuttonEntry(ttk.Frame):
-    """State entry for the entire conflict.
+    """State entry for all DMs, and controls for adding the infeasibles.
 
     Uses a set of RadioButtonSeries elements.
     """
@@ -86,18 +86,30 @@ class RadiobuttonEntry(ttk.Frame):
 
         self.conflict = conflict
 
+        self.dmLookup = {dm.name: dm for dm in self.conflict.decisionMakers}
+        dmNames = tuple(self.dmLookup.keys())
+        self.activeDMname = StringVar(value=dmNames[0])
+
+        dmSelLabel = ttk.Label(self, text="Decision Maker")
+        dmSelLabel.grid(column=0, row=0)
+
+        self.dmSelector = ttk.Combobox(self, textvariable=self.activeDMname,
+                                       values=dmNames, state='readonly')
+        self.dmSelector.grid(column=1, row=0, sticky=tkNSEW)
+        self.dmSelector.bind('<<ComboboxSelected>>', self.dmSel)
+
         self.rbeCanvas = Canvas(self)
         self.rdBtnFrame = ttk.Frame(self.rbeCanvas)
         self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,
                                      command=self.rbeCanvas.yview)
 
-        self.rbeCanvas.grid(column=0, row=0, columnspan=2, sticky=tkNSEW)
-        self.scrollY.grid(column=2, row=0, sticky=tkNSEW)
+        self.rbeCanvas.grid(column=0, row=1, columnspan=2, sticky=tkNSEW)
+        self.scrollY.grid(column=2, row=1, sticky=tkNSEW)
         self.rbeCanvas.configure(yscrollcommand=self.scrollY.set)
         self.canvWindow = self.rbeCanvas.create_window(
             (0, 0), window=self.rdBtnFrame, anchor='nw')
 
-        self.rowconfigure(0, weight=1)
+        self.rowconfigure(1, weight=1)
 
         self.entryText = StringVar(value='')
 
@@ -105,7 +117,7 @@ class RadiobuttonEntry(ttk.Frame):
         self.entryBx = ttk.Entry(self, textvariable=self.entryText,
                                  validate="key",
                                  validatecommand=(vcmd, '%S', '%P'))
-        self.entryBx.grid(column=0, row=1, columnspan=2, sticky=tkNSEW)
+        self.entryBx.grid(column=0, row=2, columnspan=2, sticky=tkNSEW)
         self.entryBx.bind('<Return>', self.generateAdd)
 
         self.warnText = StringVar(value='')
@@ -116,9 +128,9 @@ class RadiobuttonEntry(ttk.Frame):
                                    text='Remove as Mutually Exclusive Options',
                                    command=self.generateMutEx)
         self.warnLab = ttk.Label(self, textvariable=self.warnText)
-        self.warnLab.grid(column=0, row=2, sticky=tkNSEW)
-        self.addBtn.grid(column=0, row=3, columnspan=2, sticky=tkNSEW)
-        self.mutExBtn.grid(column=0, row=4, columnspan=2, sticky=tkNSEW)
+        self.warnLab.grid(column=0, row=3, sticky=tkNSEW)
+        self.addBtn.grid(column=0, row=4, columnspan=2, sticky=tkNSEW)
+        self.mutExBtn.grid(column=0, row=5, columnspan=2, sticky=tkNSEW)
 
         self.reloadOpts()
 
@@ -190,6 +202,10 @@ class RadiobuttonEntry(ttk.Frame):
         val = ''.join([x.get() for x in self.stringVarList])
         self.entryText.set(val)
 
+    def dmSel(self, *args):
+        """Prompt response to a different DM being selected."""
+        self.event_generate('<<ChangeDM>>')
+
 # ######################
 
 
@@ -199,7 +215,8 @@ def main():
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    g1 = ConflictModel('Prisoners.gmcr')
+    g1 = ConflictModel()
+    g1.load_from_file('Examples/SyriaIraq.gmcr')
 
     radFrame = RadiobuttonEntry(root, g1)
     radFrame.grid(column=0, row=0, sticky=(N, W))
