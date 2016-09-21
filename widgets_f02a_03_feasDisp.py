@@ -1,11 +1,11 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Widget for displaying all of the feasible states left in the conflict.
+"""Widget for displaying all of the feasible states in the conflict.
 
 Loaded by the frame_02_infeasibles module.
 """
 
-from tkinter import Tk, StringVar, Listbox, VERTICAL, N, S, E, W
+from tkinter import Tk, N, S, E, W, VERTICAL, StringVar, Listbox
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 
@@ -13,7 +13,7 @@ tkNSEW = (N, S, E, W)
 
 
 class FeasDisp(ttk.Frame):
-    """Widget for displaying all of the feasible states."""
+    """Widget for displaying all of the feasible states in the conflict."""
 
     def __init__(self, master=None, conflict=None, *args):
         """Initialize the widget."""
@@ -30,8 +30,8 @@ class FeasDisp(ttk.Frame):
         self.fmts = {'Pattern': 'YN-', 'List (YN)': 'YN',
                      'List (ordered and [decimal])': 'ord_dec'}
         cBoxOpts = ('Pattern', 'List (YN)', 'List (ordered and [decimal])')
-        self.feasText = ttk.Label(self, text='Feasible States'
-                                  ).grid(row=0, column=0, columnspan=3)
+        self.feasText = ttk.Label(self, text='Feasible States')
+        self.feasText.grid(row=0, column=0, columnspan=3)
         self.cBox = ttk.Combobox(self, textvariable=self.dispFormat,
                                  values=cBoxOpts, state='readonly')
         self.cBoxLb = ttk.Label(self, text='Format:')
@@ -52,16 +52,16 @@ class FeasDisp(ttk.Frame):
         self.fmtSel()
 
     def fmtSel(self, *args):
-        """Refresh display when a new format is selected."""
+        """Action on selection of a new format."""
         self.refreshList()
 
     def setFeas(self, feasList):
-        """Change the list of feasible states displayed."""
+        """Change the list of feasible states to be displayed."""
         self.feasList = feasList
         self.refreshList()
 
     def refreshList(self):
-        """Refresh list of feasible states and display with correct format."""
+        """Update the list of feasible states displayed and the format."""
         fmt = self.fmts[self.dispFormat.get()]
         if fmt == "YN-":
             feas = self.conflict.feasibles.dash
