@@ -1,8 +1,9 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Widget for displaying all of the feasible states in the conflict.
+"""Widget for displaying all of the perceived states for a DM.
 
-Loaded by the frame_02_infeasibles module.
+Loaded by the frame_02a_misperceptions module.
+Copied from a very similar widget used on the infeasibles screen.
 """
 
 from tkinter import Tk, N, S, E, W, VERTICAL, StringVar, Listbox
@@ -53,24 +54,24 @@ class FeasDisp(ttk.Frame):
 
     def fmtSel(self, *args):
         """Action on selection of a new format."""
-        self.refreshList()
+        self.refresh()
 
     def setFeas(self, feasList):
         """Change the list of feasible states to be displayed."""
         self.feasList = feasList
-        self.refreshList()
+        self.refresh()
 
-    def refreshList(self):
-        """Update the list of feasible states displayed and the format."""
-        # TODO fix to use misperceived states instead of infeasibles.
+    def refresh(self):
+        """Update the list of perceived states displayed and the format."""
+        self.activeDM.recalculatePerceived()
         fmt = self.fmts[self.dispFormat.get()]
         if fmt == "YN-":
-            feas = self.conflict.feasibles.dash
+            perc = self.activeDM.perceived.dash
         if fmt == "YN":
-            feas = self.conflict.feasibles.yn
+            perc = self.activeDM.perceived.yn
         if fmt == "ord_dec":
-            feas = self.conflict.feasibles.ordDec
-        self.dispList.set(tuple(feas))
+            perc = self.activeDM.perceived.ordDec
+        self.dispList.set(tuple(perc))
 
 
 def main():

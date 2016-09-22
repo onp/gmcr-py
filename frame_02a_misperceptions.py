@@ -92,6 +92,7 @@ class MisperceptionFrame(FrameTemplate):
 
         # Define frame-specific variables
         self.warnText = StringVar(value='')
+        self.activeDM = self.conflict.decisionMakers[0]
 
         # infoFrame: frame and label definitions (with master 'self.infoFrame')
         self.originalStatesLabel = ttk.Label(
@@ -145,7 +146,7 @@ class MisperceptionFrame(FrameTemplate):
         self.infeasFrame.grid(column=2, row=0, sticky=tkNSEW)
 
         self.optsInp.grid(column=0, row=0, columnspan=2, sticky=tkNSEW)
-        self.optsInp.bind('<<AddInfeas>>', self.addInfeas)
+        self.optsInp.bind('<<addMisperceived>>', self.addMisperceived)
         self.optsInp.bind('<<AddMutEx>>', self.addMutEx)
         self.optsInp.bind('<<ChangeDM>>', self.changeDM)
 
@@ -160,8 +161,12 @@ class MisperceptionFrame(FrameTemplate):
 
     def refresh(self, *args):
         """Refresh data in all active display widgets."""
-        self.infeasDisp.refreshView()
-        self.feasList.refreshList()
+        self.optsInp.activeDM = self.activeDM
+        self.infeasDisp.activeDM = self.activeDM
+        self.feasList.activeDM = self.activeDM
+        self.activeDM.recalculatePerceived()
+        self.infeasDisp.refresh()
+        self.feasList.refresh()
         self.updateTotals()
 
     def updateTotals(self, event=None):
@@ -172,28 +177,27 @@ class MisperceptionFrame(FrameTemplate):
         self.feasStatesText.set('Feasible States: {}'.format(numF))
         self.removedStatesText.set('States Removed: {}'.format(2**numO - numF))
 
-    def addInfeas(self, *args):
+    def addMisperceived(self, *args):
         """Remove an infeasible state from the conflict."""
-        infeas = self.optsInp.getStates()
-        self.conflict.infeasibles.append(infeas)
-        self.conflict.recalculateFeasibleStates()
+        misperceived = self.optsInp.getStates()
+        self.activeDM.misperceptions.append(misperceived)
         self.refresh()
 
     def addMutEx(self, *args):
         """Remove a set of Mutually Exclusive States from the conflict."""
         mutEx = self.optsInp.getStates()
         mutEx = gmcrUtil.mutuallyExclusive(mutEx)
-        for infeas in mutEx:
-            self.conflict.infeasibles.append(list(infeas))
+        for misperceived in mutEx:
+            self.activeDM.misperceptions.append(list(misperceived))
         self.refresh()
 
     def selChg(self, event):
         """Triggered when the selection changes in the treeview."""
-        state = self.conflict.infeasibles[event.x].name
+        state = self.activeDM.misperceptions[event.x].name
         self.optsInp.setStates(state)
 
     def enter(self):
-        """Run when entering the Infeasible States screen."""
+        """Run when entering the Misperceived States screen."""
         if self.dataChanged():
             self.clearFrame()
         FrameTemplate.enter(self)
@@ -202,8 +206,8 @@ class MisperceptionFrame(FrameTemplate):
     def changeDM(self, *args):
         """Triggered when the focus DM is changed."""
         dmName = self.optsInp.activeDMname.get()
-        dm = self.optsInp.dmLookup[dmName]
-        print(dm, dm.options)
+        self.activeDM = self.optsInp.dmLookup[dmName]
+        self.refresh()
 
 # #############################################################################
 # ###############                   TESTING                         ###########

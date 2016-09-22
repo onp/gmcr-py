@@ -1,8 +1,9 @@
 # Copyright:   (c) Oskar Petersons 2013
 
-"""Treeview widget for displaying infeasible states removed.
+"""Treeview widget for displaying misperceived states removed.
 
 Loaded by the frame_02_infeasibles module.
+Copied from a very similar widget used on the infeasibles screen.
 """
 
 from tkinter import Tk, N, S, E, W, VERTICAL
@@ -54,20 +55,17 @@ class TreeInfeas(ttk.Frame):
 
         self.refreshView()
 
-    def refreshView(self):
+    def refresh(self):
         """Fully refreshes the list displayed."""
-        # TODO fix to use misperceived states instead of infeasibles.
         chldn = self.tDisp.get_children()
         for chld in chldn:
             self.tDisp.delete(chld)
-        if len(self.conflict.infeasibles) > 0:
-            self.conflict.recalculateFeasibleStates()
-        for infeas in self.conflict.infeasibles:
-            key = infeas.name
+        for misp in self.activeDM.misperceptions:
+            key = misp.name
             self.tDisp.insert('', 'end', key, text=key)
             self.tDisp.set(key, 'state', key)
             self.tDisp.set(key, 'stDes', str(2**(key.count('-'))))
-            self.tDisp.set(key, 'stRem', str(infeas.statesRemoved))
+            self.tDisp.set(key, 'stRem', str(misp.statesRemoved))
 
     def selChgCmd(self, *args):
         """Called whenever the selection changes."""
@@ -77,39 +75,37 @@ class TreeInfeas(ttk.Frame):
 
     def upCmd(self, *args):
         """Called whenever an item is moved upwards."""
-        # TODO fix to use misperceived states instead of infeasibles.
         idx = self.tDisp.selIdx
         if idx != 0:
-            self.conflict.infeasibles.moveCondition(idx, idx - 1)
-            self.conflict.recalculateFeasibleStates()
+            self.activeDM.misperceptions.moveCondition(idx, idx - 1)
+            self.activeDM.recalculatePerceived()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
 
     def downCmd(self, *args):
         """Called whenever an item is moved downwards."""
-        # TODO fix to use misperceived states instead of infeasibles.
         idx = self.tDisp.selIdx
         if idx != len(self.conflict.infeasibles) - 1:
-            self.conflict.infeasibles.moveCondition(idx, idx + 1)
-            self.conflict.recalculateFeasibleStates()
+            self.activeDM.misperceptions.moveCondition(idx, idx + 1)
+            self.activeDM.recalculatePerceived()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
 
     def delCmd(self, *args):
         """Called when an item is deleted."""
-        # TODO fix to use misperceived states instead of infeasibles.
         idx = self.tDisp.selIdx
-        self.conflict.infeasibles.removeCondition(idx)
-        self.conflict.recalculateFeasibleStates()
+        self.activeDM.misperceptions.removeCondition(idx)
+        self.activeDM.recalculatePerceived()
         self.event_generate('<<ValueChange>>')
-        if len(self.conflict.infeasibles) > 0:
+        if len(self.activeDM.misperceptions) > 0:
             try:
-                self.tDisp.selection_set(self.conflict.infeasibles[idx].name)
+                self.tDisp.selection_set(
+                    self.activeDM.misperceptions[idx].name)
             except IndexError:
                 self.tDisp.selection_set(
-                    self.conflict.infeasibles[idx - 1].name)
+                    self.activeDM.misperceptions[idx - 1].name)
 
 
 def main():

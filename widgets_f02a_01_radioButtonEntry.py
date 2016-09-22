@@ -2,7 +2,8 @@
 
 """Widgets for selecting a state using radio buttons for each option.
 
-Loaded by the frame_02_infeasibles module.
+Loaded by the frame_02a_misperceptions module.
+Copied from a very similar widget used on the infeasibles screen.
 """
 
 from tkinter import Tk, Canvas, N, S, E, W, VERTICAL, StringVar
@@ -141,7 +142,7 @@ class RadiobuttonEntry(ttk.Frame):
 
     def generateAdd(self, *args):
         """Prompt response to addition of an infeasible state."""
-        self.event_generate('<<AddInfeas>>')
+        self.event_generate('<<addMisperceived>>')
 
     def generateMutEx(self, *args):
         """Prompt response to addition of a mutually exclusive set."""
