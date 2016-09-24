@@ -92,6 +92,7 @@ class RMGenerator:
                                     dm.reachability[idx0,idx1] = 0
 
             # Remove moves to or from misperceived states
+            # TODO fix list of states used. should be based on "perceived".
             for state in dm.misperceivedStates:
                 dm.reachability[:, state-1] = 0
                 dm.reachability[state-1, :] = 0

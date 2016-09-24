@@ -36,13 +36,16 @@ class DecisionMaker:
     """A Decision Maker or Player in a GMCR conflict."""
 
     def __init__(self, conflict, name):
+        """Create a new DecisionMaker."""
         self.name = str(name)
         self.isCoalition = False
         self.conflict = conflict
         self.options = OptionList(conflict.options)
-        self.misperceivedStates = []
         self.preferences = ConditionList(conflict)
         self.lastCalculatedPreferences = None
+
+        self.misperceptions = ConditionList(conflict)
+        self.perceived = FeasibleList()
 
     def __str__(self):
         """Return string representation of the DM."""
@@ -56,7 +59,7 @@ class DecisionMaker:
         rep['options'] = self.options.export_rep()
         rep['preferences'] = self.preferences.export_rep()
         rep['payoffs'] = self.payoffs.tolist()
-        rep['misperceivedStates'] = self.misperceivedStates
+        rep['misperceptions'] = self.misperceptions.export_rep()
         if self.conflict.useManualPreferenceRanking:
             rep['preferenceRanking'] = self.preferenceRanking
         return rep
@@ -77,10 +80,8 @@ class DecisionMaker:
 
     def onDelete(self):
         """Cleanup options if DM is deleted."""
-        print([x.name for x in self.options])
         for opt in reversed(self.options):
             self.removeOption(opt)
-        print([x.name for x in self.options])
         for co in self.conflict.coalitions:
             if co is self:
                 self.conflict.coalitions.remove(self)
@@ -119,6 +120,16 @@ class DecisionMaker:
             self.payoffs = result[0]
             self.preferenceRanking = result[1]
 
+    def recalculatePerceived(self):
+        """Calculate states perceived by the DM based on misperceptions."""
+        percDash = self.conflict.feasibles.dash
+        for misp in self.misperceptions:
+            res = gmcrUtil.rmvSt(percDash, misp.ynd())
+            percDash = res[0]
+            misp.statesRemoved = res[1]
+        toOrd = self.conflict.feasibles.toOrdered
+        self.perceived = FeasibleList(percDash, toOrdered=toOrd)
+
 
 class Condition:
     """A subset of options, specified as either taken or not taken.
@@ -128,6 +139,7 @@ class Condition:
     """
 
     def __init__(self, conflict, condition):
+        """Create a new Condition."""
         self.conflict = conflict
         self.options = OptionList(conflict.options)
         self.taken = []
@@ -187,12 +199,14 @@ class CompoundCondition:
     """A complex condition defined as a union of simple conditions."""
 
     def __init__(self, conflict, conditions):
+        """Create a compound condition."""
         self.conflict = conflict
         self.conditions = [Condition(self.conflict, dat) for dat in conditions]
         self.isCompound = True
         self.updateName()
 
     def __str__(self):
+        """Return string representation."""
         return self.name + " object"
 
     def index(self, i):
@@ -211,12 +225,12 @@ class CompoundCondition:
         self.name = str(sorted(self.ynd()))[1:-1].replace("'", '')
 
     def append(self, condition):
-        """Adds the condition given to the compound condition."""
+        """Add the condition given to the compound condition."""
         self.conditions.append(condition)
         self.updateName()
 
     def __delitem__(self, key):
-        """Removes the condition at idx from the compound condition."""
+        """Remove the condition at idx from the compound condition."""
         del self.conditions[key]
         self.updateName()
 
@@ -306,11 +320,12 @@ class ObjectList:
 class DecisionMakerList(ObjectList):
     """A list of DecisionMaker objects."""
 
-    def __init__(self,conflict):
+    def __init__(self, conflict):
         ObjectList.__init__(self)
         self.conflict = conflict
 
     def __str__(self):
+        """Return string representation."""
         return str([dm.name for dm in self])
 
     def export_rep(self):
@@ -333,7 +348,9 @@ class DecisionMakerList(ObjectList):
         for preference in dmData['preferences']:
             newDM.preferences.from_json(preference)
         try:
-            newDM.misperceivedStates = dmData['misperceivedStates']
+            newDM.misperceptions = ConditionList(self.conflict)
+            for mispData in dmData['misperceptions']:
+                newDM.misperceptions.from_json(mispData)
         except KeyError:
             pass
         if self.conflict.useManualPreferenceRanking:
@@ -391,7 +408,7 @@ class ConditionList(ObjectList):
         return [x.export_rep() for x in self.itemList]
 
     def from_json(self, condData):
-        """Replaces the option number with the actual option object."""
+        """Replace the option number with the actual option object."""
         if isinstance(condData, list):
             for opt in condData:
                 opt[0] = self.conflict.options[opt[0]]
@@ -422,7 +439,7 @@ class ConditionList(ObjectList):
         self.insert(targ, j)
 
     def removeCondition(self, idx):
-        """Remove the Condition at position idx"""
+        """Remove the Condition at position idx."""
         del self[idx]
 
     def validate(self):
@@ -434,7 +451,7 @@ class ConditionList(ObjectList):
             del self[idx]
 
     def format(self, fmt="YN-"):
-        """Returns the conditions in the specified format.
+        """Return the conditions in the specified format.
 
         Valid formats are:
         'YN-': uses 'Y','N', and '-' to represent infeasible states compactly.
@@ -452,7 +469,10 @@ class ConditionList(ObjectList):
 
 
 class FeasibleList:
-    def __init__(self, dash=None):
+    """A list of feasible states, allowing access in multiple formats."""
+
+    def __init__(self, dash=None, toOrdered=None):
+        """Construct a list of feasibles based on a dash format input list."""
         if not dash:
             self.decimal = []
             self.dash = []
@@ -460,22 +480,30 @@ class FeasibleList:
         # as 'Y,N,-' compact patterns
         self.dash = gmcrUtil.reducePatterns(dash)
 
-        temp = sorted([(gmcrUtil.yn2dec(yn),yn) for yn in gmcrUtil.expandPatterns(self.dash)])
+        temp = sorted([(gmcrUtil.yn2dec(yn), yn) for yn
+                       in gmcrUtil.expandPatterns(self.dash)])
 
         # as 'Y,N' patterns
         self.yn = [yn for dec, yn in temp]
 
         # as decimal values
-        self.decimal   = [dec for dec,yn in temp]
+        self.decimal = [dec for dec, yn in temp]
 
         # conversion dictionaries
-        self.toOrdered, self.toDecimal = gmcrUtil.orderedNumbers(self.decimal)
+        # TODO fix so this works with misperceptions
+        if toOrdered is None:
+            self.toOrdered, self.toDecimal = gmcrUtil.orderedNumbers(
+                self.decimal)
+        else:
+            self.toOrdered = {x: toOrdered[x] for x in self.decimal}
+            self.toDecimal = {toOrdered[x]: x for x in self.decimal}
 
         # as ordered numbers
         self.ordered = sorted(self.toDecimal.keys())
 
         # special display notation
-        self.ordDec = ['%3d  [%s]'%(ord,dec) for ord,dec in zip(self.ordered,self.decimal)]
+        self.ordDec = ['{:3d}  [{}]'.format(seq, dec)
+                       for seq, dec in zip(self.ordered, self.decimal)]
 
     def __len__(self):
         return len(self.decimal)
@@ -531,15 +559,17 @@ class Coalition:
 
     def export_rep(self):
         if len(self.members) > 1:
-            return [self.conflict.decisionMakers.index(dm) for dm in self.members]
+            return [self.conflict.decisionMakers.index(dm)
+                    for dm in self.members]
         else:
             return self.conflict.decisionMakers.index(self.members[0])
 
     def disp_rep(self):
         if len(self.members) > 1:
-            return [self.conflict.decisionMakers.index(dm)+1 for dm in self.members]
+            return [self.conflict.decisionMakers.index(dm) + 1
+                    for dm in self.members]
         else:
-            return self.conflict.decisionMakers.index(self.members[0])+1
+            return self.conflict.decisionMakers.index(self.members[0]) + 1
 
     def full_rep(self):
         rep = {}
@@ -550,10 +580,13 @@ class Coalition:
     def calculatePreferences(self):
         for dm in self.members:
             dm.calculatePreferences()
-        self.payoffs = [", ".join([str(dm.payoffs[state]) for dm in self.members]) for state in self.conflict.feasibles]
+        self.payoffs = [", ".join([str(dm.payoffs[state])
+                                   for dm in self.members])
+                        for state in self.conflict.feasibles]
 
 
 class CoalitionList(ObjectList):
+
     def __init__(self, conflict):
         ObjectList.__init__(self)
         self.conflict = conflict
@@ -585,13 +618,14 @@ class CoalitionList(ObjectList):
         elif isinstance(item, DecisionMaker):
             self.itemList.append(item)
         else:
-            raise TypeError("%s is not a Coalition"%item)
+            raise TypeError("{} is not a Coalition".format(item))
 
     def from_json(self, coData):
         if isinstance(coData, int):
             memberList = [self.conflict.decisionMakers[int(coData)]]
         elif isinstance(coData, list):
-            memberList = [self.conflict.decisionMakers[int(dmIdx)] for dmIdx in coData]
+            memberList = [self.conflict.decisionMakers[int(dmIdx)]
+                          for dmIdx in coData]
         newCO = Coalition(self.conflict, memberList)
         self.append(newCO)
 
@@ -635,7 +669,7 @@ class ConflictModel:
         return Coalition(self, coalitionData)
 
     def export_rep(self):
-        """Generate a representation of the conflict suitable for JSON encoding."""
+        """Generate a  JSON encodable representation of the conflict."""
         self.reorderOptionsByDM()
         return {'decisionMakers': self.decisionMakers.export_rep(),
                 'coalitions': self.coalitions.export_rep(),
@@ -711,7 +745,7 @@ class ConflictModel:
     def recalculateFeasibleStates(self, init_override=False):
         """Update all feasible state calculations."""
         oldFeas = list(self.feasibles.decimal)
-        feasDash = ['-'*len(self.options)]
+        feasDash = ['-' * len(self.options)]
         for infeas in self.infeasibles:
             res = gmcrUtil.rmvSt(feasDash, infeas.ynd())
             feasDash = res[0]

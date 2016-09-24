@@ -90,6 +90,7 @@ class RadiobuttonEntry(ttk.Frame):
         self.dmLookup = {dm.name: dm for dm in self.conflict.decisionMakers}
         dmNames = tuple(self.dmLookup.keys())
         self.activeDMname = StringVar(value=dmNames[0])
+        self.activeDM = self.dmLookup[dmNames[0]]
 
         dmSelLabel = ttk.Label(self, text="Decision Maker")
         dmSelLabel.grid(column=0, row=0)
@@ -123,10 +124,10 @@ class RadiobuttonEntry(ttk.Frame):
 
         self.warnText = StringVar(value='')
 
-        self.addBtn = ttk.Button(self, text='Remove as Infeasible Condition',
+        self.addBtn = ttk.Button(self, text='Remove as Misperceived Condition',
                                  command=self.generateAdd)
         self.mutExBtn = ttk.Button(self,
-                                   text='Remove as Mutually Exclusive Options',
+                                   text='Perceived as Mutually Exclusive',
                                    command=self.generateMutEx)
         self.warnLab = ttk.Label(self, textvariable=self.warnText)
         self.warnLab.grid(column=0, row=3, sticky=tkNSEW)
@@ -205,6 +206,8 @@ class RadiobuttonEntry(ttk.Frame):
 
     def dmSel(self, *args):
         """Prompt response to a different DM being selected."""
+        dmName = self.activeDMname.get()
+        self.activeDM = self.dmLookup[dmName]
         self.event_generate('<<ChangeDM>>')
 
 # ######################

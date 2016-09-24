@@ -50,7 +50,6 @@ class FeasDisp(ttk.Frame):
         self.feasLBx.configure(yscrollcommand=self.scrl.set)
 
         self.dispFormat.set('Pattern')
-        self.fmtSel()
 
     def fmtSel(self, *args):
         """Action on selection of a new format."""

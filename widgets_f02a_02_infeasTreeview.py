@@ -53,8 +53,6 @@ class TreeInfeas(ttk.Frame):
 
         self.tDisp.bind('<<TreeviewSelect>>', self.selChgCmd)
 
-        self.refreshView()
-
     def refresh(self):
         """Fully refreshes the list displayed."""
         chldn = self.tDisp.get_children()

@@ -92,7 +92,7 @@ class MisperceptionFrame(FrameTemplate):
 
         # Define frame-specific variables
         self.warnText = StringVar(value='')
-        self.activeDM = self.conflict.decisionMakers[0]
+        self.activeDM = None
 
         # infoFrame: frame and label definitions (with master 'self.infoFrame')
         self.originalStatesLabel = ttk.Label(
@@ -148,7 +148,7 @@ class MisperceptionFrame(FrameTemplate):
         self.optsInp.grid(column=0, row=0, columnspan=2, sticky=tkNSEW)
         self.optsInp.bind('<<addMisperceived>>', self.addMisperceived)
         self.optsInp.bind('<<AddMutEx>>', self.addMutEx)
-        self.optsInp.bind('<<ChangeDM>>', self.changeDM)
+        self.optsInp.bind('<<ChangeDM>>', self.refresh)
 
         self.infeasDisp.bind('<<SelItem>>', self.selChg)
         self.infeasDisp.bind('<<ValueChange>>', self.refresh)
@@ -161,7 +161,7 @@ class MisperceptionFrame(FrameTemplate):
 
     def refresh(self, *args):
         """Refresh data in all active display widgets."""
-        self.optsInp.activeDM = self.activeDM
+        self.activeDM = self.optsInp.activeDM
         self.infeasDisp.activeDM = self.activeDM
         self.feasList.activeDM = self.activeDM
         self.activeDM.recalculatePerceived()
@@ -202,12 +202,6 @@ class MisperceptionFrame(FrameTemplate):
             self.clearFrame()
         FrameTemplate.enter(self)
         self.optsInp.reloadOpts()
-
-    def changeDM(self, *args):
-        """Triggered when the focus DM is changed."""
-        dmName = self.optsInp.activeDMname.get()
-        self.activeDM = self.optsInp.dmLookup[dmName]
-        self.refresh()
 
 # #############################################################################
 # ###############                   TESTING                         ###########
