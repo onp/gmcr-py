@@ -82,6 +82,7 @@ class ResultFrame(FrameTemplate):
 
         for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
+            dm.recalculatePerceived()
 
         self.lastBuildConflict = self.conflict.export_rep()
 

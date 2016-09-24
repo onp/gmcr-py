@@ -490,7 +490,6 @@ class FeasibleList:
         self.decimal = [dec for dec, yn in temp]
 
         # conversion dictionaries
-        # TODO fix so this works with misperceptions
         if toOrdered is None:
             self.toOrdered, self.toDecimal = gmcrUtil.orderedNumbers(
                 self.decimal)
