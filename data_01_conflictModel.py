@@ -120,7 +120,7 @@ class DecisionMaker:
             self.payoffs = result[0]
             self.preferenceRanking = result[1]
 
-    def recalculatePerceived(self):
+    def calculatePerceived(self):
         """Calculate states perceived by the DM based on misperceptions."""
         percDash = self.conflict.feasibles.dash
         for misp in self.misperceptions:
@@ -533,6 +533,7 @@ class Coalition:
 
         self.preferences = ConditionList(self.conflict)
         self.calculatePreferences()
+        self.calculatePerceived()
 
     def __str__(self):
         return self.name
@@ -583,6 +584,12 @@ class Coalition:
                                    for dm in self.members])
                         for state in self.conflict.feasibles]
 
+    def calculatePerceived(self):
+        for dm in self.members:
+            dm.calculatePerceived()
+        toOrd = self.conflict.feasibles.toOrdered
+        percDash = [dm.perceived.dash for dm in self.members]
+        self.perceived = FeasibleList(percDash, toOrdered=toOrd)
 
 class CoalitionList(ObjectList):
 

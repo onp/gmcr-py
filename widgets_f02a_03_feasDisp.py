@@ -62,7 +62,7 @@ class FeasDisp(ttk.Frame):
 
     def refresh(self):
         """Update the list of perceived states displayed and the format."""
-        self.activeDM.recalculatePerceived()
+        self.activeDM.calculatePerceived()
         fmt = self.fmts[self.dispFormat.get()]
         if fmt == "YN-":
             perc = self.activeDM.perceived.dash

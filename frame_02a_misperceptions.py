@@ -164,7 +164,7 @@ class MisperceptionFrame(FrameTemplate):
         self.activeDM = self.optsInp.activeDM
         self.infeasDisp.activeDM = self.activeDM
         self.feasList.activeDM = self.activeDM
-        self.activeDM.recalculatePerceived()
+        self.activeDM.calculatePerceived()
         self.infeasDisp.refresh()
         self.feasList.refresh()
         self.updateTotals()

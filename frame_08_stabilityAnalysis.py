@@ -79,7 +79,7 @@ class StabilityFrame(FrameTemplate):
 
         for dm in self.conflict.decisionMakers:
             dm.calculatePreferences()
-            dm.recalculatePerceived()
+            dm.calculatePerceived()
 
         self.lastBuildConflict = self.conflict.export_rep()
 

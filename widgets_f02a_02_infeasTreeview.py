@@ -76,7 +76,7 @@ class TreeInfeas(ttk.Frame):
         idx = self.tDisp.selIdx
         if idx != 0:
             self.activeDM.misperceptions.moveCondition(idx, idx - 1)
-            self.activeDM.recalculatePerceived()
+            self.activeDM.calculatePerceived()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
@@ -86,7 +86,7 @@ class TreeInfeas(ttk.Frame):
         idx = self.tDisp.selIdx
         if idx != len(self.conflict.infeasibles) - 1:
             self.activeDM.misperceptions.moveCondition(idx, idx + 1)
-            self.activeDM.recalculatePerceived()
+            self.activeDM.calculatePerceived()
             self.event_generate('<<ValueChange>>')
             self.tDisp.selection_set(self.tDisp.selId)
             self.selChgCmd()
@@ -95,7 +95,7 @@ class TreeInfeas(ttk.Frame):
         """Called when an item is deleted."""
         idx = self.tDisp.selIdx
         self.activeDM.misperceptions.removeCondition(idx)
-        self.activeDM.recalculatePerceived()
+        self.activeDM.calculatePerceived()
         self.event_generate('<<ValueChange>>')
         if len(self.activeDM.misperceptions) > 0:
             try:
