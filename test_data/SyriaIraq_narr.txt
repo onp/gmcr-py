@@ -15,7 +15,7 @@ state 1 (decimal 0, payoff 6) is GMR stable since focal DM Syria has no UIs avai
 state 1 (decimal 0, payoff 6) is SMR stable since focal DM Syria has no UIs available.
 
 #DM Syria  state 1  NASH
-state 2 (decimal 1, payoff 3) is NOT Nash stable for DM Syria since they have UIs available to: state 1 (decimal 0, payoff 6),state 3 (decimal 2, payoff 5)
+state 2 (decimal 1, payoff 3) is NOT Nash stable for DM Syria since they have UIs available to: state 1 (decimal 0, payoff 6), state 3 (decimal 2, payoff 5)
 
 #DM Syria  state 1  SEQ
 From state 2 (decimal 1, payoff 3) Syria has UIs available to: state 1 (decimal 0, payoff 6)state 3 (decimal 2, payoff 5) .  Check for sanctioning...
@@ -114,7 +114,7 @@ state 4 (decimal 4, payoff 2)) is unstable by SMR for focal dm Syria, since thei
 
 
 #DM Syria  state 4  NASH
-state 5 (decimal 5, payoff 1) is NOT Nash stable for DM Syria since they have UIs available to: state 4 (decimal 4, payoff 2),state 6 (decimal 6, payoff 4)
+state 5 (decimal 5, payoff 1) is NOT Nash stable for DM Syria since they have UIs available to: state 4 (decimal 4, payoff 2), state 6 (decimal 6, payoff 4)
 
 #DM Syria  state 4  SEQ
 From state 5 (decimal 5, payoff 1) Syria has UIs available to: state 4 (decimal 4, payoff 2)state 6 (decimal 6, payoff 4) .  Check for sanctioning...

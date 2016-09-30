@@ -40,6 +40,9 @@ class RMGenerator:
             self.effectiveDMs = self.conflict.decisionMakers
 
         for dm in self.effectiveDMs:
+            dm.calculatePreferences()
+            dm.calculatePerceived()
+
             dm.reachability = numpy.zeros((len(conflict.feasibles),
                                            len(conflict.feasibles)),
                                           numpy.int_)

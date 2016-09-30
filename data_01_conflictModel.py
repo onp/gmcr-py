@@ -591,6 +591,7 @@ class Coalition:
         percDash = [dm.perceived.dash for dm in self.members]
         self.perceived = FeasibleList(percDash, toOrdered=toOrd)
 
+
 class CoalitionList(ObjectList):
 
     def __init__(self, conflict):
