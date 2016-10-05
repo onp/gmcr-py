@@ -252,34 +252,34 @@ class LogicalSolver(RMGenerator):
                          "from this state.\n").format(
                 self.chattyHelper(dm, state0), dm.name)
             return True, narration
-        else:
-            narration = ('From {0}, {1} has UIs available to: \n   {2}\nCheck '
-                         'for sanctioning...\n\n'
-                         ).format(self.chattyHelper(dm, state0), dm.name,
-                                  ',\n   '.join([self.chattyHelper(dm, state1)
-                                                 for state1 in ui]))
-            # for each potential move...
-            for state1 in ui:
-                oDMs = [d for d in self.effectiveDMs if d is not dm]
-                focalPayoffs = dm.payoffMatrix[state0, :]
-                sanc, narr, s3 = self.checkUISanctions(oDMs, state1,
-                                                       focalPayoffs)
-                if sanc:
-                    narration += ("A move to {0} is sanctioned by {1}"
-                                  "\n\n").format(self.chattyHelper(dm, state1),
-                                                 narr)
-                else:
-                    narration += ("{0} is unstable by SEQ for focal DM {1}, "
-                                  "since other DMs cannot effectively sanction"
-                                  " a move to {2}").format(
-                        self.chattyHelper(dm, state0), dm.name,
-                        self.chattyHelper(dm, state1))
-                    return False, narration
-            narration += ("{0} is stable by SEQ for focal DM {1}, since all "
-                          "available UIs are sanctioned by other"
-                          " players.\n\n").format(
-                self.chattyHelper(dm, state0), dm.name)
-            return True, narration
+
+        narration = ('From {0}, {1} has UIs available to: \n   {2}\nCheck '
+                     'for sanctioning...\n\n'
+                     ).format(self.chattyHelper(dm, state0), dm.name,
+                              ',\n   '.join([self.chattyHelper(dm, state1)
+                                             for state1 in ui]))
+        # for each potential move...
+        for state1 in ui:
+            oDMs = [d for d in self.effectiveDMs if d is not dm]
+            focalPayoffs = dm.payoffMatrix[state0, :]
+            sanc, narr, s3 = self.checkUISanctions(oDMs, state1,
+                                                   focalPayoffs)
+            if sanc:
+                narration += ("A move to {0} is sanctioned by {1}"
+                              "\n\n").format(self.chattyHelper(dm, state1),
+                                             narr)
+            else:
+                narration += ("{0} is unstable by SEQ for focal DM {1}, "
+                              "since other DMs cannot effectively sanction"
+                              " a move to {2}").format(
+                    self.chattyHelper(dm, state0), dm.name,
+                    self.chattyHelper(dm, state1))
+                return False, narration
+        narration += ("{0} is stable by SEQ for focal DM {1}, since all "
+                      "available UIs are sanctioned by other"
+                      " players.\n\n").format(
+            self.chattyHelper(dm, state0), dm.name)
+        return True, narration
 
     def sim(self, dm, state0):
         """Calculate SIM stability.
@@ -287,40 +287,60 @@ class LogicalSolver(RMGenerator):
         Returns true if state0 is SIM stable for dm.
         """
         ui = self.UIs(dm, state0)
-        narr = ''
 
         if not ui:
-            simStab = 1      # stable since the dm has no UIs available
-            narr += self.chattyHelper(dm, state0) + ' is SIM stable since focal dm ' + dm.name + ' has no UIs available.\n'
-        else:
-            narr += 'From ' + self.chattyHelper(dm, state0) + ' ' + dm.name + ' has UIs available to: ' + ''.join([self.chattyHelper(dm, state1) for state1 in ui]) + ' .  Check for sanctioning...\n\n'
-            otherDMuis = [x for oDM in self.effectiveDMs if oDM != dm for x in self.UIs(oDM, state0)]     # find all possible UIs available to other players
-            if not otherDMuis:
-                simStab = 0
-                narr += self.chattyHelper(dm, state0) + ' is unstable by SIM for focal dm ' + dm.name + ', since their opponents have no UIs from ' + self.chattyHelper(dm, state0) + '.\n\n'
-                return simStab, narr
-            else:
-                for state1 in ui:
-                    stable = 0
-                    for state2 in otherDMuis:
-                        state2combinedDec = self.conflict.feasibles.decimal[state1] + self.conflict.feasibles.decimal[state2] - self.conflict.feasibles.decimal[state0]
-                        if state2combinedDec in self.conflict.feasibles.decimal:
-                            state2combined = self.conflict.feasibles.decimal.index(state2combinedDec)
-                            if dm.payoffMatrix[state0, state2combined] <= 0:
-                                stable = 1
-                                narr += 'A move to ' + self.chattyHelper(dm, state1) + ' is SIM sanctioned for focal DM ' + dm.name + ' by a move to ' + self.chattyHelper(dm, state2) + ' by other DMs, which would give a final state of ' + self.chattyHelper(dm, state2combined) + '.  Check other focal DM UIs for sanctioning...\n\n'
-                                break
-                        else:
-                            narr += 'Simultaneous moves towards ' + str(state1) + ' and ' + str(state2) + ' are not possible since the resultant state is infeasible.\n\n'
+            narration = ("{0} is SIM stable since focal DM {1} has no UIs"
+                         " available.\n").format(self.chattyHelper(dm, state0),
+                                                 dm.name)
+            return True, narration
 
-                    if not stable:
-                        simStab = 0
-                        narr += self.chattyHelper(dm, state0) + ') is unstable by SIM for focal DM ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm, state1) + '.\n\n'
-                        return simStab, narr
+        narration = ('From {0}, {1} has UIs available to: \n   {2}\nCheck '
+                     'for sanctioning...\n\n'
+                     ).format(self.chattyHelper(dm, state0), dm.name,
+                              ',\n   '.join([self.chattyHelper(dm, state1)
+                                             for state1 in ui]))
 
-            simStab = 1
-            narr += self.chattyHelper(dm, state0) + ' is stable by SIM for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm, state1) for state1 in ui]) + ' are sanctioned by other players.\n\n'
-        return simStab, narr
+        dec = self.conflict.feasibles.decimal      # shorter handle
+        s0dec = dec[state0]
+        # find all possible UIs available to other players
+        otherDMuis = [[0] + [dec[s2] - s0dec for s2 in self.UIs(oDM, state0)]
+                      for oDM in self.effectiveDMs if oDM != dm]
+        otherDMmovesets = itertools.product(*otherDMuis)
+
+        for state1 in ui:
+            sanctioned = False
+            for moveset in otherDMmovesets:
+                state2combinedDec = dec[state1] + sum(moveset)
+                if state2combinedDec not in self.conflict.feasibles.decimal:
+                    # move combination would lead to an infeasible state
+                    # check next opponent moveset
+                    continue
+                state2combined = dec.index(state2combinedDec)
+                if dm.payoffMatrix[state0, state2combined] <= 0:
+                    narration += ("Focal DM {0}'s attempt to move to {1} is "
+                                  "SIM sanctioned, due to simultaneous moves "
+                                  "by other DMs leading to a final state of "
+                                  "{2}.\nCheck other focal DM UIs for "
+                                  "sanctioning...\n\n").format(
+                                      dm.name, self.chattyHelper(dm, state1),
+                                      self.chattyHelper(dm, state2combined))
+                    sanctioned = True
+                    break
+            if sanctioned:
+                # A sanction against this UI was already found. check next UI.
+                continue
+            # gets here if none of the opponent movesets are sanctions.
+            narration += ("{0} is unstable by SIM for focal DM {1}, since no "
+                          "combination of simultaneous moves by other "
+                          "players can result in a sanction.\n\n").format(
+                              self.chattyHelper(dm, state0), dm.name)
+            return False, narration
+        # gets here if all UIs were sanctioned.
+        narration += ("{0} is stable by SIM for focal DM {1}, since all "
+                      "available UIs are sanctioned by simultaneous moves by "
+                      "other players.\n\n").format(
+                          self.chattyHelper(dm, state0), dm.name)
+        return True, narration
 
     def gmr(self, dm, state0):
         """Calculate GMR stability.
