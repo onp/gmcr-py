@@ -7,11 +7,6 @@ import itertools
 import json
 
 
-class Preference:
-    def __init__(self, preferred, oneOfSet):
-        self.preferred = preferred
-
-
 class RMGenerator:
     """Reachability matrix class.
 
@@ -26,7 +21,7 @@ class RMGenerator:
     """
 
     def __init__(self, conflict, useCoalitions=True):
-
+        """Generate reachability matrices for conflict participants."""
         self.conflict = conflict
 
         if useCoalitions:
@@ -98,9 +93,13 @@ class RMGenerator:
                         # value of the irreversible move option in DMs current
                         # state (Y/N)
                         val0 = state0yn[option.master_index]
-                        if (val0 == "Y") and (option.permittedDirection == "fwd") or (val0 == "N") and (option.permittedDirection == "back"):
-                            for idx1, state1yn in enumerate(conflict.feasibles.yn):
-                                # does target move have irreversible move?
+                        if (val0 == "Y") and (
+                           option.permittedDirection == "fwd") or (
+                           val0 == "N") and (
+                           option.permittedDirection == "back"):
+                            for idx1, state1yn in enumerate(
+                                    conflict.feasibles.yn):
+                                # is target move irreversible?
                                 val1 = state1yn[option.master_index]
                                 if val0 != val1:
                                     # remove irreversible moves from
@@ -196,16 +195,19 @@ class LogicalSolver(RMGenerator):
             state + 1, self.conflict.feasibles.decimal[state], pay)
         return snippet
 
-    def checkUISanctions(self, otherDMs, state1, focalPayoffs):
+    def checkSanctions(self, otherDMs, state1, focalPayoffs, uiOnly=False):
         """Return (True, narration, sanctioned to) if move is sanctioned."""
         for dm in otherDMs:
-            uis = self.UIs(dm, state1)
+            if uiOnly:
+                moves = self.UIs(dm, state1)
+            else:
+                moves = self.reachable(dm, state1)
 
-            # if DM has no UIs, pass.
-            if not uis:
+            # if DM has no moves, pass.
+            if not moves:
                 continue
 
-            for state2 in uis:
+            for state2 in moves:
                 if focalPayoffs[state2] <= 0:
                     # effective sanction found.
                     narration = "a move to state {0} by {1}.".format(
@@ -215,8 +217,8 @@ class LogicalSolver(RMGenerator):
                     # see if subsequent moves by other opponents can lead to
                     # an effective sanction.
                     oDMs = [d for d in otherDMs if d is not dm]
-                    sanc, narr, s3 = self.checkUISanctions(oDMs, state2,
-                                                           focalPayoffs)
+                    sanc, narr, s3 = self.checkSanctions(oDMs, state2,
+                                                         focalPayoffs, uiOnly)
                     if sanc:
                         narration = ("a move to state {0} by {1}, followed by "
                                      "{2}").format(state2 + 1, dm.name, narr)
@@ -265,8 +267,8 @@ class LogicalSolver(RMGenerator):
         for state1 in ui:
             oDMs = [d for d in self.effectiveDMs if d is not dm]
             focalPayoffs = dm.payoffMatrix[state0, :]
-            sanc, narr, s3 = self.checkUISanctions(oDMs, state1,
-                                                   focalPayoffs)
+            sanc, narr, s3 = self.checkSanctions(oDMs, state1,
+                                                 focalPayoffs, True)
             if sanc:
                 narration += ("A move to {0} is sanctioned by {1}"
                               "\n\n").format(self.chattyHelper(dm, state1),
@@ -348,10 +350,9 @@ class LogicalSolver(RMGenerator):
     def gmr(self, dm, state0):
         """Calculate GMR stability.
 
-        Returns true if state0 is GMR stable for dm.
+        Returns True if state0 is GMR stable for dm.
         """
         ui = self.UIs(dm, state0)
-        narr = ''
 
         if not ui:
             narration = ("{0} is GMR stable for DM {1} since they have no UIs "
@@ -364,28 +365,28 @@ class LogicalSolver(RMGenerator):
                      ).format(self.chattyHelper(dm, state0), dm.name,
                               ',\n   '.join([self.chattyHelper(dm, state1)
                                              for state1 in ui]))
-        for state1 in ui:             # for each potential move...
-            otherDMums = [x for oDM in self.effectiveDMs if oDM != dm for x in self.reachable(oDM, state1)]        # find all possible moves (not just UIs) available to other players
-            if not otherDMums:
-                gmrStab = 0
-                narr += self.chattyHelper(dm, state0) + ' is unstable by GMR for focal DM ' + dm.name + ', since their opponents have no moves from ' + self.chattyHelper(dm, state1) + '.\n\n'
-                return gmrStab, narr
+        # for each potential move...
+        for state1 in ui:
+            oDMs = [d for d in self.effectiveDMs if d is not dm]
+            focalPayoffs = dm.payoffMatrix[state0, :]
+            sanc, narr, s3 = self.checkSanctions(oDMs, state1,
+                                                 focalPayoffs, False)
+            if sanc:
+                narration += ("A move to {0} is sanctioned by {1}"
+                              "\n\n").format(self.chattyHelper(dm, state1),
+                                             narr)
             else:
-                stable = 0
-                for state2 in otherDMums:
-                    if dm.payoffMatrix[state0, state2] <= 0:
-                        stable = 1
-                        narr += 'A move to ' + self.chattyHelper(dm, state1) + ' is GMR sanctioned for focal DM ' + dm.name + ' by a move to ' + self.chattyHelper(dm, state2) + ' by other DMs.\n\n'
-                        break
-
-                if not stable:
-                    gmrStab = 0
-                    narr += self.chattyHelper(dm, state0) + ') is unstable by GMR for focal dm ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm, state1) + '.\n\n'
-                    return gmrStab, narr
-
-            gmrStab = 1
-            narr += self.chattyHelper(dm, state0) + ' is stable by GMR for focal DM ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm, state1) for state1 in ui]) + 'are sanctioned by other players.\n\n'
-        return gmrStab, narr
+                narration += ("{0} is unstable by GMR for focal DM {1}, "
+                              "since other DMs cannot effectively sanction"
+                              " a move to {2}").format(
+                    self.chattyHelper(dm, state0), dm.name,
+                    self.chattyHelper(dm, state1))
+                return False, narration
+        narration += ("{0} is stable by GMR for focal DM {1}, since all "
+                      "available UIs are sanctioned by other"
+                      " players.\n\n").format(
+            self.chattyHelper(dm, state0), dm.name)
+        return True, narration
 
     def smr(self, dm, state0):
         """Calculate SMR stability.
@@ -440,9 +441,10 @@ class LogicalSolver(RMGenerator):
         return smrStab, narr
 
     def findEquilibria(self):
-        """Calculate the equilibrium states that exist within the conflict for each stability concept."""
+        """Calculate equilibrium states for each stability concept."""
         # Nash calculation
-        nashStabilities = np.zeros((len(self.effectiveDMs), len(self.conflict.feasibles)))
+        nashStabilities = np.zeros((len(self.effectiveDMs),
+                                    len(self.conflict.feasibles)))
         for idx, dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 nashStabilities[idx, state] = self.nash(dm, state)[0]
@@ -453,7 +455,8 @@ class LogicalSolver(RMGenerator):
         self.nashEquilibria = np.invert(sum(nashStabilities, 0).astype('bool'))
 
         # SEQ calculation
-        seqStabilities = np.zeros((len(self.effectiveDMs), len(self.conflict.feasibles)))
+        seqStabilities = np.zeros((len(self.effectiveDMs),
+                                   len(self.conflict.feasibles)))
         for idx, dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 seqStabilities[idx, state] = self.seq(dm, state)[0]
@@ -464,7 +467,8 @@ class LogicalSolver(RMGenerator):
         self.seqEquilibria = np.invert(sum(seqStabilities, 0).astype('bool'))
 
         # SIM calculation
-        simStabilities = np.zeros((len(self.effectiveDMs), len(self.conflict.feasibles)))
+        simStabilities = np.zeros((len(self.effectiveDMs),
+                                   len(self.conflict.feasibles)))
         for idx, dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 simStabilities[idx, state] = self.sim(dm, state)[0]
@@ -475,11 +479,14 @@ class LogicalSolver(RMGenerator):
         self.simEquilibria = np.invert(sum(simStabilities, 0).astype('bool'))
 
         # SEQ + SIM calculation
-        seqSimStabilities = np.bitwise_and(simStabilities.astype('bool'), seqStabilities.astype('bool'))
-        self.seqSimEquilibria = np.invert(sum(seqSimStabilities, 0).astype('bool'))
+        seqSimStabilities = np.bitwise_and(simStabilities.astype('bool'),
+                                           seqStabilities.astype('bool'))
+        self.seqSimEquilibria = np.invert(sum(seqSimStabilities,
+                                              0).astype('bool'))
 
         # GMR calculation
-        gmrStabilities = np.zeros((len(self.effectiveDMs), len(self.conflict.feasibles)))
+        gmrStabilities = np.zeros((len(self.effectiveDMs),
+                                   len(self.conflict.feasibles)))
         for idx, dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 gmrStabilities[idx, state] = self.gmr(dm, state)[0]
@@ -490,7 +497,8 @@ class LogicalSolver(RMGenerator):
         self.gmrEquilibria = np.invert(sum(gmrStabilities, 0).astype('bool'))
 
         # SMR calculations
-        smrStabilities = np.zeros((len(self.effectiveDMs), len(self.conflict.feasibles)))
+        smrStabilities = np.zeros((len(self.effectiveDMs),
+                                   len(self.conflict.feasibles)))
         for idx, dm in enumerate(self.effectiveDMs):
             for state in range(len(self.conflict.feasibles)):
                 smrStabilities[idx, state] = self.smr(dm, state)[0]
@@ -502,15 +510,18 @@ class LogicalSolver(RMGenerator):
 
         # output
         self.allEquilibria = np.vstack((self.nashEquilibria,
-                                           self.gmrEquilibria,
-                                           self.seqEquilibria,
-                                           self.simEquilibria,
-                                           self.seqSimEquilibria,
-                                           self.smrEquilibria))
+                                        self.gmrEquilibria,
+                                        self.seqEquilibria,
+                                        self.simEquilibria,
+                                        self.seqSimEquilibria,
+                                        self.smrEquilibria))
 
 
 class InverseSolver(RMGenerator):
+    """Generate list of preference rankings which result in stablility."""
+
     def __init__(self, conflict, vary=None, desiredEquilibria=None):
+        """Setup solver based on variable preferences and desired Eq states."""
         RMGenerator.__init__(self, conflict, useCoalitions=False)
         if type(desiredEquilibria) is list:
             self.desEq = desiredEquilibria[0]
@@ -543,7 +554,7 @@ class InverseSolver(RMGenerator):
         # on the vary ranges selected.
 
     def _decPerm(self, full, vary):
-        """Returns all possible permutations of a list 'full' when only the span
+        """Return all possible permutations of a list 'full' when only the span
         defined by 'vary' is allowed to change. (UI vector for 1 DM).
         """
         if not vary:
@@ -553,15 +564,19 @@ class InverseSolver(RMGenerator):
                 yield full[:vary[0]] + list(x) + full[vary[1]:]
 
     def prefPermGen(self, prefRanks, vary):
-        """Returns all possible permutations of the group of preference rankings
-        'pref' when the spans defined in 'vary' are allowed to move for each DM."""
+        """Return all possible permutations of the group of preference rankings
+        'pref' when the spans defined in 'vary' are allowed to move for each
+        DM.
+        """
         b = [self._decPerm(y, vary[x]) for x, y in enumerate(prefRanks)]
         c = itertools.product(*b)
         for y in c:
             yield y
 
     def nashCond(self):
-        """Generates a list of the conditions that preferences must satisfy for Nash stability to exist."""
+        """Generates a list of the conditions that preferences must satisfy for
+        Nash stability to exist.
+        """
         output = [""]
         for dmIdx, dm in enumerate(self.conflict.decisionMakers):
             desEq = self.conflict.feasibles.ordered[self.desEq]
@@ -586,7 +601,8 @@ class InverseSolver(RMGenerator):
         return "\n\n".join(output) + "\n\n\n\n"
 
     def gmrCond(self):
-        """Generate a list of the conditions that preferences must satisfy for GMR stability to exist."""
+        """Generate a list of the conditions that preferences must satisfy for
+        GMR stability to exist."""
         output = [""]
         for dmIdx, dm in enumerate(self.conflict.decisionMakers):
             desEq = self.conflict.feasibles.ordered[self.desEq]
@@ -940,8 +956,8 @@ class GoalSeeker(RMGenerator):
         return conditions
 
 
-class PatternAnd:
-    """All statements must be true."""
+class Pattern:
+    """Preference based class."""
 
     def __init__(self, *patterns, statement=None):
         self.plist = []
@@ -950,6 +966,9 @@ class PatternAnd:
         self.conf = None
         for p in patterns:
             self.append(p)
+
+class PatternAnd(Pattern):
+    """All statements must be true."""
 
     def append(self, p):
         if isinstance(p, PatternAnd):
@@ -980,16 +999,8 @@ class PatternAnd:
             return (indent + "AND\n").join(pat)
 
 
-class PatternOr:
+class PatternOr(Pattern):
     """At least one statement must be true."""
-
-    def __init__(self, *patterns, statement=None):
-        self.plist = []
-        self.co = False  # indicates that this is not a base level condition.
-        self.statement = statement
-        self.conf = None
-        for p in patterns:
-            self.append(p)
 
     def append(self, p):
         if isinstance(p, PatternOr):
@@ -1071,7 +1082,11 @@ class LessThanOneOf:
         return False
 
     def asString(self, indent=""):
-        return indent + "%s must be less preferred than at least one of %s for %s\n"%(self.s0 + 1, [s1 + 1 for s1 in self.li], self.co.name)
+        return ("{0}{1} must be less preferred than at least one of {2} "
+                "for {3}\n").format(indent,
+                                    self.s0 + 1,
+                                    [s1 + 1 for s1 in self.li],
+                                    self.co.name)
 
 
 class MatrixCalc(RMGenerator):
