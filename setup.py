@@ -1,6 +1,8 @@
 """Script for generation of an .msi install package for GMCR-py.
 
 Call from console with `python setup.py bdist_msi`
+     py -3.5 setup.py bdist_msi
+     py -3.5_32 setup.py bdist_msi
 
 Built versions will appear in the `dist` top directory.
 """
@@ -68,7 +70,7 @@ executables = [
 
 # Run setup
 setup(name='GMCRplus',
-      version='0.3.12',
+      version='0.3.13',
       description='Graph Model for Conflict Resolution',
       options={'build_exe': buildOptions,
                'bdist_msi': bdist_msi_options},
