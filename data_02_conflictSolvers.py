@@ -215,10 +215,9 @@ class LogicalSolver(RMGenerator):
                     if countermove and self.checkCountermoves(focalDM, state0,
                                                               state2):
                         # countermoves allowed, and one exists.
-                        print("countermoved")
                         pass
                     else:
-                        narration = "a move to {0} by {1}.".format(
+                        narration = "a move to {0} by {1}".format(
                             self.chattyHelper(focalDM, state2), dm.name)
                         return True, narration, state2
                 # see if subsequent moves by other opponents can lead to
@@ -236,12 +235,9 @@ class LogicalSolver(RMGenerator):
     def checkCountermoves(self, dm, state0, state2):
         """Check if DM can countermove after being sanctioned to state2."""
         uis = self.UIs(dm, state2)
-        print("countermoves for ", dm.name, state0, " ", state2)
         if not uis:
             return False
-        print(uis)
         for state3 in uis:
-            print(dm.payoffMatrix[state0, state3])
             if dm.payoffMatrix[state0, state3] > 0:
                 # effective countermove found.
                 return True
@@ -291,7 +287,7 @@ class LogicalSolver(RMGenerator):
             sanc, narr, s3 = self.checkSanctions(dm, oDMs, state0, state1,
                                                  uiOnly=True)
             if sanc:
-                narration += ("A move to {0} is sanctioned by {1}"
+                narration += ("A move to {0} is sanctioned by {1}."
                               "\n\n").format(self.chattyHelper(dm, state1),
                                              narr)
             else:
@@ -391,7 +387,7 @@ class LogicalSolver(RMGenerator):
             oDMs = [d for d in self.effectiveDMs if d is not dm]
             sanc, narr, s3 = self.checkSanctions(dm, oDMs, state0, state1)
             if sanc:
-                narration += ("A move to {0} is sanctioned by {1}"
+                narration += ("A move to {0} is sanctioned by {1}."
                               "\n\n").format(self.chattyHelper(dm, state1),
                                              narr)
             else:
