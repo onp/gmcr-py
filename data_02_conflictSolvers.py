@@ -195,7 +195,8 @@ class LogicalSolver(RMGenerator):
             state + 1, self.conflict.feasibles.decimal[state], pay)
         return snippet
 
-    def checkSanctions(self, otherDMs, state1, focalPayoffs, uiOnly=False):
+    def checkSanctions(self, focalDM, otherDMs, state0, state1,
+                       uiOnly=False, countermove=False):
         """Return (True, narration, sanctioned to) if move is sanctioned."""
         for dm in otherDMs:
             if uiOnly:
@@ -208,22 +209,43 @@ class LogicalSolver(RMGenerator):
                 continue
 
             for state2 in moves:
-                if focalPayoffs[state2] <= 0:
+                # check if state2 is an effective sanction
+                if focalDM.payoffMatrix[state0, state2] <= 0:
                     # effective sanction found.
-                    narration = "a move to state {0} by {1}.".format(
-                        state2 + 1, dm.name)
-                    return True, narration, state2
-                else:
-                    # see if subsequent moves by other opponents can lead to
-                    # an effective sanction.
-                    oDMs = [d for d in otherDMs if d is not dm]
-                    sanc, narr, s3 = self.checkSanctions(oDMs, state2,
-                                                         focalPayoffs, uiOnly)
-                    if sanc:
-                        narration = ("a move to state {0} by {1}, followed by "
-                                     "{2}").format(state2 + 1, dm.name, narr)
-                        return True, narration, s3
+                    if countermove and self.checkCountermoves(focalDM, state0,
+                                                              state2):
+                        # countermoves allowed, and one exists.
+                        print("countermoved")
+                        pass
+                    else:
+                        narration = "a move to {0} by {1}.".format(
+                            self.chattyHelper(focalDM, state2), dm.name)
+                        return True, narration, state2
+                # see if subsequent moves by other opponents can lead to
+                # an effective sanction.
+                oDMs = [d for d in otherDMs if d is not dm]
+                sanc, narr, s3 = self.checkSanctions(focalDM, oDMs, state0,
+                                                     state2, uiOnly,
+                                                     countermove)
+                if sanc:
+                    narration = ("a move to state {0} by {1}, followed by "
+                                 "{2}").format(state2 + 1, dm.name, narr)
+                    return True, narration, s3
         return False, "no sanctions", None
+
+    def checkCountermoves(self, dm, state0, state2):
+        """Check if DM can countermove after being sanctioned to state2."""
+        uis = self.UIs(dm, state2)
+        print("countermoves for ", dm.name, state0, " ", state2)
+        if not uis:
+            return False
+        print(uis)
+        for state3 in uis:
+            print(dm.payoffMatrix[state0, state3])
+            if dm.payoffMatrix[state0, state3] > 0:
+                # effective countermove found.
+                return True
+        return False
 
     def nash(self, dm, state0):
         """Calculate Nash stability.
@@ -266,9 +288,8 @@ class LogicalSolver(RMGenerator):
         # for each potential move...
         for state1 in ui:
             oDMs = [d for d in self.effectiveDMs if d is not dm]
-            focalPayoffs = dm.payoffMatrix[state0, :]
-            sanc, narr, s3 = self.checkSanctions(oDMs, state1,
-                                                 focalPayoffs, True)
+            sanc, narr, s3 = self.checkSanctions(dm, oDMs, state0, state1,
+                                                 uiOnly=True)
             if sanc:
                 narration += ("A move to {0} is sanctioned by {1}"
                               "\n\n").format(self.chattyHelper(dm, state1),
@@ -368,9 +389,7 @@ class LogicalSolver(RMGenerator):
         # for each potential move...
         for state1 in ui:
             oDMs = [d for d in self.effectiveDMs if d is not dm]
-            focalPayoffs = dm.payoffMatrix[state0, :]
-            sanc, narr, s3 = self.checkSanctions(oDMs, state1,
-                                                 focalPayoffs, False)
+            sanc, narr, s3 = self.checkSanctions(dm, oDMs, state0, state1)
             if sanc:
                 narration += ("A move to {0} is sanctioned by {1}"
                               "\n\n").format(self.chattyHelper(dm, state1),
@@ -391,10 +410,9 @@ class LogicalSolver(RMGenerator):
     def smr(self, dm, state0):
         """Calculate SMR stability.
 
-        Returns true if state0 is SMR stable for dm.
+        Returns True if state0 is SMR stable for dm.
         """
         ui = self.UIs(dm, state0)
-        narr = ''
 
         if not ui:
             narration = ("{0} is SMR stable for DM {1} since they have no UIs "
@@ -407,38 +425,28 @@ class LogicalSolver(RMGenerator):
                      ).format(self.chattyHelper(dm, state0), dm.name,
                               ',\n   '.join([self.chattyHelper(dm, state1)
                                              for state1 in ui]))
-
-        for state1 in ui:             # for each potential move...
-            otherDMums = [x for oDM in self.effectiveDMs if oDM != dm for x in self.reachable(oDM, state1)]        # find all possible moves (not just UIs) available to other players
-
-            if not otherDMums:
-                smrStab = 0
-                narr += self.chattyHelper(dm, state0) + ' is unstable by SMR for focal DM ' + dm.name + ', since their opponents have no moves from ' + self.chattyHelper(dm, state1) + '.\n\n'
-                return smrStab, narr
+        # for each potential move...
+        for state1 in ui:
+            oDMs = [d for d in self.effectiveDMs if d is not dm]
+            sanc, narr, s3 = self.checkSanctions(dm, oDMs, state0, state1,
+                                                 countermove=True)
+            if sanc:
+                narration += ("A move to {0} is sanctioned by {1}. No "
+                              "effective countermove is possible."
+                              "\n\n").format(self.chattyHelper(dm, state1),
+                                             narr)
             else:
-                stable = 0
-                for state2 in otherDMums:
-                    if dm.payoffMatrix[state0, state2] <= 0:     # if a sanctioning state exists...
-                        narr += 'A move to ' + self.chattyHelper(dm, state1) + ' is SMR sanctioned for focal DM ' + dm.name + ' by a move to ' + self.chattyHelper(dm, state2) + ' by other dms.  Check for possible countermoves...\n\n'
-                        stable = 1
-                        ui2 = self.UIs(dm, state2, state0)         # Find list of moves available to the focal DM from 'state2' with a preference higher than 'state0'
-
-                        if ui2:     # still unstable since countermove is possible.  Check other sanctionings...
-                            narr += '    The sanctioned state ' + self.chattyHelper(dm, state2) + ' can be countermoved to ' + str([self.chattyHelper(dm, state3) for state3 in ui2]) + '. Check other sanctionings...\n\n'
-                            stable = 0
-
-                        else:        # 'state0' is stable since there is a sanctioning 'state2' that does not have a countermove
-                            narr += '    ' + self.chattyHelper(dm, state1) + ' remains sanctioned under SMR for focal DM ' + dm.name + ', since they cannot countermove their opponent\'s sanction to ' + self.chattyHelper(dm, state2) + '.\n\n'
-                            break
-
-                if not stable:
-                    smrStab = 0
-                    narr += self.chattyHelper(dm, state0) + ') is unstable by SMR for focal dm ' + dm.name + ', since their opponents have no less preferred sanctioning UIs from ' + self.chattyHelper(dm, state1) + ' that cannot be effectively countermoved by the focal dm.\n\n'
-                    return smrStab, narr
-
-            smrStab = 1
-            narr += self.chattyHelper(dm, state0) + ' is stable by SMR for focal dm ' + dm.name + ', since all available UIs ' + str([self.chattyHelper(dm, state1) for state1 in ui]) + ' are sanctioned by other players and cannot be countermoved.\n\n'
-        return smrStab, narr
+                narration += ("{0} is unstable by SMR for focal DM {1}, "
+                              "since other DMs cannot effectively sanction"
+                              " a move to {2}").format(
+                    self.chattyHelper(dm, state0), dm.name,
+                    self.chattyHelper(dm, state1))
+                return False, narration
+        narration += ("{0} is stable by SMR for focal DM {1}, since all "
+                      "available UIs are sanctioned by other"
+                      " players.\n\n").format(
+            self.chattyHelper(dm, state0), dm.name)
+        return True, narration
 
     def findEquilibria(self):
         """Calculate equilibrium states for each stability concept."""
