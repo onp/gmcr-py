@@ -16,7 +16,7 @@ from widgets_f04_02_prefElements import (PreferenceRankingMaster,
                                          PreferenceListDisplay)
 from widgets_f04_03_optionForm import OptionFormTable
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class PreferencesFrame(FrameTemplate):
@@ -139,44 +139,44 @@ class PreferencesFrame(FrameTemplate):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
         self.grid_remove()
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.infoLabel.grid(column=0, row=1, sticky=tkNSEW)
+        self.infoLabel.grid(column=0, row=1, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
-        self.paneMaster.grid(column=0, row=1, sticky=tkNSEW)
+        self.paneMaster.grid(column=0, row=1, sticky=NSEW)
         self.paneMaster.add(self.paneTop, minsize=200)
-        self.rankings.grid(column=0, row=1, sticky=tkNSEW)
+        self.rankings.grid(column=0, row=1, sticky=NSEW)
         ttk.Separator(self.paneTop, orient=VERTICAL).grid(
-            column=1, row=1, sticky=tkNSEW, padx=3)
-        self.editor.grid(column=2, row=1, sticky=tkNSEW)
+            column=1, row=1, sticky=NSEW, padx=3)
+        self.editor.grid(column=2, row=1, sticky=NSEW)
         ttk.Separator(self.paneTop, orient=VERTICAL).grid(
-            column=3, row=1, sticky=tkNSEW, padx=3)
-        self.paneTopRightMaster.grid(column=4, row=1, sticky=tkNSEW)
+            column=3, row=1, sticky=NSEW, padx=3)
+        self.paneTopRightMaster.grid(column=4, row=1, sticky=NSEW)
         self.paneTop.columnconfigure(0, weight=0)
         self.paneTop.columnconfigure(2, weight=0)
         self.paneTop.columnconfigure(4, weight=1)
         self.paneTop.rowconfigure(1, weight=1)
 
         self.usePrioritizationButton.grid(column=0, row=0, columnspan=5,
-                                          sticky=tkNSEW)
+                                          sticky=NSEW)
 
         self.paneTopRightMaster.add(self.staging)
         self.paneTopRightMaster.add(self.preferenceDisp)
 
         self.paneMaster.add(self.paneBottom)
-        self.optionTable.grid(column=0, row=0, sticky=tkNSEW)
+        self.optionTable.grid(column=0, row=0, sticky=NSEW)
         self.paneBottom.columnconfigure(0, weight=1)
         self.paneBottom.rowconfigure(0, weight=1)
 
@@ -298,10 +298,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     conf = ConflictModel()
     conf.load_from_file("save_files/Garrison.gmcr")

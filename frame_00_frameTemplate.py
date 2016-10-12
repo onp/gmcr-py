@@ -5,7 +5,7 @@
 from tkinter import Frame, PhotoImage, StringVar, N, S, E, W
 from tkinter import ttk
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class FrameTemplate(Frame):
@@ -49,7 +49,7 @@ class FrameTemplate(Frame):
                                  image=self.inactiveIcon, compound="top",
                                  width=20, command=lambda: onClick())
         self.button.grid(column=len(mainWindow.frameBtnList), row=0,
-                         sticky=tkNSEW)
+                         sticky=NSEW)
         return self.button
 
     def hasRequiredData(self):

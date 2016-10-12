@@ -12,7 +12,7 @@ from frame_00_frameTemplate import FrameTemplate
 from widgets_f01_01_dmOptElements import DMselector, DMeditor
 from data_01_conflictModel import ConflictModel
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class DMInpFrame(FrameTemplate):
@@ -70,29 +70,29 @@ class DMInpFrame(FrameTemplate):
         # ########  preliminary griding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.grid_remove()
         self.columnconfigure(0, weight=1)
         self.columnconfigure(2, weight=1)
         self.rowconfigure(0, weight=1)
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.dmCountLabel.grid(column=0, row=1, sticky=tkNSEW)
-        self.optCountLabel.grid(column=0, row=2, sticky=tkNSEW)
-        self.stateCountLabel.grid(column=0, row=3, sticky=tkNSEW)
+        self.dmCountLabel.grid(column=0, row=1, sticky=NSEW)
+        self.optCountLabel.grid(column=0, row=2, sticky=NSEW)
+        self.stateCountLabel.grid(column=0, row=3, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
-        self.dmSelector.grid(row=0, column=0, sticky=tkNSEW)
+        self.dmSelector.grid(row=0, column=0, sticky=NSEW)
         ttk.Separator(self, orient=VERTICAL).grid(row=0, column=1,
-                                                  sticky=tkNSEW, padx=3)
-        self.editor.grid(row=0, column=2, sticky=tkNSEW)
+                                                  sticky=NSEW, padx=3)
+        self.editor.grid(row=0, column=2, sticky=NSEW)
 
         # bindings
         self.dmSelector.bind('<<DMselected>>', self.dmChange)
@@ -160,10 +160,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     g1 = ConflictModel('AmRv2.gmcr')
 

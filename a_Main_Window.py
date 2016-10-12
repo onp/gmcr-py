@@ -20,7 +20,7 @@ from multiprocessing import freeze_support
 import os
 import sys
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class MainAppWindow:
@@ -48,16 +48,16 @@ class MainAppWindow:
         self.topVSep = ttk.Separator(self.topFrame, orient=HORIZONTAL)
         self.bottomHSep = ttk.Separator(self.contentFrame, orient=VERTICAL)
 
-        self.topFrame.grid(column=0, row=0, sticky=tkNSEW)
+        self.topFrame.grid(column=0, row=0, sticky=NSEW)
         self.topFrame.columnconfigure(2, weight=1)
         self.topFrame.rowconfigure(3, weight=1)
-        self.fileFrame.grid(column=0, row=1, sticky=tkNSEW)
+        self.fileFrame.grid(column=0, row=1, sticky=NSEW)
         self.pageSelectFrame.grid(column=1, row=1, columnspan=4,
                                   sticky=(N, S, W))
         self.pageSelectFrame.rowconfigure(0, weight=1)
-        self.topVSep.grid(column=0, row=2, columnspan=10, sticky=tkNSEW)
-        self.bottomHSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
-        self.contentFrame.grid(column=0, row=3, columnspan=5, sticky=tkNSEW)
+        self.topVSep.grid(column=0, row=2, columnspan=10, sticky=NSEW)
+        self.bottomHSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
+        self.contentFrame.grid(column=0, row=3, columnspan=5, sticky=NSEW)
         self.contentFrame.columnconfigure(0, weight=1)
         self.contentFrame.rowconfigure(1, weight=1)
 
@@ -104,7 +104,7 @@ class MainAppWindow:
         self.frameList.append(newFrame)
         newButton = newFrame.makeButton(self.pageSelectFrame, self)
         self.frameBtnList.append(newButton)
-        newButton.grid(column=len(self.frameBtnList), row=0, sticky=tkNSEW)
+        newButton.grid(column=len(self.frameBtnList), row=0, sticky=NSEW)
 
     def checkFramesHaveData(self, event=None):
         """Check if required data exists for each frame then de/activate."""

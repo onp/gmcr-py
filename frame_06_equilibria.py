@@ -18,7 +18,7 @@ from widgets_f06_01_logResultDisp import (CoalitionSelector,
                                           Exporter,
                                           LogNarrator)
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class ResultFrame(FrameTemplate):
@@ -118,34 +118,34 @@ class ResultFrame(FrameTemplate):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.grid_remove()
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.infoLabel.grid(column=0, row=1, sticky=tkNSEW)
+        self.infoLabel.grid(column=0, row=1, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
-        self.paneMaster.grid(column=0, row=1, sticky=tkNSEW)
+        self.paneMaster.grid(column=0, row=1, sticky=NSEW)
         self.paneMaster.add(self.pane1, width=600, stretch='always')
         self.pane1.rowconfigure(1, weight=1)
         self.pane1.columnconfigure(0, weight=1)
-        self.coalitionSelector.grid(row=0, column=0, sticky=tkNSEW)
-        self.solutionTable.grid(row=1, column=0, sticky=tkNSEW)
-        self.exporter.grid(row=2, column=0, sticky=tkNSEW)
+        self.coalitionSelector.grid(row=0, column=0, sticky=NSEW)
+        self.solutionTable.grid(row=1, column=0, sticky=NSEW)
+        self.exporter.grid(row=2, column=0, sticky=NSEW)
 
         self.paneMaster.add(self.pane2, width=250, stretch='always')
         self.pane2.rowconfigure(0, weight=1)
         self.pane2.columnconfigure(0, weight=1)
-        self.narrator.grid(row=0, column=0, sticky=tkNSEW)
+        self.narrator.grid(row=0, column=0, sticky=NSEW)
 
         # bindings
         self.coalitionSelector.bind("<<CoalitionsChanged>>",
@@ -181,10 +181,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     conf = ConflictModel()
     conf.load_from_file("save_files/Garrison.gmcr")

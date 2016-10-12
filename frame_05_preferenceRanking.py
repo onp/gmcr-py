@@ -13,7 +13,7 @@ from data_01_conflictModel import ConflictModel
 from widgets_f05_01_PrefRank import PRankEditMaster
 from widgets_f04_03_optionForm import OptionFormTable
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class PreferenceRankingFrame(FrameTemplate):
@@ -111,22 +111,22 @@ class PreferenceRankingFrame(FrameTemplate):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.grid_remove()
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.infoLabel.grid(column=0, row=1, sticky=tkNSEW)
+        self.infoLabel.grid(column=0, row=1, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
-        self.prefEditor.grid(row=0, column=0, sticky=tkNSEW)
-        self.stateTable.grid(row=1, column=0, sticky=tkNSEW)
+        self.prefEditor.grid(row=0, column=0, sticky=NSEW)
+        self.stateTable.grid(row=1, column=0, sticky=NSEW)
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
@@ -169,10 +169,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     testConflict = ConflictModel('SyriaIraq.gmcr')
 

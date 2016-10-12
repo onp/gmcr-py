@@ -9,7 +9,7 @@ from tkinter import Tk, N, S, E, W, VERTICAL, StringVar, Listbox
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class FeasDisp(ttk.Frame):
@@ -40,10 +40,10 @@ class FeasDisp(ttk.Frame):
                                   command=self.feasLBx.yview)
 
         # ###########
-        self.cBoxLb.grid(column=0, row=1, sticky=tkNSEW, pady=3)
-        self.cBox.grid(column=1, row=1, columnspan=2, sticky=tkNSEW, pady=3)
-        self.feasLBx.grid(column=0, row=2, columnspan=2, sticky=tkNSEW)
-        self.scrl.grid(column=2, row=2, sticky=tkNSEW)
+        self.cBoxLb.grid(column=0, row=1, sticky=NSEW, pady=3)
+        self.cBox.grid(column=1, row=1, columnspan=2, sticky=NSEW, pady=3)
+        self.feasLBx.grid(column=0, row=2, columnspan=2, sticky=NSEW)
+        self.scrl.grid(column=2, row=2, sticky=NSEW)
 
         self.cBox.bind('<<ComboboxSelected>>', self.fmtSel)
         self.feasLBx.configure(yscrollcommand=self.scrl.set)
@@ -81,7 +81,7 @@ def main():
     g1 = ConflictModel('Prisoners.gmcr')
 
     FeasView = FeasDisp(root, g1)
-    FeasView.grid(column=0, row=0, sticky=tkNSEW)
+    FeasView.grid(column=0, row=0, sticky=NSEW)
 
     root.mainloop()
 

@@ -16,7 +16,7 @@ from widgets_f08_01_stabilityAnalysis import (StatusQuoAndGoals,
                                               ReachableTreeViewer,
                                               PatternNarrator)
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class StabilityFrame(FrameTemplate):
@@ -121,44 +121,44 @@ class StabilityFrame(FrameTemplate):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.grid_remove()
         self.columnconfigure(0, weight=1)
         self.rowconfigure(0, weight=1)
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.infoLabel.grid(column=0, row=1, sticky=tkNSEW)
+        self.infoLabel.grid(column=0, row=1, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
-        self.paneMaster.grid(row=0, column=0, sticky=tkNSEW)
+        self.paneMaster.grid(row=0, column=0, sticky=NSEW)
 
         self.paneMaster.add(self.paneLeft)
 
         self.paneLeft.add(self.paneLeftTop)
         self.paneLeftTop.columnconfigure(1, weight=1)
         self.paneLeftTop.rowconfigure(2, weight=1)
-        self.coalitionSelector.grid(row=0, column=0, sticky=tkNSEW)
+        self.coalitionSelector.grid(row=0, column=0, sticky=NSEW)
         ttk.Separator(self, orient=HORIZONTAL).grid(row=1, column=0,
-                                                    sticky=tkNSEW, pady=3)
-        self.statusQuoAndGoals.grid(row=2, column=0, sticky=tkNSEW)
-        self.reachableTree.grid(row=0, column=1, rowspan=3, sticky=tkNSEW)
+                                                    sticky=NSEW, pady=3)
+        self.statusQuoAndGoals.grid(row=2, column=0, sticky=NSEW)
+        self.reachableTree.grid(row=0, column=1, rowspan=3, sticky=NSEW)
 
         self.paneLeft.add(self.paneLeftBottom)
         self.paneLeftBottom.rowconfigure(0, weight=1)
         self.paneLeftBottom.columnconfigure(0, weight=1)
-        self.optionFormTable.grid(row=0, column=0, sticky=tkNSEW)
+        self.optionFormTable.grid(row=0, column=0, sticky=NSEW)
 
         self.paneMaster.add(self.paneRight)
         self.paneRight.rowconfigure(0, weight=1)
         self.paneRight.columnconfigure(0, weight=1)
-        self.patternNarrator.grid(row=0, column=0, sticky=tkNSEW)
+        self.patternNarrator.grid(row=0, column=0, sticky=NSEW)
 
         # bindings
         self.statusQuoAndGoals.bind("<<StatusQuoChanged>>",
@@ -202,10 +202,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     conf = ConflictModel()
     conf.load_from_file("save_files/Garrison.gmcr")

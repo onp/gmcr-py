@@ -10,7 +10,7 @@ from tkinter import Tk, Canvas, N, S, E, W, VERTICAL, StringVar
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class RadiobuttonSeries(ttk.Labelframe):
@@ -40,7 +40,7 @@ class RadiobuttonSeries(ttk.Labelframe):
         """Create Radiobutton inputs for each Option for the target DM."""
         if not options:
             self.placeholder = ttk.Label(self, text="This DM has no Options.")
-            self.placeholder.grid(column=0, row=1, columnspan=4, sticky=tkNSEW)
+            self.placeholder.grid(column=0, row=1, columnspan=4, sticky=NSEW)
             return None
         if self.placeholder:
             self.placeholder.grid_forget()
@@ -97,7 +97,7 @@ class RadiobuttonEntry(ttk.Frame):
 
         self.dmSelector = ttk.Combobox(self, textvariable=self.activeDMname,
                                        values=dmNames, state='readonly')
-        self.dmSelector.grid(column=1, row=0, sticky=tkNSEW)
+        self.dmSelector.grid(column=1, row=0, sticky=NSEW)
         self.dmSelector.bind('<<ComboboxSelected>>', self.dmSel)
 
         self.rbeCanvas = Canvas(self)
@@ -105,8 +105,8 @@ class RadiobuttonEntry(ttk.Frame):
         self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,
                                      command=self.rbeCanvas.yview)
 
-        self.rbeCanvas.grid(column=0, row=1, columnspan=2, sticky=tkNSEW)
-        self.scrollY.grid(column=2, row=1, sticky=tkNSEW)
+        self.rbeCanvas.grid(column=0, row=1, columnspan=2, sticky=NSEW)
+        self.scrollY.grid(column=2, row=1, sticky=NSEW)
         self.rbeCanvas.configure(yscrollcommand=self.scrollY.set)
         self.canvWindow = self.rbeCanvas.create_window(
             (0, 0), window=self.rdBtnFrame, anchor='nw')
@@ -119,7 +119,7 @@ class RadiobuttonEntry(ttk.Frame):
         self.entryBx = ttk.Entry(self, textvariable=self.entryText,
                                  validate="key",
                                  validatecommand=(vcmd, '%S', '%P'))
-        self.entryBx.grid(column=0, row=2, columnspan=2, sticky=tkNSEW)
+        self.entryBx.grid(column=0, row=2, columnspan=2, sticky=NSEW)
         self.entryBx.bind('<Return>', self.generateAdd)
 
         self.warnText = StringVar(value='')
@@ -130,9 +130,9 @@ class RadiobuttonEntry(ttk.Frame):
                                    text='Perceived as Mutually Exclusive',
                                    command=self.generateMutEx)
         self.warnLab = ttk.Label(self, textvariable=self.warnText)
-        self.warnLab.grid(column=0, row=3, sticky=tkNSEW)
-        self.addBtn.grid(column=0, row=4, columnspan=2, sticky=tkNSEW)
-        self.mutExBtn.grid(column=0, row=5, columnspan=2, sticky=tkNSEW)
+        self.warnLab.grid(column=0, row=3, sticky=NSEW)
+        self.addBtn.grid(column=0, row=4, columnspan=2, sticky=NSEW)
+        self.mutExBtn.grid(column=0, row=5, columnspan=2, sticky=NSEW)
 
         self.reloadOpts()
 
@@ -166,7 +166,7 @@ class RadiobuttonEntry(ttk.Frame):
             a = RadiobuttonSeries(self.rdBtnFrame, dm)
             self.rdBtnSrs.append(a)
             a.setOpts(dm.options)
-            a.grid(column=0, row=int(x), sticky=tkNSEW)
+            a.grid(column=0, row=int(x), sticky=NSEW)
             self.stringVarList += a.stringVarList
 
         self.rdBtnChgCmd()

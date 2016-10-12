@@ -15,7 +15,7 @@ from widgets_f02_03_feasDisp import FeasDisp
 from data_01_conflictModel import ConflictModel
 import data_03_gmcrUtilities as gmcrUtil
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class InfeasInpFrame(FrameTemplate):
@@ -116,39 +116,39 @@ class InfeasInpFrame(FrameTemplate):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.grid_remove()
 
         self.columnconfigure(2, weight=3)
         self.rowconfigure(0, weight=1)
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.originalStatesLabel.grid(column=0, row=1, sticky=tkNSEW)
-        self.removedStatesLabel.grid(column=0, row=2, sticky=tkNSEW)
-        self.feasStatesLabel.grid(column=0, row=3, sticky=tkNSEW)
+        self.originalStatesLabel.grid(column=0, row=1, sticky=NSEW)
+        self.removedStatesLabel.grid(column=0, row=2, sticky=NSEW)
+        self.feasStatesLabel.grid(column=0, row=3, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
         self.optsFrame.columnconfigure(0, weight=1)
         self.optsFrame.rowconfigure(0, weight=1)
-        self.optsFrame.grid(column=0, row=0, sticky=tkNSEW)
+        self.optsFrame.grid(column=0, row=0, sticky=NSEW)
 
-        self.infeasFrame.grid(column=2, row=0, sticky=tkNSEW)
+        self.infeasFrame.grid(column=2, row=0, sticky=NSEW)
 
-        self.optsInp.grid(column=0, row=0, columnspan=2, sticky=tkNSEW)
+        self.optsInp.grid(column=0, row=0, columnspan=2, sticky=NSEW)
         self.optsInp.bind('<<AddInfeas>>', self.addInfeas)
         self.optsInp.bind('<<AddMutEx>>', self.addMutEx)
 
         self.infeasDisp.bind('<<SelItem>>', self.selChg)
         self.infeasDisp.bind('<<ValueChange>>', self.refresh)
 
-        self.hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+        self.hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
         self.refresh()
 
@@ -214,10 +214,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     g1 = ConflictModel('Prisoners.gmcr')
 

@@ -10,7 +10,7 @@ Loaded by the frame_01_decisionMakers module.
 from tkinter import N, S, E, W, VERTICAL, HORIZONTAL, END, StringVar, Listbox
 from tkinter import ttk
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class DMselector(ttk.Frame):
@@ -43,12 +43,12 @@ class DMselector(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
-        self.label.grid(column=0, row=0, columnspan=5, sticky=tkNSEW)
-        self.dmListDisp.grid(column=0, row=1, columnspan=5, sticky=tkNSEW)
-        self.scrollY.grid(column=5, row=1, sticky=tkNSEW)
-        self.upBtn.grid(column=2, row=2, sticky=tkNSEW)
-        self.downBtn.grid(column=3, row=2, sticky=tkNSEW)
-        self.delBtn.grid(column=4, row=2, sticky=tkNSEW)
+        self.label.grid(column=0, row=0, columnspan=5, sticky=NSEW)
+        self.dmListDisp.grid(column=0, row=1, columnspan=5, sticky=NSEW)
+        self.scrollY.grid(column=5, row=1, sticky=NSEW)
+        self.upBtn.grid(column=2, row=2, sticky=NSEW)
+        self.downBtn.grid(column=3, row=2, sticky=NSEW)
+        self.delBtn.grid(column=4, row=2, sticky=NSEW)
 
         self.dmListDisp.bind('<<ListboxSelect>>', self.selChgCmd)
         self.dmListDisp.bind('<Double-1>', self.editCmd)
@@ -142,15 +142,15 @@ class DMeditor(ttk.Frame):
 
         # configuration
         self.columnconfigure(1, weight=1)
-        self.label.grid(column=0, row=0, columnspan=2, sticky=tkNSEW)
+        self.label.grid(column=0, row=0, columnspan=2, sticky=NSEW)
         ttk.Separator(self, orient=HORIZONTAL).grid(
-            column=0, row=1, columnspan=2, sticky=tkNSEW, pady=3)
-        self.dmFieldLabel.grid(column=0, row=2, sticky=tkNSEW)
-        self.dmNameEditor.grid(column=1, row=2, sticky=tkNSEW)
+            column=0, row=1, columnspan=2, sticky=NSEW, pady=3)
+        self.dmFieldLabel.grid(column=0, row=2, sticky=NSEW)
+        self.dmNameEditor.grid(column=1, row=2, sticky=NSEW)
         ttk.Separator(self, orient=HORIZONTAL).grid(
-            column=0, row=3, columnspan=2, sticky=tkNSEW, pady=3)
-        self.optionListFrame.grid(column=0, row=4, columnspan=2, sticky=tkNSEW)
-        self.newOptionBtn.grid(column=0, row=5, sticky=tkNSEW)
+            column=0, row=3, columnspan=2, sticky=NSEW, pady=3)
+        self.optionListFrame.grid(column=0, row=4, columnspan=2, sticky=NSEW)
+        self.newOptionBtn.grid(column=0, row=5, sticky=NSEW)
 
         self.loadDM()
 
@@ -205,10 +205,10 @@ class DMeditor(ttk.Frame):
         self.optionEditors.append(newOptionEditor)
         ovcmd = newOptionEditor.register(optNameMod)
         newOptionEditor.configure(validatecommand=(ovcmd, '%P'))
-        newOptionEditor.grid(row=len(self.optionVars), column=0, sticky=tkNSEW)
+        newOptionEditor.grid(row=len(self.optionVars), column=0, sticky=NSEW)
         newOptionDelBtn = ttk.Button(self.optionListFrame, text="X",
                                      command=deleteOption)
-        newOptionDelBtn.grid(row=len(self.optionVars), column=1, sticky=tkNSEW)
+        newOptionDelBtn.grid(row=len(self.optionVars), column=1, sticky=NSEW)
 
     def newOption(self):
         self.dm.options.append('New Option')

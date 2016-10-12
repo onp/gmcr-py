@@ -10,7 +10,7 @@ from tkinter import Tk, N, S, E, W, VERTICAL
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class TreeInfeas(ttk.Frame):
@@ -43,13 +43,13 @@ class TreeInfeas(ttk.Frame):
         self.tDisp.heading('stRem', text='# of States Removed')
         self.tDisp['show'] = 'headings'
 
-        self.tDisp.grid(column=0, row=0, columnspan=5, sticky=tkNSEW)
-        self.scrl.grid(column=5, row=0, sticky=tkNSEW)
+        self.tDisp.grid(column=0, row=0, columnspan=5, sticky=NSEW)
+        self.scrl.grid(column=5, row=0, sticky=NSEW)
         self.tDisp.configure(yscrollcommand=self.scrl.set)
 
-        self.upBtn.grid(column=2, row=2, sticky=tkNSEW)
-        self.downBtn.grid(column=3, row=2, sticky=tkNSEW)
-        self.delBtn.grid(column=4, row=2, sticky=tkNSEW)
+        self.upBtn.grid(column=2, row=2, sticky=NSEW)
+        self.downBtn.grid(column=3, row=2, sticky=NSEW)
+        self.delBtn.grid(column=4, row=2, sticky=NSEW)
 
         self.tDisp.bind('<<TreeviewSelect>>', self.selChgCmd)
 
@@ -116,7 +116,7 @@ def main():
     g1.load_from_file('Examples/SyriaIraq.gmcr')
 
     theTree = TreeInfeas(root, g1)
-    theTree.grid(column=0, row=0, sticky=tkNSEW)
+    theTree.grid(column=0, row=0, sticky=NSEW)
 
     root.mainloop()
 

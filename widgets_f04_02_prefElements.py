@@ -8,7 +8,7 @@ Loaded by the frame_04_preferencePrioritization module.
 from tkinter import StringVar, N, S, E, W, VERTICAL, Label
 from tkinter import ttk
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class PreferenceRanking(ttk.Frame):
@@ -23,7 +23,7 @@ class PreferenceRanking(ttk.Frame):
 
         self.dmText = StringVar(value=dm.name + ': ')
         self.dmLabel = Label(self, textvariable=self.dmText)
-        self.dmLabel.grid(row=0, column=0, sticky=tkNSEW)
+        self.dmLabel.grid(row=0, column=0, sticky=NSEW)
 
         if len(conflict.feasibles) < 1000:
             self.prefRankText = StringVar(value=str(dm.preferenceRanking))
@@ -31,10 +31,10 @@ class PreferenceRanking(ttk.Frame):
             self.prefRankText = StringVar(value="Too Many States")
         self.prefRank = ttk.Label(self, textvariable=self.prefRankText,
                                   relief="sunken", width=40)
-        self.prefRank.grid(row=1, column=0, sticky=tkNSEW)
+        self.prefRank.grid(row=1, column=0, sticky=NSEW)
 
         self.selectBtn = ttk.Button(self, text="Edit", command=self.selectCmd)
-        self.selectBtn.grid(row=0, column=1, rowspan=2, sticky=tkNSEW)
+        self.selectBtn.grid(row=0, column=1, rowspan=2, sticky=NSEW)
 
         self.columnconfigure(0, weight=1)
 
@@ -68,7 +68,7 @@ class PreferenceRankingMaster(ttk.Frame):
 
         self.clearBtn = ttk.Button(self, text="Clear Selection",
                                    command=self.clearSel)
-        self.clearBtn.grid(row=1, column=0, sticky=tkNSEW)
+        self.clearBtn.grid(row=1, column=0, sticky=NSEW)
 
         self.refresh()
 
@@ -87,14 +87,14 @@ class PreferenceRankingMaster(ttk.Frame):
     def refresh(self):
         self.cframe.destroy()
         self.cframe = ttk.Frame(self)
-        self.cframe.grid(row=0, column=0, sticky=tkNSEW)
+        self.cframe.grid(row=0, column=0, sticky=NSEW)
         self.cframe.columnconfigure(0, weight=1)
         self.rankings = []
         for idx, dm in enumerate(self.conflict.decisionMakers):
             self.rankings.append(PreferenceRanking(self.cframe, self.conflict,
                                                    dm, idx))
             self.rankings[-1].grid(row=idx, column=0, padx=3, pady=3,
-                                   sticky=tkNSEW)
+                                   sticky=NSEW)
             self.rankings[-1].bind('<<DMselect>>', self.chgDM)
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].select()
@@ -139,11 +139,11 @@ class PreferenceStaging(ttk.Frame):
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
-        self.label.grid(column=0, row=0, sticky=tkNSEW)
-        self.listDisp.grid(column=0, row=1, sticky=tkNSEW)
-        self.scrollY.grid(column=1, row=1, sticky=tkNSEW)
-        self.removeConditionBtn.grid(column=0, row=2, sticky=tkNSEW)
-        self.addToPreferencesBtn.grid(column=0, row=3, sticky=tkNSEW)
+        self.label.grid(column=0, row=0, sticky=NSEW)
+        self.listDisp.grid(column=0, row=1, sticky=NSEW)
+        self.scrollY.grid(column=1, row=1, sticky=NSEW)
+        self.removeConditionBtn.grid(column=0, row=2, sticky=NSEW)
+        self.addToPreferencesBtn.grid(column=0, row=3, sticky=NSEW)
 
         self.listDisp.bind('<<TreeviewSelect>>', self.selChgCmd)
         self.clear()
@@ -237,15 +237,15 @@ class PreferenceListDisplay(ttk.Frame):
         self.disp.heading('weight', text='Weighting')
         self.disp['show'] = 'headings'
 
-        self.label.grid(column=0, row=0, columnspan=5, sticky=tkNSEW)
+        self.label.grid(column=0, row=0, columnspan=5, sticky=NSEW)
 
-        self.disp.grid(column=0, row=1, columnspan=5, sticky=tkNSEW)
-        self.scrl.grid(column=5, row=1, sticky=tkNSEW)
+        self.disp.grid(column=0, row=1, columnspan=5, sticky=NSEW)
+        self.scrl.grid(column=5, row=1, sticky=NSEW)
         self.disp.configure(yscrollcommand=self.scrl.set)
 
-        self.upBtn.grid(column=2, row=3, sticky=tkNSEW)
-        self.downBtn.grid(column=3, row=3, sticky=tkNSEW)
-        self.delBtn.grid(column=4, row=3, sticky=tkNSEW)
+        self.upBtn.grid(column=2, row=3, sticky=NSEW)
+        self.downBtn.grid(column=3, row=3, sticky=NSEW)
+        self.delBtn.grid(column=4, row=3, sticky=NSEW)
 
         self.disp.bind('<<TreeviewSelect>>', self.selChgCmd)
 

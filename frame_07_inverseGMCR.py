@@ -12,7 +12,7 @@ from frame_00_frameTemplate import FrameTemplate
 from data_01_conflictModel import ConflictModel
 from widgets_f07_01_inverseContent import InverseContent
 
-tkNSEW = (N, S, E, W)
+NSEW = (N, S, E, W)
 
 
 class InverseFrame(FrameTemplate):
@@ -90,23 +90,23 @@ class InverseFrame(FrameTemplate):
         # ########  preliminary gridding and option configuration
 
         # configuring the input frame
-        self.grid(column=0, row=0, rowspan=5, sticky=tkNSEW)
+        self.grid(column=0, row=0, rowspan=5, sticky=NSEW)
         self.grid_remove()
         self.columnconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
         # configuring infoFrame & infoFrame widgets
-        self.infoFrame.grid(column=2, row=0, sticky=tkNSEW, padx=3, pady=3)
+        self.infoFrame.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
         self.infoFrame.grid_remove()
-        self.infoLabel.grid(column=0, row=1, sticky=tkNSEW)
+        self.infoLabel.grid(column=0, row=1, sticky=NSEW)
 
         # configuring helpFrame & helpFrame widgets
-        self.helpFrame.grid(column=2, row=1, sticky=tkNSEW, padx=3, pady=3)
+        self.helpFrame.grid(column=2, row=1, sticky=NSEW, padx=3, pady=3)
         self.helpFrame.grid_remove()
-        self.helpLabel.grid(column=0, row=0, sticky=tkNSEW)
+        self.helpLabel.grid(column=0, row=0, sticky=NSEW)
 
         # configuring frame-specific options
-        self.invDisp.grid(column=0, row=1, sticky=tkNSEW)
+        self.invDisp.grid(column=0, row=1, sticky=NSEW)
 
         # bindings
 
@@ -140,10 +140,10 @@ def main():
     cFrame = ttk.Frame(root)
     cFrame.columnconfigure(0, weight=1)
     cFrame.rowconfigure(1, weight=1)
-    cFrame.grid(column=0, row=0, sticky=tkNSEW)
+    cFrame.grid(column=0, row=0, sticky=NSEW)
 
     hSep = ttk.Separator(cFrame, orient=VERTICAL)
-    hSep.grid(column=1, row=0, rowspan=10, sticky=tkNSEW)
+    hSep.grid(column=1, row=0, rowspan=10, sticky=NSEW)
 
     testConflict = ConflictModel('pris.gmcr')
 
