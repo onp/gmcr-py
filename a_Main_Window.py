@@ -81,7 +81,7 @@ class MainAppWindow:
 
         self.addMod(DMInpFrame)
         self.addMod(InfeasInpFrame)
-        # self.addMod(MisperceptionFrame)
+        self.addMod(MisperceptionFrame)
         self.addMod(IrrevInpFrame)
         self.addMod(PreferencesFrame)
         self.addMod(PreferenceRankingFrame)
