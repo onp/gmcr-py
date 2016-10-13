@@ -14,20 +14,25 @@ class Option:
     """
 
     def __init__(self, name, masterList, permittedDirection='both'):
+        """Create a new Option."""
         self.name = str(name)
         self.permittedDirection = permittedDirection
         self.refs = 0
 
     def __str__(self):
+        """Return string representation of the Option."""
         return self.name
 
     def addRef(self):
+        """Increment reference counter."""
         self.refs += 1
 
     def remRef(self):
+        """De-increment reference counter."""
         self.refs -= 1
 
     def export_rep(self):
+        """JSONify Option data."""
         return {'name': str(self.name),
                 'permittedDirection': str(self.permittedDirection)}
 
@@ -105,9 +110,9 @@ class DecisionMaker:
             self.payoffs = gmcrUtil.mapPrefRank2Payoffs(
                 self.preferenceRanking, self.conflict.feasibles)
             self.usedRanking = self.conflict.useManualPreferenceRanking
-        elif (self.lastCalculatedPreferences != self.preferences.export_rep() or
+        elif (self.oldFeasibles != self.conflict.feasibles.decimal or
               self.usedRanking != self.conflict.useManualPreferenceRanking or
-              self.oldFeasibles != self.conflict.feasibles.decimal):
+              self.lastCalculatedPreferences != self.preferences.export_rep()):
 
             self.lastCalculatedPreferences = self.preferences.export_rep()
             self.usedRanking = self.conflict.useManualPreferenceRanking

@@ -38,18 +38,17 @@ class PreferenceRanking(ttk.Frame):
 
         self.columnconfigure(0, weight=1)
 
-    def update(self, *args):
-        self.prefRankText.set('still not implemented')
-        # str(self.conflict.prefRank(self.dmIdx)))
-
     def selectCmd(self, *args):
+        """Propagate a selection event up to the parent widget."""
         self.event_generate('<<DMselect>>', x=self.dmIdx)
 
     def deselect(self, *args):
+        """Change the widget to the deselected state."""
         self.configure(relief='flat')
         self.dmLabel.configure(bg="SystemButtonFace")
 
     def select(self, *args):
+        """Change the widget to the selected state."""
         self.configure(relief='raised')
         self.dmLabel.configure(bg="green")
 
@@ -71,10 +70,6 @@ class PreferenceRankingMaster(ttk.Frame):
         self.clearBtn.grid(row=1, column=0, sticky=NSEW)
 
         self.refresh()
-
-    def update(self):
-        for ranking in self.rankings:
-            ranking.update()
 
     def chgDM(self, event):
         if self.dmSelIdx is not None:

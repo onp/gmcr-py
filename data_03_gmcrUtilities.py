@@ -25,19 +25,19 @@ def reducePatterns(patterns):
     for x, p1 in enumerate(patterns):
         if x in matched:
             continue
-        for y, p2 in enumerate(patterns[x+1:], 1):
-            if x+y in matched:
+        for y, p2 in enumerate(patterns[x + 1:], 1):
+            if x + y in matched:
                 continue
             diffs = 0
             for idx, bit in enumerate(zip(p1, p2)):
                 if bit[0] != bit[1]:
                     diffs += 1
-                    dbit  = idx
+                    dbit = idx
                 if diffs > 1:
                     break
             if diffs == 1:
-                newPatterns.append(p1[:dbit]+'-'+p1[dbit+1:])
-                matched += [x, x+y]
+                newPatterns.append(p1[:dbit] + '-' + p1[dbit + 1:])
+                matched += [x, x + y]
                 break
         if x not in matched:
             newPatterns.append(p1)
@@ -71,7 +71,8 @@ def yn2dec(ynState):
 
 def dec2yn(decState, numOpts):
     """Convert a decimal number into a binary string of appropriate length."""
-    output = bin(decState).lstrip("0b").zfill(numOpts)[::-1].replace('1','Y').replace('0','N')
+    output = bin(decState).lstrip("0b").zfill(
+        numOpts)[::-1].replace('1', 'Y').replace('0', 'N')
     return output
 
 
@@ -91,8 +92,8 @@ def _subtractPattern(feas, sub):
     for x in sub:
         idx, val = x
         if curr[idx] == '-':
-            remainingStates.append(curr[:idx] + bitFlip[val] + curr[idx+1:])
-            curr = curr[:idx] + val + curr[idx+1:]
+            remainingStates.append(curr[:idx] + bitFlip[val] + curr[idx + 1:])
+            curr = curr[:idx] + val + curr[idx + 1:]
     return remainingStates
 
 
@@ -108,15 +109,17 @@ def rmvSt(feas, rmv):
     for pattern in feas:
         newfeas += _subtractPattern(pattern, rmv)
     newfeas = reducePatterns(newfeas)
-    numRmvd = orig - sum([2**x.count('-') for x in newfeas])  # number of states removed
+    # number of states removed
+    numRmvd = orig - sum([2**x.count('-') for x in newfeas])
     return newfeas, numRmvd
 
+
 def subtractStateSets(originalStates, statesToRemove):
-    """Returns the originalStates minus the statesToRemove.
+    """Return the originalStates minus the statesToRemove.
 
     originalStates: list of YND states.
-    statesToRemove: list of YND states."""
-
+    statesToRemove: list of YND states.
+    """
     newStates = reducePatterns(originalStates)
     for rmv in reducePatterns(statesToRemove):
         newStates = rmvSt(newStates, rmv)[0]
@@ -125,11 +128,12 @@ def subtractStateSets(originalStates, statesToRemove):
 
 
 def mutuallyExclusive(mutEx):
-    """Given a list of mutually exclusive options, returns the equivalent set of infeasible states"""
+    """Return the equivalent set of infeasible states."""
     return list(itertools.combinations(mutEx, 2))
 
+
 def orderedNumbers(decimalList):
-    """creates translation dictionaries for using ordered numbers.
+    """Create translation dictionaries for using ordered numbers.
 
     Generates the decimal->ordered and ordered->decimal translation
     dictionaries for a list of decimal values.
@@ -141,68 +145,73 @@ def orderedNumbers(decimalList):
         toDecimal[i] = x
     return toOrdered, toDecimal
 
+
 def validatePreferenceRanking(prefRank, feasibles):
     """Check that the preference ranking given is valid."""
-
     alreadySeen = []
     if not isinstance(prefRank, list):
         return "Invalid format."
     for state in prefRank:
         if state in feasibles.ordered:
             if state in alreadySeen:
-                return "State %s cannot appear more than once."%(state)
+                return "State {} cannot appear more than once.".format(state)
             alreadySeen.append(state)
         else:
             try:
                 for subSt in state:
                     if subSt in feasibles.ordered:
                         if subSt in alreadySeen:
-                            return "State %s cannot appear more than once."%(subSt)
+                            return ("State {} cannot appear more than"
+                                    " once.").format(subSt)
                         alreadySeen.append(subSt)
                     else:
-                        return "State %s is not a feasible state."%(subSt)
+                        return ("State {} is not a feasible "
+                                "state.").format(subSt)
             except TypeError:
-                return "State %s is not a feasible state"%(state)
+                return "State {} is not a feasible state".format(state)
 
     for state in feasibles.ordered:
         if state not in alreadySeen:
-            return "State %s is missing."%(state)
+            return "State {} is missing.".format(state)
 
     return None
 
 
-def mapPrefRank2Payoffs(preferenceRanking,feasibles):
+def mapPrefRank2Payoffs(preferenceRanking, feasibles):
     """Map the preference rankings provided into payoff values for each state."""
-    payoffs = numpy.zeros(len(feasibles),numpy.int_)    # clean payoffs array
+    payoffs = numpy.zeros(len(feasibles), numpy.int_)    # clean payoffs array
 
     # use position in preference ranking to give a payoff value.
     for idx, state in enumerate(preferenceRanking):
         try:
             for subState in state:
-                payoffs[subState-1] = len(feasibles) - idx
+                payoffs[subState - 1] = len(feasibles) - idx
         except TypeError:
-            payoffs[state-1] = len(feasibles) - idx
+            payoffs[state - 1] = len(feasibles) - idx
 
     if 0 in payoffs:
         state = feasibles.ordered[payoffs.index(0)]
-        raise Exception("Feasible state '%s' for DM was not included in the preference ranking" %(state))
+        raise Exception(("Feasible state '%s' for DM was not included in the "
+                         "preference ranking").format(state))
 
     return payoffs
 
+
 def prefPriorities2payoffs(preferences, feasibles):
-    """Ranks the states for a DM, generating payoff values.
+    """Rank the states for a DM, generating payoff values.
 
     Ranking is based on Preference Prioritization, and output payoff values
     are sequential.
     """
     # generate initial payoffs
-    payoffsRaw = numpy.zeros(len(feasibles),numpy.int_)
+    payoffsRaw = numpy.zeros(len(feasibles), numpy.int_)
     for preference in preferences:
         for state in feasibles.decimal:
             if preference.test(state):
-                payoffsRaw[feasibles.toOrdered[state]-1] += preference.weight
+                payoffsRaw[feasibles.toOrdered[state] - 1] += preference.weight
 
-    # reduce magnitude of payoffs - do not do this if weights had special meaning.
+    # Reduce magnitude of payoffs.
+    # Do not do this if weights had special meaning.
     uniquePayoffs = numpy.unique(payoffsRaw)
     preferenceRanking = []
     payoffs = payoffsRaw.copy()  # creates a copy
@@ -211,12 +220,14 @@ def prefPriorities2payoffs(preferences, feasibles):
         for jdx, pay in enumerate(payoffsRaw):
             if pay == value:
                 payoffs[jdx] = idx + 1
-        stateSet = [idx+1 for idx,pay in enumerate(payoffsRaw) if pay==value]
+        stateSet = [idx + 1 for idx, pay in enumerate(payoffsRaw)
+                    if pay == value]
         if len(stateSet) > 1:
             preferenceRanking.append(stateSet)
         else:
             preferenceRanking.append(stateSet[0])
 
-    preferenceRanking.reverse()      # necessary to put most preferred states at beginning instead of end
+    # necessary to put most preferred states at beginning instead of end
+    preferenceRanking.reverse()
 
     return payoffs, preferenceRanking
