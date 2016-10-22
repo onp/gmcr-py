@@ -180,7 +180,7 @@ class RadiobuttonEntry(ttk.Frame):
                 self.warnText.set('Entry too short')
                 return True
             if len(res) == len(self.stringVarList):
-                self.setStates(res)
+                self.setStates(res.upper())
                 self.warnText.set('')
                 return True
         return False
