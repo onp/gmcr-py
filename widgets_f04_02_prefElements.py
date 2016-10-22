@@ -15,6 +15,7 @@ class PreferenceRanking(ttk.Frame):
     """Allows a DM to be selected and displays that DMs state ranking."""
 
     def __init__(self, master, conflict, dm, idx):
+        """Initialize a PreferenceRanking widget."""
         ttk.Frame.__init__(self, master, borderwidth=2)
 
         self.conflict = conflict
@@ -26,7 +27,7 @@ class PreferenceRanking(ttk.Frame):
         self.dmLabel.grid(row=0, column=0, sticky=NSEW)
 
         if len(conflict.feasibles) < 1000:
-            self.prefRankText = StringVar(value=str(dm.preferenceRanking))
+            self.prefRankText = StringVar(value=str(dm.perceivedRanking))
         else:
             self.prefRankText = StringVar(value="Too Many States")
         self.prefRank = ttk.Label(self, textvariable=self.prefRankText,
@@ -57,6 +58,7 @@ class PreferenceRankingMaster(ttk.Frame):
     """Displays a PreferenceRanking widget for each DM."""
 
     def __init__(self, master, conflict):
+        """Initialize a master widget for PreferenceRankings."""
         ttk.Frame.__init__(self, master)
         self.conflict = conflict
         self.cframe = ttk.Frame(self)
@@ -72,6 +74,7 @@ class PreferenceRankingMaster(ttk.Frame):
         self.refresh()
 
     def chgDM(self, event):
+        """Change the selected DM."""
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = event.x
@@ -80,6 +83,7 @@ class PreferenceRankingMaster(ttk.Frame):
         self.event_generate('<<DMchg>>')
 
     def refresh(self):
+        """Refresh the widget contents."""
         self.cframe.destroy()
         self.cframe = ttk.Frame(self)
         self.cframe.grid(row=0, column=0, sticky=NSEW)
@@ -95,16 +99,19 @@ class PreferenceRankingMaster(ttk.Frame):
             self.rankings[self.dmSelIdx].select()
 
     def disable(self, event=None):
+        """Put the widget and all children in disabled mode."""
         for ranking in self.rankings:
             ranking.selectBtn['state'] = 'disabled'
         self.clearBtn['state'] = 'disabled'
 
     def enable(self, event=None):
+        """Re-enable the widget and all children."""
         for ranking in self.rankings:
             ranking.selectBtn['state'] = 'normal'
         self.clearBtn['state'] = 'normal'
 
     def clearSel(self, event=None):
+        """Deselect the current DM."""
         if self.dmSelIdx is not None:
             self.rankings[self.dmSelIdx].deselect()
         self.dmSelIdx = None
@@ -116,6 +123,7 @@ class PreferenceStaging(ttk.Frame):
     """Displays the conditions that make up a compound condition."""
 
     def __init__(self, master, conflict):
+        """Initialize a widget for the condition staging area."""
         ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
@@ -144,6 +152,7 @@ class PreferenceStaging(ttk.Frame):
         self.clear()
 
     def clear(self):
+        """Remove all conditions from the staging area."""
         self.conditionList = self.conflict.newCompoundCondition([])
         self.selId = None
         self.selIdx = None
@@ -160,6 +169,7 @@ class PreferenceStaging(ttk.Frame):
         self.event_generate('<<SelCond>>', x=self.selIdx)
 
     def setList(self, newConditions):
+        """Set the list of conditions to be shown in the staging area."""
         self.clear()
         if newConditions.isCompound:
             self.conditionList = newConditions
@@ -174,6 +184,7 @@ class PreferenceStaging(ttk.Frame):
             self.addToPreferencesBtn['state'] = 'normal'
 
     def removeCondition(self, event=None):
+        """Remove the selected condition from the staging area."""
         if self.selIdx is not None:
             del self.conditionList[self.selIdx]
             self.listDisp.delete(self.selId)
@@ -183,9 +194,11 @@ class PreferenceStaging(ttk.Frame):
                 self.addToPreferencesBtn['state'] = 'disabled'
 
     def addToPreferences(self, event=None):
+        """Turn the staged conditions into a new preference."""
         self.event_generate('<<PullFromStage>>')
 
     def addCondition(self, condition):
+        """Add condition to the staging area."""
         self.conditionList.append(condition)
         self.listDisp.insert('', 'end', text=condition.name)
 
@@ -194,10 +207,12 @@ class PreferenceStaging(ttk.Frame):
             self.addToPreferencesBtn['state'] = 'normal'
 
     def disable(self, event=None):
+        """Put the staging area in disabled mode."""
         self.removeConditionBtn['state'] = 'disabled'
         self.addToPreferencesBtn['state'] = 'disabled'
 
     def enable(self, event=None):
+        """Re-enable the staging area."""
         self.removeConditionBtn['state'] = 'normal'
         self.addToPreferencesBtn['state'] = 'normal'
 
@@ -206,6 +221,7 @@ class PreferenceListDisplay(ttk.Frame):
     """Displays the preference statements for the selected DM."""
 
     def __init__(self, master, conflict):
+        """Initialize a preference list widget."""
         ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
@@ -245,7 +261,7 @@ class PreferenceListDisplay(ttk.Frame):
         self.disp.bind('<<TreeviewSelect>>', self.selChgCmd)
 
     def refresh(self):
-        """Fully refreshes the list displayed"""
+        """Fully refresh the list displayed."""
         for child in self.disp.get_children():
             self.disp.delete(child)
         if self.dm is not None:
@@ -258,12 +274,14 @@ class PreferenceListDisplay(ttk.Frame):
                 self.keys.append(key)
 
     def disable(self, event=None):
+        """Put the widget in disabled mode."""
         self.disp['selectmode'] = 'none'
         self.upBtn['state'] = 'disabled'
         self.downBtn['state'] = 'disabled'
         self.delBtn['state'] = 'disabled'
 
     def enable(self, event=None):
+        """Re-enable the widget."""
         self.disp['selectmode'] = 'browse'
         self.upBtn['state'] = 'normal'
         self.downBtn['state'] = 'normal'

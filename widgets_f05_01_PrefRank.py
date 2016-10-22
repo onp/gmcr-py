@@ -7,6 +7,7 @@ Loaded by the frame_05_preferenceRanking module.
 
 from tkinter import StringVar, N, S, E, W, Text
 from tkinter import ttk
+from ast import literal_eval
 import data_03_gmcrUtilities as gmcrUtil
 
 NSEW = (N, S, E, W)
@@ -29,7 +30,7 @@ class RankingEditor(ttk.Frame):
         self.dmLabel = ttk.Label(self, textvariable=self.dmText, width=20)
         self.dmLabel.grid(row=0, column=0, sticky=NSEW)
 
-        self.prefRankVar = StringVar(value=str(dm.preferenceRanking))
+        self.prefRankVar = StringVar(value=str(dm.perceivedRanking))
         self.prefRankEntry = ttk.Entry(self, textvariable=self.prefRankVar)
         self.prefRankEntry.grid(row=0, column=1, sticky=NSEW)
 
@@ -40,7 +41,7 @@ class RankingEditor(ttk.Frame):
     def onFocusOut(self, event):
         """Validate the preference ranking when focus leaves the widget."""
         try:
-            prefRank = eval(self.prefRankVar.get())
+            perceivedRank = literal_eval(self.prefRankVar.get())
         except SyntaxError:
             self.errorDetails = ("DM {}'s preference ranking is "
                                  "invalid.").format(self.dm.name)
@@ -51,6 +52,7 @@ class RankingEditor(ttk.Frame):
                                  "invalid.").format(self.dm.name)
             self.master.event_generate("<<errorChange>>")
             return
+        prefRank = perceivedRank + self.dm.misperceived
         self.errorDetails = gmcrUtil.validatePreferenceRanking(
             prefRank, self.conflict.feasibles)
         if self.errorDetails:

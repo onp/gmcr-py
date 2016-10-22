@@ -47,7 +47,7 @@ class DecisionMaker:
         self.conflict = conflict
         self.options = OptionList(conflict.options)
         self.preferences = ConditionList(conflict)
-        self.lastCalculatedPreferences = None
+        self.lastPreferences = None
 
         self.misperceptions = ConditionList(conflict)
         self.perceived = FeasibleList()
@@ -110,11 +110,11 @@ class DecisionMaker:
             self.payoffs = gmcrUtil.mapPrefRank2Payoffs(
                 self.preferenceRanking, self.conflict.feasibles)
             self.usedRanking = self.conflict.useManualPreferenceRanking
-        elif (self.oldFeasibles != self.conflict.feasibles.decimal or
-              self.usedRanking != self.conflict.useManualPreferenceRanking or
-              self.lastCalculatedPreferences != self.preferences.export_rep()):
+        elif (self.lastPreferences != self.preferences.export_rep() or
+              self.oldFeasibles != self.conflict.feasibles.decimal or
+              self.usedRanking != self.conflict.useManualPreferenceRanking):
 
-            self.lastCalculatedPreferences = self.preferences.export_rep()
+            self.lastPreferences = self.preferences.export_rep()
             self.usedRanking = self.conflict.useManualPreferenceRanking
             self.oldFeasibles = list(self.conflict.feasibles.decimal)
 
@@ -125,6 +125,20 @@ class DecisionMaker:
             self.payoffs = result[0]
             self.preferenceRanking = result[1]
 
+        self.perceivedRanking = []
+        for st in self.preferenceRanking:
+            if isinstance(st, list):
+                subGroup = []
+                for subState in st:
+                    if subState in self.perceived.ordered:
+                        subGroup.append(subState)
+                if len(subGroup) > 1:
+                    self.perceivedRanking.append(subGroup)
+                elif len(subGroup) == 1:
+                    self.perceivedRanking.append(subGroup[0])
+            elif st in self.perceived.ordered:
+                self.perceivedRanking.append(st)
+
     def calculatePerceived(self):
         """Calculate states perceived by the DM based on misperceptions."""
         percDash = self.conflict.feasibles.dash
@@ -134,6 +148,8 @@ class DecisionMaker:
             misp.statesRemoved = res[1]
         toOrd = self.conflict.feasibles.toOrdered
         self.perceived = FeasibleList(percDash, toOrdered=toOrd)
+        self.misperceived = [st for st in self.conflict.feasibles.ordered
+                             if st not in self.perceived.ordered]
 
 
 class Condition:
@@ -215,6 +231,7 @@ class CompoundCondition:
         return self.name + " object"
 
     def index(self, i):
+        """Index of the passed condition."""
         return self.conditions.index(i)
 
     def __len__(self):
@@ -227,6 +244,7 @@ class CompoundCondition:
         return iter(self.conditions)
 
     def updateName(self):
+        """Update the name string based on the subconditions."""
         self.name = str(sorted(self.ynd()))[1:-1].replace("'", '')
 
     def append(self, condition):
@@ -272,6 +290,7 @@ class ObjectList:
     """A base class for lists of DMs/options. Defines useful magic methods."""
 
     def __init__(self, masterList=None):
+        """Initialize a generic ObjectList."""
         self.itemList = []
         self.masterList = masterList
 
@@ -291,6 +310,7 @@ class ObjectList:
             self.masterList.remove(item)
 
     def remove(self, item):
+        """Remove the passed item from the list."""
         self.itemList.remove(item)
         if self.masterList is not None:
             self.masterList.remove(item)
@@ -305,20 +325,25 @@ class ObjectList:
         return item in self.itemList
 
     def insert(self, i, x):
+        """Standard list insert behaviour."""
         self.itemList.insert(i, x)
 
     def pop(self, i=None):
+        """Standard list pop behaviour."""
         return self.itemList.pop(i)
 
     def index(self, i):
+        """Standard list index behaviour."""
         return self.itemList.index(i)
 
     def set_indexes(self):
+        """Set each list item's index attribute based on the list order."""
         for idx, item in enumerate(self.itemList):
             item.master_index = idx
             item.dec_val = 2**(idx)
 
     def names(self):
+        """Get string names of all items in the list."""
         return [item.name for item in self.itemList]
 
 
@@ -326,6 +351,7 @@ class DecisionMakerList(ObjectList):
     """A list of DecisionMaker objects."""
 
     def __init__(self, conflict):
+        """Initialize a list of decisionMakers."""
         ObjectList.__init__(self)
         self.conflict = conflict
 
@@ -334,9 +360,15 @@ class DecisionMakerList(ObjectList):
         return str([dm.name for dm in self])
 
     def export_rep(self):
+        """JSONify the DecisionMakerList for export."""
         return [x.export_rep() for x in self.itemList]
 
     def append(self, item):
+        """Append the passed DecisionMaker to the list.
+
+        Creates a new DecisionMaker if a string is passed, using the
+        string as the DM's name.
+        """
         if isinstance(item, DecisionMaker) and item not in self.itemList:
             self.itemList.append(item)
         elif isinstance(item, str):
@@ -347,6 +379,7 @@ class DecisionMakerList(ObjectList):
         del self.itemList[key]
 
     def from_json(self, dmData):
+        """Create a new DM from JSON data and add it to the list."""
         newDM = DecisionMaker(self.conflict, dmData['name'])
         for optIdx in dmData['options']:
             newDM.options.append(self.conflict.options[int(optIdx)])
@@ -371,9 +404,11 @@ class OptionList(ObjectList):
     """A list of Option objects."""
 
     def __init__(self, masterList=None):
+        """Initialize a new OptionList."""
         ObjectList.__init__(self, masterList)
 
     def export_rep(self):
+        """JSONify the Option for export."""
         if self.masterList is not None:
             self.masterList.set_indexes()
             return [x.master_index for x in self.itemList]
@@ -381,6 +416,11 @@ class OptionList(ObjectList):
             return [x.export_rep() for x in self.itemList]
 
     def append(self, item):
+        """Append the passed Option to the list.
+
+        Creates a new Option if a string is passed, using the string
+        as the option's name.
+        """
         if isinstance(item, Option) and item not in self.itemList:
             self.itemList.append(item)
             if self.masterList is not None:
@@ -397,6 +437,7 @@ class OptionList(ObjectList):
             self.itemList.append(newOption)
 
     def from_json(self, optData):
+        """Create a new option from JSON data and add it to the list."""
         newOption = Option(optData['name'], self.masterList,
                            optData['permittedDirection'])
         self.append(newOption)
@@ -406,10 +447,12 @@ class ConditionList(ObjectList):
     """A list of Condition objects."""
 
     def __init__(self, conflict):
+        """Initialize a new ConditionList."""
         ObjectList.__init__(self)
         self.conflict = conflict
 
     def export_rep(self):
+        """JSONify the ConditionList for export."""
         return [x.export_rep() for x in self.itemList]
 
     def from_json(self, condData):
@@ -424,6 +467,11 @@ class ConditionList(ObjectList):
         self.append(condData)
 
     def append(self, item):
+        """Add a new condition to the list.
+
+        Argument can be a Condition, CompoundCondition, list/string format
+        condition, or a dict/string format CompoundCondition.
+        """
         if isinstance(item, Condition) or isinstance(item, CompoundCondition):
             newCondition = item
         elif isinstance(item, list):
@@ -448,6 +496,7 @@ class ConditionList(ObjectList):
         del self[idx]
 
     def validate(self):
+        """Check that all conditions in the list are valid."""
         toRemove = []
         for idx, pref in enumerate(self):
             if not pref.isValid():
@@ -523,12 +572,14 @@ class Coalition:
     """
 
     def __init__(self, conflict, dms):
+        """Initialize a new Coalition."""
         self.members = dms
         self.isCoalition = True
         self.conflict = conflict
         self.refresh()
 
     def refresh(self):
+        """Refresh coalition attributes based on member DM data."""
         self.name = ', '.join([dm.name for dm in self.members])
         self.options = OptionList(self.conflict.options)
 
@@ -551,6 +602,7 @@ class Coalition:
         self.refresh()
 
     def remove(self, dm):
+        """Remove a memeber from the coalition and refresh data."""
         if dm in self.members:
             self.members.remove(dm)
             self.refresh()
@@ -559,10 +611,12 @@ class Coalition:
         return dm in self.members
 
     def insert(self, i, x):
+        """Insert a new member into the coalition and refresh data."""
         self.members.insert(i, x)
         self.refresh()
 
     def export_rep(self):
+        """JSONify the Coalition for export."""
         if len(self.members) > 1:
             return [self.conflict.decisionMakers.index(dm)
                     for dm in self.members]
@@ -570,6 +624,7 @@ class Coalition:
             return self.conflict.decisionMakers.index(self.members[0])
 
     def disp_rep(self):
+        """Coalition display format for GUI use."""
         if len(self.members) > 1:
             return [self.conflict.decisionMakers.index(dm) + 1
                     for dm in self.members]
@@ -577,12 +632,14 @@ class Coalition:
             return self.conflict.decisionMakers.index(self.members[0]) + 1
 
     def full_rep(self):
+        """Representation of the coalition as a decision maker."""
         rep = {}
         rep['name'] = str(self.name)
         rep['options'] = self.options.export_rep()
         return rep
 
     def calculatePreferences(self):
+        """Recalculate preferences of each member DM."""
         for dm in self.members:
             dm.calculatePreferences()
         self.payoffs = [", ".join([str(dm.payoffs[state])
@@ -590,6 +647,11 @@ class Coalition:
                         for state in self.conflict.feasibles]
 
     def calculatePerceived(self):
+        """Calculate the states perceived by the coalition.
+
+        It is assumed that a state that can be seen by one or more
+        members can be seen by the entire coalition.
+        """
         for dm in self.members:
             dm.calculatePerceived()
         toOrd = self.conflict.feasibles.toOrdered
@@ -598,12 +660,15 @@ class Coalition:
 
 
 class CoalitionList(ObjectList):
+    """A set of coalitions including all DMs in the conflict."""
 
     def __init__(self, conflict):
+        """Initialize a new CoalitionList."""
         ObjectList.__init__(self)
         self.conflict = conflict
 
     def export_rep(self):
+        """JSONify the CoalitionList for export."""
         working = list(self.itemList)
         for idx, item in enumerate(working):
             if isinstance(item, DecisionMaker):
@@ -613,9 +678,11 @@ class CoalitionList(ObjectList):
         return working
 
     def full_rep(self):
+        """Representation of the coalitions as decision makers."""
         return [x.full_rep() for x in self.itemList]
 
     def disp_rep(self):
+        """Coalition display format for GUI use."""
         working = list(self.itemList)
         for idx, item in enumerate(working):
             if isinstance(item, DecisionMaker):
@@ -625,6 +692,7 @@ class CoalitionList(ObjectList):
         return working
 
     def append(self, item):
+        """Add a Coalition or DecisionMaker to the list."""
         if isinstance(item, Coalition) and item not in self.itemList:
             self.itemList.append(item)
         elif isinstance(item, DecisionMaker):
@@ -633,6 +701,7 @@ class CoalitionList(ObjectList):
             raise TypeError("{} is not a Coalition".format(item))
 
     def from_json(self, coData):
+        """Create a new Coalition from JSON data."""
         if isinstance(coData, int):
             memberList = [self.conflict.decisionMakers[int(coData)]]
         elif isinstance(coData, list):
@@ -642,11 +711,12 @@ class CoalitionList(ObjectList):
         self.append(newCO)
 
     def validate(self):
+        """Check that coalitions are valid and do not include duplicates."""
         dms = list(self.conflict.decisionMakers)
         for co in self.itemList:
             if isinstance(co, Coalition):
                 for dm in co:
-                        dms.remove(dm)
+                    dms.remove(dm)
             else:
                 dms.remove(co)
         if len(dms) == 0:
@@ -655,6 +725,8 @@ class CoalitionList(ObjectList):
 
 
 class ConflictModel:
+    """Master object defining a conflict."""
+
     def __init__(self):
         """Initialize a new, empty conflict."""
         # list of Option objects
@@ -672,12 +744,15 @@ class ConflictModel:
         self.coalitions = CoalitionList(self)
 
     def newCondition(self, condData):
+        """Create a new Condition linked to the conflict."""
         return Condition(self, condData)
 
     def newCompoundCondition(self, condData):
+        """Create a new CompoundCondition linked to the conflict."""
         return CompoundCondition(self, condData)
 
     def newCoalition(self, coalitionData):
+        """Create a new Coalition linked to the conflict."""
         return Coalition(self, coalitionData)
 
     def export_rep(self):
@@ -722,6 +797,7 @@ class ConflictModel:
         self.infeasibles.validate()
         self.recalculateFeasibleStates(True)
         for dm in self.decisionMakers:
+            dm.calculatePerceived()
             dm.calculatePreferences()
         try:
             for coData in d['coalitions']:

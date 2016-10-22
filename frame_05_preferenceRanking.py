@@ -84,8 +84,8 @@ class PreferenceRankingFrame(FrameTemplate):
         self.conflict.recalculateFeasibleStates()
 
         for dm in self.conflict.decisionMakers:
-            dm.calculatePreferences()
             dm.calculatePerceived()
+            dm.calculatePreferences()
 
         self.lastBuildDMs = self.conflict.decisionMakers.export_rep()
         self.lastBuildOptions = self.conflict.options.export_rep()

@@ -70,8 +70,8 @@ class InverseFrame(FrameTemplate):
         self.conflict.recalculateFeasibleStates()
 
         for dm in self.conflict.decisionMakers:
-            dm.calculatePreferences()
             dm.calculatePerceived()
+            dm.calculatePreferences()
 
         self.lastBuildConflict = self.conflict.export_rep()
 

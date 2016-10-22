@@ -178,7 +178,7 @@ def validatePreferenceRanking(prefRank, feasibles):
 
 
 def mapPrefRank2Payoffs(preferenceRanking, feasibles):
-    """Map the preference rankings provided into payoff values for each state."""
+    """Map the preference rankings into payoff values for each state."""
     payoffs = numpy.zeros(len(feasibles), numpy.int_)    # clean payoffs array
 
     # use position in preference ranking to give a payoff value.
