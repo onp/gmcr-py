@@ -18,6 +18,7 @@ class RadiobuttonSeries(ttk.Labelframe):
     """State entry for a single decision maker."""
 
     def __init__(self, master=None, text=None, width=None, *args):
+        """State entry widget for a single decision maker."""
         ttk.Labelframe.__init__(self, master, text=text, width=width, *args)
         self.columnconfigure(0, weight=1)
 
@@ -37,6 +38,7 @@ class RadiobuttonSeries(ttk.Labelframe):
         self.setOpts(self.options)
 
     def setOpts(self, options, *args):
+        """Set the list of options to be displayed in the series."""
         if not options:
             self.placeholder = ttk.Label(self, text="This DM has no Options.")
             self.placeholder.grid(column=0, row=1, columnspan=4, sticky=NSEW)
@@ -62,6 +64,7 @@ class RadiobuttonSeries(ttk.Labelframe):
             name.grid(column=0, row=int(idx + 1))
 
     def getStates(self, *args):
+        """Get the entered state, in (idx,YN) format."""
         states = []
         for idx, bit in enumerate([x.get() for x in self.stringVarList]):
             if bit != '-':
@@ -69,13 +72,16 @@ class RadiobuttonSeries(ttk.Labelframe):
         return states
 
     def chgEvent(self):
+        """Generate event if input is changed."""
         self.master.event_generate('<<RdBtnChg>>')
 
     def disable(self):
+        """Disable the widget and all children."""
         for child in self.winfo_children():
             child['state'] = 'disabled'
 
     def enable(self):
+        """Enable the widget and all children."""
         for child in self.winfo_children():
             child['state'] = 'normal'
 
@@ -84,6 +90,7 @@ class RadiobuttonEntry(ttk.Frame):
     """State entry for the entire conflict. A set of RadioButtonSeries."""
 
     def __init__(self, master, conflict):
+        """State entry widget for the entire conflict."""
         ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
@@ -149,16 +156,20 @@ class RadiobuttonEntry(ttk.Frame):
         self.hasValidIf = False
 
     def resize(self, event=None):
+        """Adjust the canvas widget if the window is resized."""
         self.rbeCanvas.configure(scrollregion=self.rbeCanvas.bbox("all"))
         self.rbeCanvas["width"] = self.rbeCanvas.bbox("all")[2]
 
     def generateAdd(self, event=None):
+        """Generate event if a preference is added."""
         self.event_generate('<<AddPref>>')
 
     def generateStage(self, event=None):
+        """Generate event if a preference is staged."""
         self.event_generate('<<StagePref>>')
 
     def reloadOpts(self):
+        """Reload options for all decision makers."""
         self.rbeCanvas.delete(self.canvWindow)
         self.rdBtnFrame.destroy()
         self.rdBtnFrame = ttk.Frame(self.rbeCanvas)
@@ -184,6 +195,7 @@ class RadiobuttonEntry(ttk.Frame):
             self.disable()
 
     def disable(self, event=None):
+        """Disable the widget and all children."""
         self.isDisabled = True
         self.entryBx['state'] = 'disabled'
         self.codeBx['state'] = 'disabled'
@@ -193,6 +205,7 @@ class RadiobuttonEntry(ttk.Frame):
             srs.disable()
 
     def enable(self, event=None):
+        """Enable the widget and all children."""
         self.isDisabled = False
         self.entryBx['state'] = 'normal'
         self.codeBx['state'] = 'normal'
@@ -202,6 +215,7 @@ class RadiobuttonEntry(ttk.Frame):
             srs.enable()
 
     def setStates(self, dashOne):
+        """Set the states shown on the radiobuttons."""
         if dashOne == 'clear':
             for var in self.stringVarList:
                 var.set('-')
@@ -215,6 +229,7 @@ class RadiobuttonEntry(ttk.Frame):
         self.hasValidIf = False
 
     def getStates(self):
+        """Get the states shown on the radiobuttons in YN- format."""
         if self.hasValidIf:
             return self.ifCond
 
@@ -224,6 +239,7 @@ class RadiobuttonEntry(ttk.Frame):
         return states
 
     def onValidate(self, chg, res):
+        """Validation of entrybox state description string."""
         if chg in ['Y', 'N', 'y', 'n', '-']:
             if len(res) < len(self.stringVarList):
                 self.warnText.set('Entry too short')
@@ -235,6 +251,7 @@ class RadiobuttonEntry(ttk.Frame):
         return False
 
     def onValidate2(self, chg, res):
+        """Validate condition input string."""
         if self.regexValidChars.match(res):
             if "if" in res:
                 m = self.regexStatesIf.match(res)
@@ -307,6 +324,7 @@ class RadiobuttonEntry(ttk.Frame):
         self.ifCond = newCondition
 
     def rdBtnChgCmd(self, *args):
+        """Update display on input through radiobuttons."""
         val = ''.join([x.get() for x in self.stringVarList])
         self.entryText.set(val)
         self.warnText.set('')
