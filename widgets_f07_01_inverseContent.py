@@ -49,16 +49,16 @@ class VaryRangeSelector(ttk.Frame):
             self.varyVar.append([startVar,endVar])
             self.varyDispVar.append(dispVar)
 
-    def chgVary(self,*args):
-        self.vary=[[0,0] for dm in self.conflict.decisionMakers]
-        for dmIdx,rangeForDM in enumerate(self.varyVar):
+    def chgVary(self, *args):
+        self.vary=[[0, 0] for dm in self.conflict.decisionMakers]
+        for dmIdx, rangeForDM in enumerate(self.varyVar):
             dm = self.conflict.decisionMakers[dmIdx]
             rg1 = rangeForDM[0].get()
             rg2 = rangeForDM[1].get()
-            if " " in rg1:
-                rg1 = "[" + ",".join(rg1.split(" ")) + "]"
-            if " " in rg2:
-                rg2 = "[" + ",".join(rg2.split(" ")) + "]"
+#            if " " in rg1:
+#                rg1 = "[" + ",".join(rg1.split(" ")) + "]"
+#            if " " in rg2:
+#                rg2 = "[" + ",".join(rg2.split(" ")) + "]"
             v1 = dm.preferenceRanking.index(eval(rg1))
             v2 = dm.preferenceRanking.index(eval(rg2))+1
             if (v2-v1)>1:
