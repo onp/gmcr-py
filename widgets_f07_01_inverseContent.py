@@ -5,7 +5,7 @@
 Loaded by the frame_07_inverseApproach module.
 """
 
-from tkinter import Tk, N, S, E, W, VERTICAL
+from tkinter import Tk, N, S, E, W, VERTICAL, HORIZONTAL, StringVar, Text
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 from data_02_conflictSolvers import InverseSolver
@@ -29,8 +29,6 @@ class VaryRangeSelector(ttk.Frame):
             dmFrame = ttk.Labelframe(self, text=dm.name)
             dmFrame.grid(column=0, row=dmIdx)
 
-            startVar = StringVar()
-            endVar = StringVar()
             dispVar = StringVar(value='No range selected. Using original '
                                 'ranking.')
             ttk.Label(dmFrame, text='Original ranking: ' +
@@ -42,36 +40,28 @@ class VaryRangeSelector(ttk.Frame):
                                                           sticky=NSEW)
 
             ttk.Label(dmFrame, text='Vary from:').grid(column=0, row=0)
-            startSel = ttk.Combobox(dmFrame, textvariable=startVar,
-                                    state='readonly')
+            startSel = ttk.Combobox(dmFrame, state='readonly')
             startSel['values'] = tuple(dm.preferenceRanking)
             startSel.current(0)
             startSel.grid(column=1, row=0)
             startSel.bind('<<ComboboxSelected>>', self.chgVary)
 
             ttk.Label(dmFrame, text='  to:').grid(column=2, row=0)
-            endSel = ttk.Combobox(dmFrame, textvariable=endVar,
-                                  state='readonly')
+            endSel = ttk.Combobox(dmFrame, state='readonly')
             endSel['values'] = tuple(dm.preferenceRanking)
             endSel.current(0)
             endSel.grid(column=3, row=0)
             endSel.bind('<<ComboboxSelected>>', self.chgVary)
 
-            self.varyVar.append([startVar, endVar])
+            self.varyVar.append([startSel, endSel])
             self.varyDispVar.append(dispVar)
 
     def chgVary(self, *args):
         self.vary = [[0, 0] for dm in self.conflict.decisionMakers]
         for dmIdx, rangeForDM in enumerate(self.varyVar):
             dm = self.conflict.decisionMakers[dmIdx]
-            rg1 = rangeForDM[0].get()
-            rg2 = rangeForDM[1].get()
-#            if " " in rg1:
-#                rg1 = "[" + ",".join(rg1.split(" ")) + "]"
-#            if " " in rg2:
-#                rg2 = "[" + ",".join(rg2.split(" ")) + "]"
-            v1 = dm.preferenceRanking.index(eval(rg1))
-            v2 = dm.preferenceRanking.index(eval(rg2))+1
+            v1 = rangeForDM[0].current()
+            v2 = rangeForDM[1].current()+1
             if (v2-v1) > 1:
                 self.vary[dmIdx] = [v1, v2]
                 varyRange = dm.preferenceRanking[v1:v2]

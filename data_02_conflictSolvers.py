@@ -600,7 +600,7 @@ class InverseSolver(RMGenerator):
                         message1 = "    Equilibrium not possible as %s is always more preferred than %s"%(self.conflict.feasibles.ordered[state1], desEq)
                         break
                 if message1 == '':
-                    message1 = "    equilibrium exists under all selected rankings"
+                    message1 = "    Equilibrium exists under all selected rankings"
                 output.append(message1)
         return "\n\n".join(output) + "\n\n\n\n"
 
