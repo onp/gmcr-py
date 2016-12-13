@@ -61,8 +61,8 @@ class VaryRangeSelector(ttk.Frame):
         for dmIdx, rangeForDM in enumerate(self.varyVar):
             dm = self.conflict.decisionMakers[dmIdx]
             v1 = rangeForDM[0].current()
-            v2 = rangeForDM[1].current()+1
-            if (v2-v1) > 1:
+            v2 = rangeForDM[1].current() + 1
+            if (v2 - v1) > 1:
                 self.vary[dmIdx] = [v1, v2]
                 varyRange = dm.preferenceRanking[v1:v2]
                 self.varyDispVar[dmIdx].set('Varying on this range: ' +
@@ -112,8 +112,8 @@ class InverseContent(ttk.Frame):
         self.calcFrame.columnconfigure(0, weight=1)
         self.displayPermutations = StringVar(value=0)
         self.displayPermutationsChk = ttk.Checkbutton(
-                self.calcFrame, text="Display all Permutations",
-                variable=self.displayPermutations)
+            self.calcFrame, text="Display all Permutations",
+            variable=self.displayPermutations)
         self.displayPermutationsChk.grid(column=0, row=0, sticky=NSEW)
         self.calcButton = ttk.Button(self.calcFrame,
                                      text='Perform Inverse Calculations',
@@ -178,7 +178,7 @@ class InverseContent(ttk.Frame):
         self.conditionDisp.grid(column=3, row=0, rowspan=7, sticky=NSEW)
 
         self.conditionDispScrl = ttk.Scrollbar(
-                self, orient=VERTICAL, command=self.conditionDisp.yview)
+            self, orient=VERTICAL, command=self.conditionDisp.yview)
         self.conditionDisp.configure(yscrollcommand=self.conditionDispScrl.set)
         self.conditionDispScrl.grid(column=4, row=0, rowspan=7, sticky=NSEW)
 
@@ -221,7 +221,7 @@ class InverseContent(ttk.Frame):
 
     def varyChange(self, *args):
         self.vary = self.varySel.vary
-        varySpanSizes = [v2-v1 for v1, v2 in self.vary if (v2-v1) > 1]
+        varySpanSizes = [v2 - v1 for v1, v2 in self.vary if (v2 - v1) > 1]
         totalPermutations = int(np.prod([factorial(x) for x in varySpanSizes]))
         self.permCountVar.set("{} Permutations".format(totalPermutations))
 
