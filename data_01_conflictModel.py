@@ -655,7 +655,7 @@ class Coalition:
         for dm in self.members:
             dm.calculatePerceived()
         toOrd = self.conflict.feasibles.toOrdered
-        percDash = [dm.perceived.dash for dm in self.members]
+        percDash = [d for dm in self.members for d in dm.perceived.dash]
         self.perceived = FeasibleList(percDash, toOrdered=toOrd)
 
 
