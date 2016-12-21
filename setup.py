@@ -17,7 +17,7 @@ buildOptions = {'include_files':
                  'gmcr-vis/js-lib/', 'gmcr-vis/json/', 'gmcr-vis/favicon.ico',
                  'gmcr-vis/index.html', 'gmcr.ico', 'GMCR+handout.pdf',
                  'END USER AGREEMENT.txt'],
-                'silent': True}
+                 'silent': True}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
 shortcut_table = [
@@ -70,7 +70,7 @@ executables = [
 
 # Run setup
 setup(name='GMCRplus',
-      version='0.3.13',
+      version='0.3.14',
       description='Graph Model for Conflict Resolution',
       options={'build_exe': buildOptions,
                'bdist_msi': bdist_msi_options},
