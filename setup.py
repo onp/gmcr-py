@@ -61,8 +61,8 @@ executables = [
     Executable('a_Main_Window.py',
                base='Win32GUI',
                targetName='GMCRplus.exe',
-               appendScriptToExe=True,
-               appendScriptToLibrary=False,
+               # appendScriptToExe=True,
+               # appendScriptToLibrary=False,
                icon='gmcr.ico',
                shortcutName='GMCR+',
                shortcutDir='ProgramMenuFolder')
