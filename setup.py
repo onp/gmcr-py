@@ -10,14 +10,22 @@ Built versions will appear in the `dist` top directory.
 # Copyright:   (c) Oskar Petersons 2013
 
 from cx_Freeze import setup, Executable
+import os
+
+os.environ['TCL_LIBRARY'] = "C:/Python35/tcl/tcl8.6"
+os.environ['TK_LIBRARY'] = "C:/Python35/tcl/tk8.6"
 
 # Set other directories to be included.
 buildOptions = {'include_files':
                 ['Examples/', 'icons/', 'gmcr-vis/css/', 'gmcr-vis/js/',
                  'gmcr-vis/js-lib/', 'gmcr-vis/json/', 'gmcr-vis/favicon.ico',
                  'gmcr-vis/index.html', 'gmcr.ico', 'GMCR+handout.pdf',
-                 'END USER AGREEMENT.txt'],
-                 'silent': True}
+                 'END USER AGREEMENT.txt', 'C:/Python35/DLLs/tcl86t.dll',
+                 'C:/Python35/DLLs/tk86t.dll'],
+                'packages':
+                ["tkinter", "numpy", "multiprocessing"],
+                'replace_paths': ["*", ""],
+                'silent': True}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
 shortcut_table = [
