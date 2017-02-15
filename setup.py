@@ -9,6 +9,7 @@ Built versions will appear in the `dist` top directory.
 
 # Copyright:   (c) Oskar Petersons 2013
 
+from version import __version__
 from cx_Freeze import setup, Executable
 import os
 
@@ -78,7 +79,7 @@ executables = [
 
 # Run setup
 setup(name='GMCRplus',
-      version='0.3.14',
+      version=__version__,
       description='Graph Model for Conflict Resolution',
       options={'build_exe': buildOptions,
                'bdist_msi': bdist_msi_options},

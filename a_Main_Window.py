@@ -2,6 +2,7 @@
 
 """Launches the GMCR-py Decision Support System."""
 
+from version import __version__
 from tkinter import Tk, VERTICAL, HORIZONTAL, N, S, E, W
 from tkinter import ttk
 from tkinter import filedialog
@@ -32,7 +33,7 @@ class MainAppWindow:
 
         self.root = Tk()
         self.root.iconbitmap('gmcr.ico')
-        self.root.wm_title('New GMCR+ Model')
+        self.root.wm_title('GMCR+ v{} | New Model'.format(__version__))
         self.root.columnconfigure(0, weight=1)
         self.root.rowconfigure(0, weight=1)
 
@@ -171,7 +172,7 @@ class MainAppWindow:
         )
         if fileName:
             self.file = fileName
-            self.root.wm_title(self.file)
+            self.root.wm_title('GMCR+ v{} | {}'.format(__version__, self.file))
             self.saveConflict()
 
     def loadConflict(self, fileName=None):
@@ -189,7 +190,7 @@ class MainAppWindow:
             self.frameLeave()
             self.unloadAllFrames()
             print('loading: {}'.format(fileName))
-            self.root.wm_title(fileName)
+            self.root.wm_title('GMCR+ v{} | {}'.format(__version__, self.file))
             self.activeConflict.load_from_file(fileName)
             self.refreshActiveFrames()
 
@@ -200,7 +201,7 @@ class MainAppWindow:
         self.activeConflict.__init__()
         self.file = None
         self.refreshActiveFrames()
-        self.root.wm_title('New GMCR+ Model')
+        self.root.wm_title('GMCR+ v{} | New Model'.format(__version__))
 
 
 if __name__ == '__main__':

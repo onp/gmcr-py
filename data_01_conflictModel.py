@@ -4,6 +4,7 @@
 
 import json
 import data_03_gmcrUtilities as gmcrUtil
+from version import __version__
 
 
 class Option:
@@ -765,7 +766,7 @@ class ConflictModel:
                 'infeasibles': self.infeasibles.export_rep(),
                 'useManualPreferenceRanking': self.useManualPreferenceRanking,
                 'program': 'gmcr-py',
-                'version': '0.3.14'}
+                'version': __version__}
 
     def save_to_file(self, file):
         """Save the current conflict to the file location given."""
