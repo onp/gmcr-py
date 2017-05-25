@@ -29,10 +29,7 @@ def serve():
 
 
 def launchVis(data=None):
-    # serverThread = Process(target=serve,daemon=True)
-    # daemon keyword only works in python 3.3 and up
-    serverThread = Process(target=serve)
-    serverThread.daemon = True
+    serverThread = Process(target=serve, daemon=True)
 
     serverThread.start()
 
