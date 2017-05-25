@@ -1,8 +1,8 @@
 """Script for generation of an .msi install package for GMCR-py.
 
 Call from console with `python setup.py bdist_msi`
-     py -3.5 setup.py bdist_msi
-     py -3.5_32 setup.py bdist_msi
+     py -3.6 setup.py bdist_msi
+     py -3.6_32 setup.py bdist_msi
 
 Built versions will appear in the `dist` top directory.
 """
@@ -21,11 +21,10 @@ buildOptions = {'include_files':
                 ['Examples/', 'icons/', 'gmcr-vis/css/', 'gmcr-vis/js/',
                  'gmcr-vis/js-lib/', 'gmcr-vis/json/', 'gmcr-vis/favicon.ico',
                  'gmcr-vis/index.html', 'gmcr.ico', 'GMCR+handout.pdf',
-                 'END USER AGREEMENT.txt', 'C:/Python35/DLLs/tcl86t.dll',
-                 'C:/Python35/DLLs/tk86t.dll'],
-                'packages':
-                ["tkinter", "numpy", "multiprocessing"],
-                'replace_paths': ["*", ""],
+                 'END USER AGREEMENT.txt', 'C:/Python36/DLLs/tcl86t.dll',
+                 'C:/Python36/DLLs/tk86t.dll'],
+                'packages': ["tkinter", "numpy", "multiprocessing"],
+                'replace_paths': ["*="],
                 'silent': True}
 
 # http://msdn.microsoft.com/en-us/library/windows/desktop/aa371847(v=vs.85).aspx
