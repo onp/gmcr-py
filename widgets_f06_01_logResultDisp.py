@@ -31,7 +31,7 @@ class CoalitionSelector(ttk.Frame):
         self.entry = ttk.Entry(self, textvariable=self.coalitionVar,
                                validate='key')
         vcmd = self.entry.register(self.onChange)
-        self.entry.configure(validatecommand=(vcmd,'%P'))
+        self.entry.configure(validatecommand=(vcmd, '%P'))
         self.entry.grid(row=0, column=1, sticky=NSEW)
         self.statusLabel = ttk.Label(self, textvariable=self.statusVar)
         self.statusLabel.grid(row=0, column=2, sticky=NSEW)
@@ -61,34 +61,34 @@ class CoalitionSelector(ttk.Frame):
         for itm in newCoIdxs:
             if type(itm) is int:
                 if itm in seen:
-                    self.statusVar.set("%s appears more than once."%itm)
+                    self.statusVar.set("%s appears more than once." % itm)
                     return True
                 elif (itm > numDMs) or (itm < 1):
-                    self.statusVar.set("%s is not a valid DM number."%itm)
+                    self.statusVar.set("%s is not a valid DM number." % itm)
                     return True
                 else:
                     seen.append(itm)
-                    newCos.append(self.conflict.decisionMakers[itm -1])
+                    newCos.append(self.conflict.decisionMakers[itm - 1])
             elif type(itm) is list:
                 newCoMembers = []
                 for itm2 in itm:
                     if type(itm2) is not int:
-                        self.statusVar.set("%s is an invalid entry"%itm2)
+                        self.statusVar.set("%s is an invalid entry" % itm2)
                         return True
                     else:
                         if itm2 in seen:
-                            self.statusVar.set("%s appears more than once."%itm2)
+                            self.statusVar.set("%s appears more than once." % itm2)
                             return True
                         elif (itm2 > numDMs) or (itm2 < 1):
-                            self.statusVar.set("%s is not a valid DM number."%itm2)
+                            self.statusVar.set("%s is not a valid DM number." % itm2)
                             return True
                         else:
                             seen.append(itm2)
-                            newCoMembers.append(self.conflict.decisionMakers[itm2-1])
+                            newCoMembers.append(self.conflict.decisionMakers[itm2 - 1])
                 newCos.append(self.conflict.newCoalition(newCoMembers))
                 areCoalitions = True
             else:
-                self.statusVar.set("%s is an invalid entry"%itm)
+                self.statusVar.set("%s is an invalid entry" % itm)
                 return True
         if len(seen) == numDMs:
             self.statusVar.set("Input OK.")
@@ -99,7 +99,7 @@ class CoalitionSelector(ttk.Frame):
                 raise Exception("Coalitions failed to validate")
             self.event_generate("<<CoalitionsChanged>>")
         else:
-            self.statusVar.set("Missing DMs"%([x+1 for x in range(numDMs) if x+1 not in seen]))
+            self.statusVar.set("Missing DMs" % ([x + 1 for x in range(numDMs) if x + 1 not in seen]))
         return True
 
 
@@ -134,7 +134,7 @@ class OptionFormSolutionTable(ttk.Frame):
         self.scrollX.grid(column=0, row=1, sticky=NSEW)
         self.tableCanvas.configure(yscrollcommand=self.scrollY.set)
         self.tableCanvas.configure(xscrollcommand=self.scrollX.set)
-        self.tableCanvas.create_window((0,0), window=self.table, anchor='nw')
+        self.tableCanvas.create_window((0, 0), window=self.table, anchor='nw')
         self.table.bind("<Configure>", resize)
 
         self.style = ttk.Style()
@@ -146,19 +146,19 @@ class OptionFormSolutionTable(ttk.Frame):
         self.refresh()
 
     def refresh(self):
-        rowCount = len(self.conflict.options)+len(self.conflict.decisionMakers)+2+6
+        rowCount = len(self.conflict.options) + len(self.conflict.decisionMakers) + 2 + 6
 
         columnCount = len(self.conflict.feasibles) + 2
         tableData = numpy.zeros((rowCount, columnCount), dtype="<U20")
 
         # labels
-        tableData[0,1] = "Ordered"
-        tableData[1,1] = "Decimal"
+        tableData[0, 1] = "Ordered"
+        tableData[1, 1] = "Decimal"
 
         # #DMs and options
         currRow = 2
         for i, dm in enumerate(self.conflict.decisionMakers):
-            tableData[currRow, 0] = "%s - %s"%(i + 1, dm.name)
+            tableData[currRow, 0] = "%s - %s" % (i + 1, dm.name)
             for opt in dm.options:
                 tableData[currRow, 1] = opt.name
                 currRow += 1
@@ -177,10 +177,10 @@ class OptionFormSolutionTable(ttk.Frame):
         currCol = 2
         feasibles = self.conflict.feasibles
         for state in range(len(feasibles)):
-            newCol = [feasibles.ordered[state], feasibles.decimal[state]]+list(feasibles.yn[state])
+            newCol = [feasibles.ordered[state], feasibles.decimal[state]] + list(feasibles.yn[state])
             for dm in self.conflict.decisionMakers:
                 newCol.append(dm.payoffs[state])
-            newCol += [("Y" if stability else "N") for stability in self.owner.sol.allEquilibria[:,state]]
+            newCol += [("Y" if stability else "N") for stability in self.owner.sol.allEquilibria[:, state]]
             tableData[:, currCol] = newCol
             currCol += 1
 
@@ -188,7 +188,7 @@ class OptionFormSolutionTable(ttk.Frame):
 
         # sorting
         if self.sortDM is not None:
-            sortIndex = numpy.array(tableData[self.sortDM, 2:], int).argsort() +2
+            sortIndex = numpy.array(tableData[self.sortDM, 2:], int).argsort() + 2
             if self.sortDirection == "ascending":
                 tableData[:, 2:] = tableData[:, sortIndex]
             else:
@@ -214,14 +214,14 @@ class OptionFormSolutionTable(ttk.Frame):
 
             for col in range(tableData.shape[1]):
                 if col < 2:
-                    newEntry = ttk.Label(self.table, text=tableData[row,col],style=tag+".TLabel")
+                    newEntry = ttk.Label(self.table, text=tableData[row, col], style=tag + ".TLabel")
                     newEntry.grid(row=row, column=col, sticky=NSEW)
                 else:
                     if (tag == "stabilities") and (tableData[row, col] == "N"):
                         newEntry = ttk.Label(self.table, text="",
                                              style=tag + ".TLabel", width=4)
                     else:
-                        newEntry = ttk.Label(self.table, text=tableData[row,col],style=tag+".TLabel",width=4)
+                        newEntry = ttk.Label(self.table, text=tableData[row, col], style=tag + ".TLabel", width=4)
                     newEntry.grid(row=row, column=col + 1, sticky=NSEW)
 
                 def enterCell(event=None, row=row, col=col):
@@ -250,22 +250,20 @@ class OptionFormSolutionTable(ttk.Frame):
                     newEntry.bind("<Enter>", enterCell)
                     newEntry.bind("<Leave>", exitCell)
 
-
-
-        valRotation = {"-":"Y","Y":"N","N":"-"}
+        valRotation = {"-": "Y", "Y": "N", "N": "-"}
 
         if len(self.filterVals) != rowCount:
-            self.filterVals = numpy.zeros(rowCount,dtype="<U20")
+            self.filterVals = numpy.zeros(rowCount, dtype="<U20")
 
         def filterStates():
-            for col in range(2,tableData.shape[1]):
-                yMatch = numpy.greater_equal(tableData[:,col]=="Y",self.filterVals=="Y")
-                nMatch = numpy.greater_equal(tableData[:,col]=="N",self.filterVals=="N")
+            for col in range(2, tableData.shape[1]):
+                yMatch = numpy.greater_equal(tableData[:, col] == "Y", self.filterVals == "Y")
+                nMatch = numpy.greater_equal(tableData[:, col] == "N", self.filterVals == "N")
                 if numpy.all(numpy.logical_and(yMatch, nMatch)):
-                    for cell,tag in columns[col]:
+                    for cell, tag in columns[col]:
                         cell.grid()
                 else:
-                    for cell,tag in columns[col]:
+                    for cell, tag in columns[col]:
                         cell.grid_remove()
 
         filterStates()
@@ -311,16 +309,15 @@ class OptionFormSolutionTable(ttk.Frame):
 
             return newSortButton
 
-
-        for row in range(2, 2+len(self.conflict.options)):
+        for row in range(2, 2 + len(self.conflict.options)):
             nfb = filtMaker(row)
             nfb.grid(row=row, column=2, sticky=NSEW)
 
-        for row in range(2+len(self.conflict.options)+len(self.conflict.decisionMakers),tableData.shape[0]):
+        for row in range(2 + len(self.conflict.options) + len(self.conflict.decisionMakers), tableData.shape[0]):
             nfb = filtMaker(row)
             nfb.grid(row=row, column=2, sticky=NSEW)
 
-        for row in range(2+len(self.conflict.options),2+len(self.conflict.options)+len(self.conflict.decisionMakers)):
+        for row in range(2 + len(self.conflict.options), 2 + len(self.conflict.options) + len(self.conflict.decisionMakers)):
             nsb = sortMaker(row)
             nsb.grid(row=row, column=2, sticky=NSEW)
 
@@ -328,10 +325,9 @@ class OptionFormSolutionTable(ttk.Frame):
         filterLabel.grid(row=1, column=2, sticky=NSEW)
 
 
-
 class LogNarrator(ttk.Frame):
     def __init__(self, master, conflict, solOwner):
-        ttk.Frame.__init__(self,master)
+        ttk.Frame.__init__(self, master)
 
         self.conflict = conflict
         self.owner = solOwner
@@ -349,9 +345,9 @@ class LogNarrator(ttk.Frame):
                                      state='readonly', width=15)
         self.stateSel.grid(column=1, row=0, sticky=NSEW, padx=3, pady=3)
 
-        self.eqTypeSel = ttk.Combobox(self,textvariable=self.eqTypeVar,
+        self.eqTypeSel = ttk.Combobox(self, textvariable=self.eqTypeVar,
                                       state='readonly', width=15)
-        self.eqTypeSel['values'] = ('Nash','GMR','SEQ','SIM','SMR')
+        self.eqTypeSel['values'] = ('Nash', 'GMR', 'SEQ', 'SIM', 'SMR')
         self.eqTypeSel.grid(column=2, row=0, sticky=NSEW, padx=3, pady=3)
 
         self.equilibriumNarrator = Text(self, wrap='word')
@@ -454,14 +450,14 @@ class Exporter(ttk.Frame):
                 json.dump(rmJSONdata, jsonfile)
 
     def loadVis(self, event=None):
-        """Launches visualization in browser."""
+        """Launch visualization in browser."""
         copy_tree('gmcr-vis', os.environ['TEMP'] + '/gmcr-vis', update=True)
         self.owner.sol.saveJSON(os.environ['TEMP'] +
                                 '/gmcr-vis/json/conflictData.json')
         launchVis()
 
     def saveToCSV(self, event=None):
-        """Exports the currently displayed results to a csv file"""
+        """Export the currently displayed results to a csv file."""
         fileName = filedialog.asksaveasfilename(defaultextension='.csv',
                                         filetypes=(("CSV files", "*.csv"),
                                                    ("All files", "*.*")),
