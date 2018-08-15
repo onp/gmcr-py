@@ -23,17 +23,13 @@ pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
-          exclude_binaries=True,
+          a.binaries,
+          a.zipfiles,
+          a.datas,
           name='GMCRplus',
           debug=False,
           strip=False,
           upx=True,
-          console=True,
-          icon='gmcr.ico')
-coll = COLLECT(exe,
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               name='GMCRplus_v0.3.15')
+          runtime_tmpdir=None,
+          console=False,
+          icon='gmcr.ico' )
