@@ -103,7 +103,7 @@ class DMInpFrame(FrameTemplate):
 
         self.built = True
 
-    def refresh(self):
+    def refresh(self, *args):
         """Refresh data in all active display widgets."""
         self.dmSelector.refresh()
         self.dmSelector.reselect()

@@ -112,7 +112,7 @@ class InverseFrame(FrameTemplate):
 
         self.built = True
 
-    def refresh(self):
+    def refresh(self, *args):
         """Refresh data in all active display widgets."""
         self.invDisp.refreshDisplay()
         self.invDisp.refreshSolution()

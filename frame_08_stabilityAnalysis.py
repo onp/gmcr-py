@@ -170,7 +170,7 @@ class StabilityFrame(FrameTemplate):
 
         self.built = True
 
-    def refresh(self):
+    def refresh(self, *args):
         """Refresh data in all active display widgets."""
         sq = self.statusQuoAndGoals.statusQuoSelector.current()
         goals = self.statusQuoAndGoals.getGoals()
