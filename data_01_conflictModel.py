@@ -106,7 +106,7 @@ class DecisionMaker:
             pref.weight = 2**(len(self.preferences) - idx - 1)
 
     def calculatePreferences(self):
-        """Calculate the DM's prefence ranking of the valid states."""
+        """Calculate the DM's preference ranking of the valid states."""
         if self.conflict.useManualPreferenceRanking:
             self.payoffs = gmcrUtil.mapPrefRank2Payoffs(
                 self.preferenceRanking, self.conflict.feasibles)
@@ -531,6 +531,7 @@ class FeasibleList:
         if not dash:
             self.decimal = []
             self.dash = []
+            self.ordered = []
             return
         # as 'Y,N,-' compact patterns
         self.dash = gmcrUtil.reducePatterns(dash)
