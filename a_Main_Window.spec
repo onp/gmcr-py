@@ -33,3 +33,5 @@ exe = EXE(pyz,
           runtime_tmpdir=None,
           console=False,
           icon='gmcr.ico' )
+
+# call pyinstaller a_Main_Window.spec to build executable
