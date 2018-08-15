@@ -100,12 +100,15 @@ class DMselector(ttk.Frame):
 
     def selChgCmd(self, *args):
         """Called when the selection changes."""
-        self.selIdx = int(self.dmListDisp.curselection()[0])
-        if self.selIdx != len(self.conflict.decisionMakers):
+        if len(self.dmListDisp.curselection()) == 0:
             self.selectedDM = self.conflict.decisionMakers[self.selIdx]
         else:
-            self.selectedDM = None
-        self.event_generate('<<DMselected>>')
+            self.selIdx = int(self.dmListDisp.curselection()[0])
+            if self.selIdx != len(self.conflict.decisionMakers):
+                self.selectedDM = self.conflict.decisionMakers[self.selIdx]
+            else:
+                self.selectedDM = None
+            self.event_generate('<<DMselected>>')
 
     def editCmd(self, *args):
         """Called when a list entry is selected for editing."""
