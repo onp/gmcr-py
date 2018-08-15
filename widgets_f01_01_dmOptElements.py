@@ -119,7 +119,10 @@ class DMselector(ttk.Frame):
 
 
 class DMeditor(ttk.Frame):
+    """Widget to change a DM's name and options."""
+
     def __init__(self, master, conflict):
+        """DM editor widget initialization."""
         ttk.Frame.__init__(self, master)
         self.conflict = conflict
 
@@ -155,6 +158,7 @@ class DMeditor(ttk.Frame):
         self.loadDM()
 
     def loadDM(self, dm=None):
+        """Load a decision maker's data into the widget."""
         self.dm = dm
 
         print('loading ' + str(self.dm))
@@ -183,12 +187,14 @@ class DMeditor(ttk.Frame):
             self.addOption(opt)
 
     def dmNameMod(self, newName):
+        """Change the decisionmaker's name."""
         self.labelVar.set("Editing DM " + newName)
         self.dm.name = newName
         self.event_generate('<<dmNameChange>>')
         return True
 
     def addOption(self, opt):
+        """Create an editing widget for the option."""
         def optNameMod(newName):
             opt.name = newName
             return True
@@ -211,6 +217,7 @@ class DMeditor(ttk.Frame):
         newOptionDelBtn.grid(row=len(self.optionVars), column=1, sticky=NSEW)
 
     def newOption(self):
+        """Add an option to the decisionmaker's list."""
         self.dm.options.append('New Option')
         self.loadDM(self.dm)
         self.event_generate('<<dmOptChg>>')
