@@ -25,7 +25,7 @@ class InverseFrame(FrameTemplate):
     # Image used on button to select frame, when frame is inactive.
     inactiveIcon = 'icons/Inverse_GMCR_OFF.gif'
     # Help text to be displayed when screen is active.
-    helpText = ("")
+    helpText = ("Inverse GMCR calculations.")
 
 # ########################     INITIALIZATION  ################################
     def __init__(self, master, conflict, *args):

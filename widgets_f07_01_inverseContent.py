@@ -5,7 +5,8 @@
 Loaded by the frame_07_inverseApproach module.
 """
 
-from tkinter import Tk, N, S, E, W, VERTICAL, HORIZONTAL, StringVar, Text
+from tkinter import (Tk, N, S, E, W, VERTICAL, HORIZONTAL, StringVar,
+                     Text, Canvas)
 from tkinter import ttk
 from data_01_conflictModel import ConflictModel
 from data_02_conflictSolvers import InverseSolver
@@ -19,6 +20,20 @@ class VaryRangeSelector(ttk.Frame):
     def __init__(self, master, conflict, *args):
         ttk.Frame.__init__(self, master, *args)
 
+        self.vrsCanvas = Canvas(self)
+        self.vrsFrame = ttk.Frame(self.vrsCanvas)
+        self.scrollY = ttk.Scrollbar(self, orient=VERTICAL,
+                                     command=self.vrsCanvas.yview)
+
+        self.vrsCanvas.grid(column=0, row=0, columnspan=1, sticky=NSEW)
+        self.scrollY.grid(column=2, row=0, sticky=NSEW)
+        self.vrsCanvas.configure(yscrollcommand=self.scrollY.set)
+        self.canvWindow = self.vrsCanvas.create_window((0, 0),
+                                                       window=self.vrsFrame,
+                                                       anchor='nw')
+        self.vrsFrame.bind("<Configure>", self.resize)
+        self.rowconfigure(0, weight=1)
+
         self.conflict = conflict
         self.vary = [[0, 0] for dm in self.conflict.decisionMakers]
 
@@ -26,18 +41,21 @@ class VaryRangeSelector(ttk.Frame):
         self.varyDispVar = []
 
         for dmIdx, dm in enumerate(self.conflict.decisionMakers):
-            dmFrame = ttk.Labelframe(self, text=dm.name)
+            dmFrame = ttk.Labelframe(self.vrsFrame, text=dm.name)
             dmFrame.grid(column=0, row=dmIdx)
 
             dispVar = StringVar(value='No range selected. Using original '
                                 'ranking.')
-            ttk.Label(dmFrame, text='Original ranking: ' +
-                      str(dm.preferenceRanking)).grid(column=0, row=1,
-                                                      columnspan=4,
-                                                      sticky=NSEW)
-            ttk.Label(dmFrame, textvariable=dispVar).grid(column=0, row=2,
-                                                          columnspan=4,
-                                                          sticky=NSEW)
+
+            t = 'Original ranking: ' + str(dm.preferenceRanking)
+
+            ttk.Label(dmFrame, text=t, wraplength=500).grid(column=0, row=1,
+                                                            columnspan=4,
+                                                            sticky=NSEW)
+
+            ttk.Label(dmFrame, textvariable=dispVar,
+                      wraplength=500).grid(column=0, row=2, columnspan=4,
+                                           sticky=NSEW)
 
             ttk.Label(dmFrame, text='Vary from:').grid(column=0, row=0)
             startSel = ttk.Combobox(dmFrame, state='readonly')
@@ -56,6 +74,11 @@ class VaryRangeSelector(ttk.Frame):
             self.varyVar.append([startSel, endSel])
             self.varyDispVar.append(dispVar)
 
+    def resize(self, event=None):
+        """Adjust the canvas widget if the window is resized."""
+        self.vrsCanvas.configure(scrollregion=self.vrsCanvas.bbox("all"))
+        self.vrsCanvas["width"] = self.vrsCanvas.bbox("all")[2]
+
     def chgVary(self, *args):
         self.vary = [[0, 0] for dm in self.conflict.decisionMakers]
         for dmIdx, rangeForDM in enumerate(self.varyVar):
@@ -65,8 +88,8 @@ class VaryRangeSelector(ttk.Frame):
             if (v2 - v1) > 1:
                 self.vary[dmIdx] = [v1, v2]
                 varyRange = dm.preferenceRanking[v1:v2]
-                self.varyDispVar[dmIdx].set('Varying on this range: ' +
-                                            str(varyRange))
+                self.varyDispVar[dmIdx].set(
+                    'Varying on this range: ' + str(varyRange))
             else:
                 if(v1 > v2):
                     self.varyDispVar[dmIdx].set('Start must be earlier than'
@@ -81,6 +104,7 @@ class InverseContent(ttk.Frame):
     def __init__(self, master, conflict, *args):
         ttk.Frame.__init__(self, master, *args)
         self.columnconfigure(3, weight=1)
+        self.rowconfigure(2, weight=1)
         self.rowconfigure(7, weight=1)
 
         self.conflict = conflict
